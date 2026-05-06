@@ -1,0 +1,102 @@
+<div class="container py-5">
+    <div class="max-width-800 mx-auto">
+        <h1 class="fw-bold mb-4">Privacy Policy</h1>
+        <p class="text-muted">Last updated: February 2026</p>
+
+        <div id="dynamic-privacy-policy" class="policy-animate-block policy-content-min-height">
+            <section class="mb-5">
+                <h5 class="fw-bold"><i class="fas fa-database text-primary me-2"></i> 1. Information We Collect</h5>
+                <p>We collect personal information that you voluntarily provide to us when you register on the site,
+                    place an order, or contact us. This may include your name, email address, phone number, shipping
+                    address, and payment details.</p>
+            </section>
+
+            <section class="mb-5">
+                <h5 class="fw-bold"><i class="fas fa-bullseye text-success me-2"></i> 2. How We Use Your Information
+                </h5>
+                <p>Your information is used to process and fulfill your orders, provide customer support, improve our
+                    website and services, and send you occasional promotional emails if you have opted in to receive
+                    them.</p>
+            </section>
+
+            <section class="mb-5">
+                <h5 class="fw-bold"><i class="fas fa-lock text-warning me-2"></i> 3. Data Security</h5>
+                <p>We implement a variety of security measures to maintain the safety of your personal information. Your
+                    sensitive data is encrypted and protected using industry-standard protocols. However, please be
+                    aware that no transmission over the internet is completely secure.</p>
+            </section>
+
+            <section class="mb-5">
+                <h5 class="fw-bold"><i class="fas fa-cookie text-info me-2"></i> 4. Cookies Policy</h5>
+                <p>We use cookies to enhance your browsing experience, remember the items in your cart, and understand
+                    how you interact with our site. You can choose to disable cookies through your browser settings,
+                    though this may limit your ability to use certain features.</p>
+            </section>
+
+            <section class="mb-5">
+                <h5 class="fw-bold"><i class="fas fa-share-alt text-danger me-2"></i> 5. Third-Party Disclosure</h5>
+                <p>We do not sell, trade, or transfer your personal information to outside parties except for trusted
+                    third parties who assist us in operating our website, conducting our business, or servicing you
+                    (e.g., delivery partners), so long as those parties agree to keep this information confidential.</p>
+            </section>
+
+            <section class="mb-5">
+                <h5 class="fw-bold"><i class="fas fa-user-shield text-secondary me-2"></i> 6. Your Rights</h5>
+                <p>You have the right to access, correct, or delete your personal information at any time. If you wish
+                    to exercise these rights, please contact us via the details provided in our header or footer.</p>
+            </section>
+        </div>
+
+        <a href="/shop" class="btn btn-outline-dark rounded-pill px-5 py-3 text-uppercase fw-bold mb-5 btn-letter-spacing-wide">Continue Shopping</a>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const settings = window.siteSettings ||
+                await (window.getSettings ? window.getSettings() : fetch('/api/admin/settings').then(r => r.json()));
+
+            if (settings.legal_privacy && settings.legal_privacy.trim() !== '') {
+                const animateClass = settings.policy_animation_enabled === 'yes' ? 'policy-animate-block' : '';
+                document.getElementById('dynamic-privacy-policy').innerHTML = `
+                    <div class="${animateClass}">
+                        ${settings.legal_privacy}
+                    </div>
+                `;
+                if (settings.policy_animation_enabled === 'yes') {
+                    setTimeout(() => {
+                        const blocks = document.querySelectorAll('.policy-animate-block');
+                        blocks.forEach(b => b.classList.add('visible'));
+                    }, 50);
+                }
+            } else {
+                // Return to fallback
+                setTimeout(() => {
+                    const block = document.getElementById('dynamic-privacy-policy');
+                    if (block) block.classList.add('visible');
+                }, 50);
+            }
+        } catch (error) {
+            console.error('Failed to load privacy policy:', error);
+            setTimeout(() => {
+                const block = document.getElementById('dynamic-privacy-policy');
+                if (block) block.classList.add('visible');
+            }, 50);
+        }
+    });
+</script>
+<style>
+    .policy-animate-block {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+
+    .policy-animate-block.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
+</div>
+</div>

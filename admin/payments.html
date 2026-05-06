@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 ">
+    <title>SABILORÉ | Payment Settings</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+    
+    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet">
+    <style>
+        .ql-container {
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            border-bottom-left-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+            background: #fff;
+            min-height: 120px;
+        }
+
+        .ql-toolbar {
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+            background: #f8f9fa;
+        }
+
+        .type-badge-mobile {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .type-badge-bank {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .type-badge-cash {
+            background: #fff3e0;
+            color: #e65100;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div id="admin-layout-placeholder"></div>
+
+    <div class="admin-main-content p-5">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <h2 class="fw-bold m-0">Payment Settings</h2>
+            <button class="btn btn-dark rounded-pill px-4" onclick="showAddMethodModal()">
+                <i class="fas fa-plus me-2"></i> Add Method
+            </button>
+        </div>
+
+        <div class="card p-4 border-0 shadow-sm rounded-4">
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead class="bg-light small text-uppercase fw-bold">
+                        <tr>
+                            <th>Image</th>
+                            <th>Method Name</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Instructions</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="payment-methods-table">
+                        <tr>
+                            <td colspan="5" class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status"></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
+    
+    <div class="modal fade" id="paymentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg modal-rounded-xl">
+                <div class="modal-header border-0 pb-0 p-4">
+                    <h5 class="modal-title fw-bold" id="modalTitle">Add Payment Method</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="payment-form">
+                        <input type="hidden" id="method-id">
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-5">
+                                <label for="method-name" class="form-label small fw-bold">Method Name</label>
+                                <input type="text" id="method-name" class="form-control rounded-3"
+                                     required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="method-type" class="form-label small fw-bold">Type</label>
+                                <select id="method-type" class="form-select rounded-3">
+                                    <option value="mobile">Mobile Banking</option>
+                                    <option value="bank">Bank Transfer</option>
+                                    <option value="cash">Cash on Delivery</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="method-status" class="form-label small fw-bold">Status</label>
+                                <select id="method-status" class="form-select rounded-3">
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                </select>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="method-image" class="form-label small fw-bold">Payment Option Image (Optional)</label>
+                                <input type="file" id="method-image" class="form-control rounded-3" accept="image/*">
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="method-instructions" class="form-label small fw-bold">Payment Instructions (shown on Checkout)</label>
+                            <div id="instructions-editor"></div>
+                            <textarea id="method-instructions" class="d-none"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-dark w-100 rounded-pill py-2 fw-bold">Save Payment
+                            Method</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow-lg modal-rounded-xl">
+                <div class="modal-body text-center p-4">
+                    <i class="fas fa-exclamation-triangle text-danger fa-2x mb-3"></i>
+                    <h6 class="fw-bold mb-2">Delete Payment Method?</h6>
+                    <p class="text-muted small mb-4">This action cannot be undone.</p>
+                    <input type="hidden" id="delete-method-id">
+                    <div class="d-flex gap-2 justify-content-center">
+                        <button class="btn btn-outline-secondary rounded-pill px-4"
+                            data-bs-dismiss="modal">Cancel</button>
+                        <button class="btn btn-danger rounded-pill px-4" onclick="confirmDelete()">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js"></script>
+    <script src="js/admin.js"></script>
+    <script>
+        let quillInstructions;
+        const modal = new bootstrap.Modal(document.getElementById('paymentModal'));
+        const deleteModalEl = new bootstrap.Modal(document.getElementById('deleteModal'));
+        const form = document.getElementById('payment-form');
+
+        // Init Quill
+        quillInstructions = new Quill('#instructions-editor', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    [{ 'color': [] }, { 'background': [] }],
+                    ['link'],
+                    ['clean']
+                ]
+            },
+            placeholder: 'e.g. Send money to 01812XXXXXX and enter your Transaction ID below...'
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAdminLayout();
+            loadPaymentMethods();
+        });
+
+        async function loadPaymentMethods() {
+            const res = await adminFetch(`/api/payments`);
+            if (!res) return;
+            const methods = await res.json();
+            window.paymentMethodsCache = methods; // cache for showing in modal
+            const table = document.getElementById('payment-methods-table');
+
+            if (methods.length === 0) {
+                table.innerHTML = `<tr>
+                    <td colspan="6" class="text-center py-5 text-muted">No payment methods configured yet. Click <b>Add Method</b>
+                        to get started.</td>
+                </tr>`;
+                return;
+            }
+
+            table.innerHTML = methods.map(m => `
+                <tr class="align-middle">
+                    <td>
+                        ${m.image ? `<img loading="lazy" decoding="async" src="${getImageUrl(m.image)}" alt="${m.name}"
+                            class="payment-method-thumb">` :
+                    '<span class="text-muted small">No Image</span>'}
+                    </td>
+                    <td class="fw-bold">${m.name}</td>
+                    <td>
+                        <span class="badge rounded-pill type-badge-${m.type} px-3 py-1">
+                            ${m.type === 'mobile' ? '<i class="fas fa-mobile-alt me-1"></i>Mobile' : m.type === 'bank' ? '<i class="fas fa-university me-1"></i>Bank' : '<i class="fas fa-truck me-1"></i>COD'}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge rounded-pill bg-${m.status === 'active' ? 'success' : 'secondary'} bg-opacity-10 text-${m.status === 'active' ? 'success' : 'secondary'} px-3">
+                            ${m.status.toUpperCase()}
+                        </span>
+                    </td>
+                    <td class="small text-muted text-truncate-max">
+                        ${m.instructions ? stripHtml(m.instructions).substring(0, 60) + '...' : '<i>No instructions</i>'}
+                    </td>
+                    <td class="text-end">
+                        <button class="btn btn-sm btn-outline-dark rounded-pill px-3 me-1" onclick="showEditModal(${m.id})">
+                            <i class="fas fa-edit me-1"></i> Edit
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger rounded-pill px-3" onclick="showDeleteModal(${m.id})" aria-label="Delete">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function stripHtml(html) {
+            const tmp = document.createElement('div');
+            tmp.innerHTML = html;
+            return tmp.textContent || tmp.innerText || '';
+        }
+
+        function showAddMethodModal() {
+            document.getElementById('modalTitle').textContent = 'Add Payment Method';
+            form.reset();
+            document.getElementById('method-id').value = '';
+            document.getElementById('method-image').value = '';
+            quillInstructions.root.innerHTML = '';
+            modal.show();
+        }
+
+        function showEditModal(id) {
+            const method = (window.paymentMethodsCache || []).find(m => m.id === id);
+            if (!method) return;
+            document.getElementById('modalTitle').textContent = 'Edit Payment Method';
+            document.getElementById('method-id').value = method.id;
+            document.getElementById('method-name').value = method.name;
+            document.getElementById('method-type').value = method.type;
+            document.getElementById('method-status').value = method.status;
+            document.getElementById('method-image').value = ''; // Reset file input
+            quillInstructions.root.innerHTML = method.instructions || '';
+            modal.show();
+        }
+
+        function showDeleteModal(id) {
+            document.getElementById('delete-method-id').value = id;
+            deleteModalEl.show();
+        }
+
+        async function confirmDelete() {
+            const id = document.getElementById('delete-method-id').value;
+            const res = await adminFetch(`/api/payments/${id}`, { method: 'DELETE' });
+            if (res && res.ok) {
+                showToast('Payment method deleted!', 'success');
+                deleteModalEl.hide();
+                loadPaymentMethods();
+            } else {
+                showToast('Failed to delete', 'error');
+            }
+        }
+
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('method-id').value;
+            const imageFile = document.getElementById('method-image').files[0];
+
+            const formData = new FormData();
+            formData.append('name', document.getElementById('method-name').value);
+            formData.append('type', document.getElementById('method-type').value);
+            formData.append('status', document.getElementById('method-status').value);
+            formData.append('instructions', quillInstructions.root.innerHTML);
+            if (imageFile) {
+                formData.append('image', imageFile);
+            }
+
+            const url = id ? `/api/payments/${id}` : `/api/payments`;
+            const method = id ? 'PUT' : 'POST';
+
+            const res = await adminFetch(url, {
+                method,
+                body: formData
+            });
+
+            if (res && res.ok) {
+                showToast(`Payment method ${id ? 'updated' : 'added'} successfully!`, 'success');
+                modal.hide();
+                loadPaymentMethods();
+            } else {
+                showToast('Failed to save payment method', 'error');
+            }
+        };
+
+
+    </script>
+</body>
+
+</html>

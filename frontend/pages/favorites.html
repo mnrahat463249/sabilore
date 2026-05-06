@@ -1,0 +1,70 @@
+<div class="container py-5">
+    <h1 class="fw-bold mb-4"><i class="far fa-heart me-2"></i> Your Favorites</h1>
+
+    <div id="favorites-container" class="row g-4">
+        
+        <div class="col-12 text-center py-5">
+            <i class="far fa-heart fa-3x theme-text-muted mb-3 opacity-25"></i>
+            <p class="theme-text-muted">You haven't saved any items yet.</p>
+            <a href="/shop" class="btn btn-dark rounded-pill px-4">Browse Collection</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        renderFavorites();
+    });
+
+    async function renderFavorites() {
+        const API_URL = window.API_URL || '/api';
+        const BASE_URL = window.BASE_URL || '';
+        const container = document.getElementById('favorites-container');
+        const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+
+        if (favorites.length === 0) {
+            container.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <i class="far fa-heart fa-3x theme-text-muted mb-3 opacity-25"></i>
+                        <p class="theme-text-muted">You haven't saved any items yet.</p>
+                        <a href="/shop" class="btn btn-dark rounded-pill px-4">Browse Collection</a>
+                    </div>
+                `;
+            return;
+        }
+
+        try {
+            // Fetch details for all favorite IDs
+            const response = await fetch(`${API_URL}/products/bulk`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ids: favorites })
+            });
+
+            if (!response.ok) throw new Error('Failed to fetch favorite details');
+            const products = await response.json();
+
+            if (products.length === 0) {
+                container.innerHTML = '<p class="text-center py-5">Items in your favorites are no longer available.</p>';
+                return;
+            }
+
+            container.innerHTML = products.map((product, index) => SABILORE_UTILS.renderProductCard(product, undefined, { staggerIndex: (index % 6) + 1 })).join('');
+
+            // Trigger scroll reveal
+            if (typeof refreshScrollReveal === 'function') refreshScrollReveal();
+
+        } catch (error) {
+            console.error('Favorites Error:', error);
+            container.innerHTML = '<p class="text-center text-danger py-5">Error loading favorites. Please try again.</p>';
+        }
+    }
+
+    function removeFromFavorites(id) {
+        let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        favorites = favorites.filter(favId => favId !== id);
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+        renderFavorites();
+        if (typeof updateFavIcon === 'function') updateFavIcon();
+    }
+</script>

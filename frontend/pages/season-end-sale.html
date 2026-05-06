@@ -1,0 +1,705 @@
+<style>
+    
+    .sale-hero-banner {
+        background: #ffffff;
+        padding: 50px 20px 40px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        border-bottom: 1px solid #eee;
+    }
+
+    .sale-hero-banner::before {
+        display: none;
+    }
+
+    .sale-badge-tag {
+        display: inline-block;
+        background: #ff4d00;
+        color: #fff;
+        font-size: 0.65rem;
+        font-weight: 900;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        padding: 6px 18px;
+        border-radius: 2px;
+        margin-bottom: 18px;
+    }
+
+    .sale-hero-title {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        font-weight: 900;
+        color: #1a1a1a;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        line-height: 1.1;
+        margin-bottom: 10px;
+    }
+
+    .sale-hero-title span {
+        color: #ff6a1a;
+    }
+
+    .sale-hero-subtitle {
+        color: rgba(0,0,0,0.45);
+        font-size: 0.85rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 28px;
+    }
+
+    
+    .sale-countdown-wrap {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 8px;
+    }
+
+    .sale-countdown-item {
+        background: #f5f5f5;
+        border: 1px solid #e0e0e0;
+        border-radius: 0;
+        padding: 14px 18px;
+        min-width: 72px;
+        text-align: center;
+    }
+
+    .sale-countdown-num {
+        font-size: 1.8rem;
+        font-weight: 900;
+        color: #ff6a1a;
+        line-height: 1;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .sale-countdown-label {
+        font-size: 0.55rem;
+        color: rgba(0,0,0,0.45);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-top: 4px;
+    }
+
+    
+    .filter-sidebar-sticky {
+        position: sticky;
+        top: 100px;
+        z-index: 10;
+    }
+
+    .glass-filter-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 2px;
+        padding: 20px 15px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
+    }
+
+    .filter-label-stark {
+        font-size: 0.7rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: var(--secondary);
+        margin: 0;
+    }
+
+    .filter-clear-link {
+        font-size: 0.6rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 700;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+    }
+
+    .filter-clear-link.visible {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .search-input-stark {
+        background: transparent !important;
+        border: none !important;
+        border-bottom: 2px solid var(--border-color) !important;
+        border-radius: 0 !important;
+        padding: 12px 0 !important;
+        font-size: 0.85rem !important;
+        font-weight: 500;
+        color: var(--text-main) !important;
+    }
+
+    .search-input-stark:focus {
+        border-bottom-color: #ff4d00 !important;
+        box-shadow: none !important;
+    }
+
+    .price-range-wrapper { padding: 10px 0; }
+
+    .price-display-box {
+        background: #fcfcfc;
+        border: 1px solid #eee;
+        padding: 8px 12px;
+        text-align: center;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        margin-top: 15px;
+    }
+
+    html[data-theme='dark'] .price-display-box {
+        background: #1a1a1a;
+        border-color: #333;
+    }
+
+    .filter-chip-stark {
+        padding: 8px 12px;
+        border: 1px solid #eee;
+        background: #fff;
+        font-size: 0.7rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.2s;
+        min-width: 45px;
+        text-align: center;
+        color: #999;
+    }
+
+    .filter-chip-stark:hover { border-color: #000; color: #000; }
+    .filter-chip-stark.active { background: #000; border-color: #000; color: #fff; }
+
+    html[data-theme='dark'] .filter-chip-stark { background: #111; border-color: #333; color: #666; }
+    html[data-theme='dark'] .filter-chip-stark.active { background: #ff4d00; border-color: #ff4d00; color: #fff; }
+
+    
+    .mobile-filter-bar {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        display: none;
+    }
+
+    .btn-filter-mobile {
+        background: #ff4d00;
+        color: #fff;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 50px;
+        font-weight: 800;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.15em;
+        box-shadow: 0 10px 30px rgba(255,77,0, 0.4);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .filter-drawer-mobile {
+        position: fixed;
+        inset: auto 0 0 0;
+        max-height: 85vh;
+        background: var(--bg-body);
+        z-index: 1100;
+        transform: translateY(100%);
+        transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        overflow-y: auto;
+        padding: 30px 25px;
+        border-top-left-radius: 24px;
+        border-top-right-radius: 24px;
+        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .shop-filter-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1099; }
+    .shop-filter-overlay.active { display: block; }
+    .filter-drawer-mobile.active { transform: translateY(0); }
+
+    @media (max-width: 991px) {
+        .filter-sidebar-sticky { display: none; }
+        .mobile-filter-bar { display: block; }
+    }
+
+    
+    .sale-card-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: #ff4d00;
+        color: #fff;
+        font-size: 0.6rem;
+        font-weight: 900;
+        letter-spacing: 0.15em;
+        padding: 4px 10px;
+        z-index: 5;
+    }
+
+    
+    .sale-empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        color: var(--text-muted, #888);
+    }
+
+    .filter-section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    
+    html:not([data-theme='dark']) .sale-hero-banner {
+        background: #ffffff !important;
+    }
+    html:not([data-theme='dark']) .sale-hero-banner::before {
+        display: none !important;
+    }
+    html:not([data-theme='dark']) .sale-hero-title,
+    html:not([data-theme='dark']) .asos-card-name,
+    html:not([data-theme='dark']) .asos-card-price,
+    html:not([data-theme='dark']) .asos-card a,
+    html:not([data-theme='dark']) .asos-card .text-dark,
+    html:not([data-theme='dark']) .asos-card-body a {
+        color: #1a1a1a !important;
+    }
+    html:not([data-theme='dark']) .sale-hero-subtitle {
+        color: rgba(0,0,0,0.5) !important;
+    }
+    html:not([data-theme='dark']) .asos-card-price .text-danger,
+    html:not([data-theme='dark']) .sale-hero-title span {
+        color: #e53935 !important;
+    }
+    html:not([data-theme='dark']) .asos-card-price .text-muted {
+        color: #888 !important;
+    }
+    html:not([data-theme='dark']) .size-pill {
+        color: #333 !important;
+        border-color: #ccc !important;
+        background: rgba(0,0,0,0.04) !important;
+    }
+    html:not([data-theme='dark']) .sale-countdown-item {
+        background: #f5f5f5 !important;
+        border-color: #e0e0e0 !important;
+    }
+    html:not([data-theme='dark']) .sale-countdown-label {
+        color: rgba(0,0,0,0.45) !important;
+    }
+
+    
+    html[data-theme='dark'] body { background-color: var(--bg-body) !important; }
+    html[data-theme='dark'] .sale-hero-banner {
+        background: var(--bg-body, #121212) !important;
+        border-bottom-color: #333 !important;
+    }
+    html[data-theme='dark'] .sale-hero-title {
+        color: #ffffff !important;
+    }
+    html[data-theme='dark'] .sale-hero-subtitle {
+        color: rgba(255,255,255,0.6) !important;
+    }
+    html[data-theme='dark'] .sale-countdown-item {
+        background: #1a1a1a !important;
+        border-color: #333 !important;
+    }
+    html[data-theme='dark'] .sale-countdown-label {
+        color: rgba(255,255,255,0.5) !important;
+    }
+    html[data-theme='dark'] .asos-card-name,
+    html[data-theme='dark'] .asos-card-price,
+    html[data-theme='dark'] .asos-card a,
+    html[data-theme='dark'] .asos-card .text-dark,
+    html[data-theme='dark'] .asos-card-body a.text-dark,
+    html[data-theme='dark'] .asos-card-body a {
+        color: #ffffff !important;
+    }
+    html[data-theme='dark'] .asos-card-price .text-danger {
+        color: #ff6a1a !important;
+    }
+    html[data-theme='dark'] .asos-card-price .text-muted {
+        color: rgba(255,255,255,0.5) !important;
+    }
+    html[data-theme='dark'] .size-pill {
+        color: rgba(255,255,255,0.7) !important;
+        border-color: rgba(255,255,255,0.2) !important;
+        background: rgba(255,255,255,0.08) !important;
+    }
+
+    
+    .asos-card {
+        background: transparent !important;
+        transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+        border: 1px solid transparent !important;
+        border-radius: 4px !important;
+    }
+
+    .asos-card:hover {
+        transform: translateY(-8px) scale(1.02) !important;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.15) !important;
+        border-color: rgba(255, 77, 0, 0.1) !important;
+        background: rgba(255, 255, 255, 0.02) !important;
+        z-index: 10;
+    }
+
+    html:not([data-theme='dark']) .asos-card:hover {
+        box-shadow: 0 15px 35px rgba(255, 77, 100, 0.15) !important;
+        background: rgba(255, 255, 255, 0.4) !important;
+    }
+
+    .asos-card-body {
+        background: transparent !important;
+    }
+</style>
+
+
+<div class="sale-hero-banner">
+    <div class="sale-badge-tag">🔥 Limited Time Offer</div>
+    <h1 class="sale-hero-title">Season End<br><span>Sale</span></h1>
+    <p class="sale-hero-subtitle">Massive discounts — while stocks last</p>
+
+    
+    <div class="sale-countdown-wrap" id="sale-countdown">
+        <div class="sale-countdown-item">
+            <div class="sale-countdown-num" id="cd-days">--</div>
+            <div class="sale-countdown-label">Days</div>
+        </div>
+        <div class="sale-countdown-item">
+            <div class="sale-countdown-num" id="cd-hours">--</div>
+            <div class="sale-countdown-label">Hours</div>
+        </div>
+        <div class="sale-countdown-item">
+            <div class="sale-countdown-num" id="cd-mins">--</div>
+            <div class="sale-countdown-label">Mins</div>
+        </div>
+        <div class="sale-countdown-item">
+            <div class="sale-countdown-num" id="cd-secs">--</div>
+            <div class="sale-countdown-label">Secs</div>
+        </div>
+    </div>
+    <p id="cd-end-label" class="mt-2 sale-countdown-sublabel"></p>
+</div>
+
+
+<div class="container py-5">
+    <div class="row position-relative">
+
+        
+        <div class="col-lg-2 filter-sidebar-sticky pe-lg-4">
+            <div class="glass-filter-card">
+                
+                <div class="mb-5">
+                    <label class="filter-label-stark mb-3" for="sale-search">Search</label>
+                    <input type="text" id="sale-search" class="form-control search-input-stark"  autocomplete="off">
+                </div>
+
+                
+                <div class="mb-5">
+                    <div class="filter-section-header">
+                        <label class="filter-label-stark" for="sale-category">Category</label>
+                        <a href="javascript:void(0)" class="filter-clear-link" id="clear-category" onclick="clearFilter('category')">Clear</a>
+                    </div>
+                    <select id="sale-category" class="form-select border-0 border-bottom shadow-none px-0 filter-select-stark"
+                        aria-label="Select Category" title="Select Category">
+                        <option value="">All Collections</option>
+                    </select>
+                </div>
+
+                
+                <div class="mb-5">
+                    <label class="filter-label-stark mb-3" for="sale-price-range">Price Range</label>
+                    <div class="price-range-wrapper">
+                        <input type="range" id="sale-price-range" class="form-range" min="0" max="10000" step="500" value="10000"
+                            aria-label="Price range filter" title="Price range">
+                        <div class="price-display-box" id="sale-price-value">UP TO 10k BDT</div>
+                    </div>
+                </div>
+
+                
+                <div class="mb-5">
+                    <div class="filter-section-header">
+                        <label class="filter-label-stark" for="sale-size-filter">Size</label>
+                        <a href="javascript:void(0)" class="filter-clear-link" id="clear-size" onclick="clearFilter('size')">Clear</a>
+                    </div>
+                    <div id="sale-size-chips" class="d-flex flex-wrap gap-2 mt-2"></div>
+                    <input type="hidden" id="sale-size-filter" value="">
+                </div>
+
+                
+                <div class="mb-5">
+                    <label class="filter-label-stark mb-3" for="sale-sort">Sort By</label>
+                    <select id="sale-sort" class="form-select border-0 border-bottom shadow-none px-0 filter-select-stark"
+                        aria-label="Sort products" title="Sort options">
+                        <option value="discount">BIGGEST DISCOUNT</option>
+                        <option value="latest">LATEST FIRST</option>
+                        <option value="low">PRICE: LOW TO HIGH</option>
+                        <option value="high">PRICE: HIGH TO LOW</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-dark w-100 py-3 text-uppercase small fw-bold btn-letter-spacing-wide" onclick="resetSaleFilters()">
+                    Reset Filters
+                </button>
+            </div>
+        </div>
+
+        
+        <div class="mobile-filter-bar">
+            <button class="btn-filter-mobile" onclick="toggleSaleMobileFilter()">
+                <i class="fas fa-sliders-h"></i> Filters
+            </button>
+        </div>
+
+        <div class="shop-filter-overlay" id="saleFilterOverlay" onclick="toggleSaleMobileFilter()"></div>
+
+        <div id="sale-mobile-filter-drawer" class="filter-drawer-mobile">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="filter-label-stark m-0 modal-header-title">Filters</h3>
+                <button class="btn-close" onclick="toggleSaleMobileFilter()" aria-label="Close filters" title="Close"></button>
+            </div>
+            <div id="sale-mobile-filter-content"></div>
+            <div class="mt-5 pt-4 border-top">
+                <button class="btn btn-dark w-100 rounded-0 py-3 text-uppercase small fw-bold" onclick="toggleSaleMobileFilter()">Show Products</button>
+            </div>
+        </div>
+
+        
+        <div class="col-lg-10">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="text-uppercase fw-light sale-grid-title">
+                        🔥 Season End Sale
+                    </h2>
+                    <span id="sale-count-label" class="text-muted small text-uppercase sale-grid-count">Loading products...</span>
+                </div>
+            </div>
+
+            <div id="sale-products-row" class="row g-2">
+                <div class="col-12 text-center py-5">
+                    <div class="spinner-border sale-spinner"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const selectedSizes = new Set();
+    let allSaleProducts = [];
+    let nearestSaleEnd = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        // Mobile filter drawer toggle
+        window.toggleSaleMobileFilter = function() {
+            const drawer = document.getElementById('sale-mobile-filter-drawer');
+            const overlay = document.getElementById('saleFilterOverlay');
+            const desktopCard = document.querySelector('.glass-filter-card');
+            const mobileContent = document.getElementById('sale-mobile-filter-content');
+
+            if (drawer.classList.contains('active')) {
+                drawer.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+                document.querySelector('.filter-sidebar-sticky').appendChild(desktopCard);
+            } else {
+                mobileContent.innerHTML = '';
+                mobileContent.appendChild(desktopCard);
+                drawer.classList.add('active');
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        };
+
+        // Price range
+        document.getElementById('sale-price-range').addEventListener('input', (e) => {
+            const val = e.target.value;
+            document.getElementById('sale-price-value').textContent = (val >= 1000) ? 'UP TO ' + (val / 1000) + 'k BDT' : 'UP TO ' + val + ' BDT';
+            filterSaleProducts();
+        });
+
+        // Search
+        document.getElementById('sale-search').addEventListener('input', () => filterSaleProducts());
+
+        // Sort
+        document.getElementById('sale-sort').addEventListener('change', () => filterSaleProducts());
+
+        // Category
+        document.getElementById('sale-category').addEventListener('change', () => {
+            const clearBtn = document.getElementById('clear-category');
+            if (clearBtn) clearBtn.classList.toggle('visible', !!document.getElementById('sale-category').value);
+            filterSaleProducts();
+        });
+
+        // Load categories
+        try {
+            const categories = await window.SABILORE_UTILS.getCategories();
+            const catSel = document.getElementById('sale-category');
+            categories.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.name.toLowerCase();
+                opt.textContent = c.name;
+                catSel.appendChild(opt);
+            });
+        } catch(e) {}
+
+        // Build size chips
+        buildSizeChips();
+
+        // Load sale products
+        await loadSaleProducts();
+    });
+
+    function buildSizeChips() {
+        const container = document.getElementById('sale-size-chips');
+        if (!container) return;
+        ['S','M','L','XL','XXL'].forEach(s => {
+            const chip = document.createElement('div');
+            chip.className = `filter-chip-stark ${selectedSizes.has(s) ? 'active' : ''}`;
+            chip.textContent = s;
+            chip.onclick = () => {
+                if (selectedSizes.has(s)) { selectedSizes.delete(s); chip.classList.remove('active'); }
+                else { selectedSizes.add(s); chip.classList.add('active'); }
+                document.getElementById('sale-size-filter').value = Array.from(selectedSizes).join(',');
+                const clearBtn = document.getElementById('clear-size');
+                if (clearBtn) clearBtn.classList.toggle('visible', selectedSizes.size > 0);
+                filterSaleProducts();
+            };
+            container.appendChild(chip);
+        });
+    }
+
+    window.clearFilter = function(type) {
+        if (type === 'category') {
+            document.getElementById('sale-category').value = '';
+            document.getElementById('clear-category').classList.remove('visible');
+        } else if (type === 'size') {
+            selectedSizes.clear();
+            document.querySelectorAll('#sale-size-chips .filter-chip-stark').forEach(el => el.classList.remove('active'));
+            document.getElementById('sale-size-filter').value = '';
+            document.getElementById('clear-size').classList.remove('visible');
+        }
+        filterSaleProducts();
+    };
+
+    window.resetSaleFilters = function() {
+        document.getElementById('sale-search').value = '';
+        document.getElementById('sale-category').value = '';
+        document.getElementById('sale-price-range').value = 10000;
+        document.getElementById('sale-price-value').textContent = 'UP TO 10k BDT';
+        document.getElementById('sale-size-filter').value = '';
+        document.getElementById('sale-sort').value = 'discount';
+        selectedSizes.clear();
+        document.querySelectorAll('#sale-size-chips .filter-chip-stark').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.filter-clear-link').forEach(el => el.classList.remove('visible'));
+        filterSaleProducts();
+    };
+
+    async function loadSaleProducts() {
+        const row = document.getElementById('sale-products-row');
+        try {
+            const apiBase = window.API_URL || '/api';
+            const res = await fetch(`${apiBase}/products/season-end-sale`);
+            if (!res.ok) throw new Error('API error');
+            allSaleProducts = await res.json();
+
+            // Find nearest sale_end for countdown
+            const withEnd = allSaleProducts.filter(p => p.sale_end);
+            if (withEnd.length > 0) {
+                withEnd.sort((a, b) => new Date(a.sale_end) - new Date(b.sale_end));
+                nearestSaleEnd = new Date(withEnd[0].sale_end);
+                startCountdown(nearestSaleEnd);
+                document.getElementById('cd-end-label').textContent = `Sale ends: ${nearestSaleEnd.toLocaleDateString('en-US', {day:'numeric', month:'long', year:'numeric'})}`;
+            } else {
+                document.getElementById('sale-countdown').style.display = 'none';
+            }
+
+            filterSaleProducts();
+        } catch(e) {
+            row.innerHTML = `<div class="col-12 sale-empty-state"><i class="fas fa-tag fa-3x mb-4 opacity-25"></i><h4 class="fw-bold">No sale products found</h4><p>Check back soon for exclusive season-end deals.</p><a href="/shop" class="btn btn-dark btn-rect px-5 mt-3">Browse All Products</a></div>`;
+        }
+    }
+
+    function filterSaleProducts() {
+        const row = document.getElementById('sale-products-row');
+        const searchTerm = document.getElementById('sale-search')?.value.toLowerCase() || '';
+        const maxPrice = parseInt(document.getElementById('sale-price-range')?.value || 10000);
+        const cat = document.getElementById('sale-category')?.value.toLowerCase() || '';
+        const sizes = (document.getElementById('sale-size-filter')?.value || '').split(',').filter(Boolean);
+        const sortBy = document.getElementById('sale-sort')?.value || 'discount';
+
+        let filtered = [...allSaleProducts];
+
+        if (searchTerm) filtered = filtered.filter(p => (p.name + ' ' + (p.tags || '')).toLowerCase().includes(searchTerm));
+        filtered = filtered.filter(p => Number(p.sale_price || p.price) <= maxPrice);
+        if (cat) filtered = filtered.filter(p => p.category_name?.toLowerCase().includes(cat) || (p.tags || '').toLowerCase().includes(cat));
+        if (sizes.length > 0) {
+            filtered = filtered.filter(p => {
+                if (!p.available_sizes) return false;
+                const pSizes = p.available_sizes.split(',').map(s => s.trim());
+                return sizes.some(s => pSizes.includes(s));
+            });
+        }
+
+        // Sort
+        if (sortBy === 'discount') {
+            filtered.sort((a, b) => {
+                const discA = a.sale_price ? ((a.price - a.sale_price) / a.price * 100) : (a.discount_percentage || 0);
+                const discB = b.sale_price ? ((b.price - b.sale_price) / b.price * 100) : (b.discount_percentage || 0);
+                return discB - discA;
+            });
+        } else if (sortBy === 'low') {
+            filtered.sort((a, b) => Number(a.sale_price || a.price) - Number(b.sale_price || b.price));
+        } else if (sortBy === 'high') {
+            filtered.sort((a, b) => Number(b.sale_price || b.price) - Number(a.sale_price || a.price));
+        } else {
+            filtered.sort((a, b) => (b.id || 0) - (a.id || 0));
+        }
+
+        const countLabel = document.getElementById('sale-count-label');
+        if (countLabel) countLabel.textContent = `${filtered.length} product${filtered.length !== 1 ? 's' : ''} on sale`;
+
+        if (filtered.length === 0) {
+            row.innerHTML = `<div class="col-12 sale-empty-state"><i class="fas fa-search fa-3x mb-4 opacity-25"></i><h4 class="fw-bold">No results</h4><p>Try adjusting your filters.</p><button class="btn btn-dark mt-3" onclick="resetSaleFilters()">Clear Filters</button></div>`;
+            return;
+        }
+
+        row.innerHTML = filtered.map((product, i) => {
+            const card = SABILORE_UTILS.renderProductCard(product, undefined, { staggerIndex: (i % 6) + 1 });
+            // Inject SALE badge into card
+            return card.replace('<div class="asos-card-img-wrap position-relative">', `<div class="asos-card-img-wrap position-relative"><div class="sale-card-badge">SALE</div>`);
+        }).join('');
+
+        if (typeof refreshScrollReveal === 'function') refreshScrollReveal();
+    }
+
+    // Countdown Timer
+    let countdownInterval = null;
+    function startCountdown(endDate) {
+        function tick() {
+            const now = new Date();
+            const diff = endDate - now;
+            if (diff <= 0) {
+                clearInterval(countdownInterval);
+                document.getElementById('sale-countdown').innerHTML = '<div style="color:#ff4d00;font-size:1rem;font-weight:700;letter-spacing:0.1em;">SALE ENDED</div>';
+                return;
+            }
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const secs = Math.floor((diff % (1000 * 60)) / 1000);
+            const pad = n => String(n).padStart(2, '0');
+            document.getElementById('cd-days').textContent = pad(days);
+            document.getElementById('cd-hours').textContent = pad(hours);
+            document.getElementById('cd-mins').textContent = pad(mins);
+            document.getElementById('cd-secs').textContent = pad(secs);
+        }
+        tick();
+        countdownInterval = setInterval(tick, 1000);
+    }
+</script>

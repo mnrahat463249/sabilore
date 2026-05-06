@@ -1,0 +1,1404 @@
+<style>
+
+.main-image-slider {
+    display: block !important;
+    overflow: hidden !important;
+}
+
+
+@media (min-width: 992px) {
+    .product-main-img {
+        max-height: 85vh !important;
+        object-fit: contain !important;
+        background-color: var(--bg-secondary, #F0F0ED);
+        width: 100% !important;
+        height: auto !important;
+    }
+    
+    .nike-main-image-wrap {
+        background-color: var(--bg-secondary, #F0F0ED);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+</style>
+<main id="product-main-content">
+<div class="container py-4 py-md-5">
+    <div class="row g-4 g-lg-5">
+        
+        <div class="col-lg-6">
+            <div class="nike-gallery-layout product-gallery">
+                
+                <div class="nike-main-image-wrap">
+                    <div class="main-image-slider position-relative overflow-hidden">
+                        <img loading="lazy" decoding="async" id="main-product-image"
+                            src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                            class="img-fluid w-100 product-main-img" alt="Product" width="900"
+                            height="1200" draggable="false">
+                        
+                        <button class="slider-nav-btn slider-prev" id="slider-prev" aria-label="Previous image">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="slider-nav-btn slider-next" id="slider-next" aria-label="Next image">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        
+                        <div class="slider-dots" id="slider-dots"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="col-lg-6">
+            <div class="nike-product-info">
+                
+                <div class="mb-4 d-none" id="color-section">
+                    <div id="color-options" class="nike-color-swatches">
+                        
+                    </div>
+                </div>
+
+                
+                <div id="related-colors-section" class="mb-4 d-none">
+                    <h6 class="text-uppercase small fw-bold mb-3 product-section-label">Other Colors</h6>
+                    <div id="related-colors-list" class="d-flex flex-wrap gap-2">
+                    </div>
+                </div>
+
+                
+                <div id="breadcrumb-category" class="product-category-badge">Category</div>
+
+                
+                <h1 id="product-name" class="fw-bold mb-1 product-title-text">
+                    <div class="skeleton-loader skeleton-title"></div>
+                </h1>
+
+                
+                <div class="theme-text-muted mb-2 product-subtitle-text">
+                    SKU: <span id="prod-sku-val">--</span>
+                </div>
+
+                
+                <div class="mb-4 product-price-container">
+                    <h3 id="product-price" class="fw-bold mb-0 product-price-amount">
+                        <div class="skeleton-loader skeleton-price-size"></div>
+                    </h3>
+                    <span id="product-sale-price" class="theme-text-muted small text-decoration-line-through d-none"></span>
+                </div>
+
+                
+                <div id="main-stock-out-badge" class="mb-3 d-none">
+                    <span class="badge bg-danger text-uppercase tracking-wider py-2 px-3">Stock Out</span>
+                </div>
+
+
+
+                
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="fw-bold selection-label-text">Select Size</span>
+
+                        
+                        <span id="product-size-chart-header" class="fw-bold size-chart-link"
+                            onclick="document.getElementById('product-size-options-container').classList.toggle('d-none')">Size
+                            Chart</span>
+
+                        <button type="button"
+                            class="btn btn-link text-decoration-none p-0 d-flex align-items-center gap-1 btn-size-guide"
+                            data-bs-toggle="modal" data-bs-target="#sizeCalculatorModal">
+                            <i class="fas fa-ruler-combined"></i>
+                            Size Guide
+                        </button>
+                    </div>
+
+                    
+                    <div id="product-size-options-container" class="mb-4 d-none">
+                        <div class="d-flex gap-3 overflow-auto pb-2 shape-guide-slider" id="shape-guide-slider">
+                            
+                        </div>
+                    </div>
+
+                    <div id="size-selector-grid" class="nike-size-grid">
+                        
+                    </div>
+                    
+                    <select id="size-selector" class="d-none" aria-label="Select size" title="Select size">
+                        <option value="">Choose a size</option>
+                    </select>
+                </div>
+
+                
+                <div id="stock-status" class="mb-4 theme-text-muted small fw-bold"></div>
+
+                
+                <button id="add-to-cart-btn" class="nike-cta-primary mb-3">
+                    <i class="fas fa-shopping-cart me-2"></i> Add to Cart
+                </button>
+
+                <button id="order-now-btn" class="nike-cta-secondary mb-4">
+                    <i class="fas fa-bolt me-2"></i> Order Now
+                </button>
+
+                
+                <p id="product-desc" class="theme-text-muted mb-4 product-description-text">
+                    <span class="skeleton-loader skeleton-text"></span>
+                    <span class="skeleton-loader skeleton-text skeleton-width-80"></span>
+                </p>
+
+                
+                <nav aria-label="breadcrumb" class="mb-3">
+                    <ol class="breadcrumb breadcrumb-text-small">
+                        <li class="breadcrumb-item"><a href="/home"
+                                class="text-decoration-none theme-text-muted">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/shop"
+                                class="text-decoration-none theme-text-muted">Shop</a></li>
+                        <li id="breadcrumb-category-trail" class="breadcrumb-item active theme-text-muted">Category</li>
+                    </ol>
+                </nav>
+
+                
+                <div class="product-info-accordion mb-3">
+                    <div class="accordion minimal-accordion" id="productAccordion">
+                        
+                        <div class="accordion-item" id="accordion-item-size">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#sizeFitCollapse" aria-expanded="true">
+                                    SIZE & FIT
+                                </button>
+                            </h2>
+                            <div id="sizeFitCollapse" class="accordion-collapse collapse show"
+                                data-bs-parent="#productAccordion">
+                                <div class="accordion-body">
+                                    <div id="size-calc-info" class="small theme-text-muted">
+                                        <div id="size-calc-content"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div class="accordion-item" id="accordion-item-details">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#detailsCollapse">
+                                    DETAILS
+                                </button>
+                            </h2>
+                            <div id="detailsCollapse" class="accordion-collapse collapse"
+                                data-bs-parent="#productAccordion">
+                                <div class="accordion-body">
+                                    <div id="product-details-content" class="small theme-text-muted"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div class="accordion-item" id="accordion-item-care">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#careCollapse">
+                                    CARE
+                                </button>
+                            </h2>
+                            <div id="careCollapse" class="accordion-collapse collapse"
+                                data-bs-parent="#productAccordion">
+                                <div class="accordion-body">
+                                    <div id="care-instructions-content" class="small theme-text-muted"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div class="accordion-item border-0" id="accordion-item-delivery">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#deliveryCollapse">
+                                    DELIVERY & RETURNS
+                                </button>
+                            </h2>
+                            <div id="deliveryCollapse" class="accordion-collapse collapse"
+                                data-bs-parent="#productAccordion">
+                                <div class="accordion-body px-0 pt-2 pb-3">
+
+                                    
+                                    <div class="delivery-feature-grid">
+                                        <div class="delivery-feat-card delivery-feat-card--express">
+                                            <div class="delivery-feat-icon delivery-feat-icon--express">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                            </div>
+                                            <span class="delivery-feat-title">Express</span>
+                                            <span class="delivery-express-badge">12–24H</span>
+                                            <span class="delivery-feat-sub">Only Dhaka</span>
+                                        </div>
+                                        <div class="delivery-feat-card">
+                                            <div class="delivery-feat-icon">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                                            </div>
+                                            <span class="delivery-feat-title">Cash on Delivery</span>
+                                            <span class="delivery-feat-sub">Pay at your door</span>
+                                        </div>
+                                        <div class="delivery-feat-card">
+                                            <div class="delivery-feat-icon">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+                                            </div>
+                                            <span class="delivery-feat-title">Easy Exchange</span>
+                                            <span class="delivery-feat-sub">Within 7 days</span>
+                                        </div>
+                                    </div>
+
+                                    
+                                    <div id="delivery-info-content">
+                                        <p class="delivery-charges-label">DELIVERY CHARGES</p>
+                                        <div class="delivery-option-list">
+
+                                            
+                                            <div class="delivery-option-card delivery-option-card--express">
+                                                <div class="dopt-left">
+                                                    <div class="dopt-icon dopt-icon--express">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                                    </div>
+                                                    <div class="dopt-info">
+                                                        <div class="dopt-name">Express Delivery <span class="dopt-badge dopt-badge--express">12–24H</span></div>
+                                                        <div class="dopt-zone">📍 Only Inside Dhaka</div>
+                                                    </div>
+                                                </div>
+                                                <div class="dopt-price">৳150</div>
+                                            </div>
+
+                                            
+                                            <div class="delivery-option-card">
+                                                <div class="dopt-left">
+                                                    <div class="dopt-icon">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/><rect x="9" y="11" width="14" height="10" rx="1"/><circle cx="12" cy="21" r="1"/><circle cx="20" cy="21" r="1"/></svg>
+                                                    </div>
+                                                    <div class="dopt-info">
+                                                        <div class="dopt-name">Standard Delivery <span class="dopt-badge">1–3 days</span></div>
+                                                        <div class="dopt-zone">📍 Inside Dhaka</div>
+                                                    </div>
+                                                </div>
+                                                <div class="dopt-price">৳80</div>
+                                            </div>
+
+                                            
+                                            <div class="delivery-option-card">
+                                                <div class="dopt-left">
+                                                    <div class="dopt-icon">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/><rect x="9" y="11" width="14" height="10" rx="1"/><circle cx="12" cy="21" r="1"/><circle cx="20" cy="21" r="1"/></svg>
+                                                    </div>
+                                                    <div class="dopt-info">
+                                                        <div class="dopt-name">Standard Delivery <span class="dopt-badge">3–5 days</span></div>
+                                                        <div class="dopt-zone">🚀 Outside Dhaka</div>
+                                                    </div>
+                                                </div>
+                                                <div class="dopt-price">৳140</div>
+                                            </div>
+
+                                        </div>
+                                        <p class="delivery-note mt-3 mb-0">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                            Orders dispatched within 24 hours. SMS tracking provided.
+                                        </p>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+
+.delivery-feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 4px 0 16px 0;
+}
+.delivery-feat-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 14px 8px;
+    border-radius: 10px;
+    background: var(--bg-body, #F8F8F6);
+    border: 1px solid rgba(0,0,0,0.07);
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+    gap: 6px;
+}
+.delivery-feat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.09);
+}
+.delivery-feat-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: #f5f3ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #7c3aed;
+    margin-bottom: 2px;
+}
+html[data-theme='dark'] .delivery-feat-card {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.1);
+}
+html[data-theme='dark'] .delivery-feat-icon {
+    background: rgba(124, 77, 255, 0.18);
+    color: #bb86fc;
+}
+.delivery-feat-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+}
+.delivery-feat-sub {
+    font-size: 0.65rem;
+    color: var(--text-muted, #888);
+    line-height: 1.3;
+}
+
+
+.delivery-charges-block {
+    background: var(--bg-body, #F8F8F6);
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 10px;
+    padding: 14px 16px;
+}
+html[data-theme='dark'] .delivery-charges-block {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(255,255,255,0.1);
+}
+.delivery-charges-label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #7c3aed;
+    margin-bottom: 12px;
+}
+html[data-theme='dark'] .delivery-charges-label { color: #bb86fc; }
+.delivery-charge-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px dashed rgba(0,0,0,0.07);
+    font-size: 0.82rem;
+}
+.delivery-charge-row:last-of-type { border-bottom: none; }
+html[data-theme='dark'] .delivery-charge-row { border-color: rgba(255,255,255,0.08); }
+.delivery-charge-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.delivery-location-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.delivery-location-dot.inside  { background: #22c55e; }
+.delivery-location-dot.outside { background: #f97316; }
+.delivery-charge-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.delivery-price {
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: var(--text-main, #1a1a1a);
+}
+.delivery-days {
+    font-size: 0.7rem;
+    background: rgba(0,0,0,0.06);
+    color: #555;
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-weight: 600;
+}
+html[data-theme='dark'] .delivery-days {
+    background: rgba(255,255,255,0.1);
+    color: #aaa;
+}
+.delivery-note {
+    font-size: 0.68rem;
+    color: var(--text-muted, #888);
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+
+.delivery-feat-card--express {
+    border: 1.5px solid rgba(124, 58, 237, 0.25);
+    background: #fcfaff;
+}
+.delivery-feat-icon--express {
+    background: #7c3aed;
+    color: #fff;
+}
+html[data-theme='dark'] .delivery-feat-card--express {
+    border-color: rgba(167, 139, 250, 0.3);
+    background: rgba(124, 58, 237, 0.05);
+}
+html[data-theme='dark'] .delivery-feat-icon--express { background: #8b5cf6; }
+.delivery-express-badge {
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    color: #fff;
+    background: #7c3aed;
+    padding: 3px 10px;
+    border-radius: 99px;
+    line-height: 1.2;
+}
+
+
+.delivery-option-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+.delivery-option-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: var(--bg-body, #F8F8F6);
+    border: 1px solid rgba(0,0,0,0.07);
+    gap: 10px;
+}
+html[data-theme='dark'] .delivery-option-card {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(255,255,255,0.09);
+}
+.delivery-option-card--express {
+    border-left: 4px solid #7c3aed;
+    background: #f8f6ff;
+}
+html[data-theme='dark'] .delivery-option-card--express {
+    border-left-color: #8b5cf6;
+    background: rgba(124, 58, 237, 0.08);
+}
+.dopt-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.dopt-icon {
+    width: 32px; height: 32px; flex-shrink: 0;
+    border-radius: 8px;
+    background: rgba(0,0,0,0.05);
+    display: flex; align-items: center; justify-content: center;
+    color: #555;
+}
+.dopt-icon--express {
+    background: #7c3aed;
+    color: #fff;
+}
+html[data-theme='dark'] .dopt-icon { background: rgba(255,255,255,0.08); color: #aaa; }
+.dopt-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.dopt-name {
+    font-size: 0.78rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+    color: var(--text-main, #1a1a1a);
+}
+.dopt-zone { font-size: 0.67rem; color: var(--text-muted, #888); }
+.dopt-badge {
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 99px;
+    background: rgba(0,0,0,0.07);
+    color: #555;
+    white-space: nowrap;
+}
+.dopt-badge--express {
+    background: #7c3aed;
+    color: #fff;
+}
+html[data-theme='dark'] .dopt-badge { background: rgba(255,255,255,0.1); color: #aaa; }
+.dopt-price {
+    font-size: 1rem;
+    font-weight: 900;
+    color: var(--text-main, #1a1a1a);
+    flex-shrink: 0;
+    letter-spacing: -0.02em;
+}
+</style>
+
+
+<div class="modal fade" id="sizeCalculatorModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="text-uppercase tracking-wider fw-bold modal-header-title">Size Guide & Calculator</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close modal" title="Close"></button>
+            </div>
+            <div class="modal-body py-4">
+                <div class="row">
+                    <div class="col-12">
+                        <h6 class="text-uppercase small fw-bold mb-4">Smart Size Finder</h6>
+                        <form id="size-calc-form" class="minimal-form">
+                            <div class="mb-4 text-center">
+                                <label class="form-label small fw-bold text-uppercase tracking-wider mb-2">Tummy
+                                    Shape</label>
+                                <button type="button"
+                                    class="btn btn-outline-dark w-100 py-3 text-uppercase small fw-bold tracking-widest"
+                                    id="btn-select-shape" onclick="toggleTummyCollapse()">
+                                    Select Your Shape
+                                </button>
+                                <div id="tummyCollapse" class="tummy-selection-container mt-3 d-none">
+                                    <h6 class="text-uppercase small fw-bold mb-4 tracking-widest">Your Tummy Shape</h6>
+                                    <div class="tummy-illustration-hero mb-4">
+                                        <img loading="lazy" decoding="async" id="sr-tummy-hero-img" src="" alt="Tummy shape illustration" class="img-fluid rounded-4 shadow-sm d-none tummy-hero-img" style="object-fit: contain; max-height: 280px; width: 100%;">
+                                        <div class="sr-tummy-hero-placeholder text-muted py-5 text-center tummy-hero-placeholder"
+                                            id="sr-tummy-hero-placeholder">
+                                            <i class="fas fa-user-tie fa-3x opacity-25"></i>
+                                        </div>
+                                    </div>
+                                    <div class="tummy-radio-group d-flex justify-content-between mb-5">
+                                        <div class="tummy-radio-opt flex-fill text-center"
+                                            onclick="selectTummyRadio('flatter')">
+                                            <div class="custom-radio-circle flatter" id="radio-flatter"></div>
+                                            <span class="small fw-bold text-uppercase d-block mt-2 tummy-radio-label">Flatter</span>
+                                        </div>
+                                        <div class="tummy-radio-opt flex-fill text-center"
+                                            onclick="selectTummyRadio('average')">
+                                            <div class="custom-radio-circle average active" id="radio-average"></div>
+                                            <span class="small fw-bold text-uppercase d-block mt-2 tummy-radio-label">Average</span>
+                                        </div>
+                                        <div class="tummy-radio-opt flex-fill text-center"
+                                            onclick="selectTummyRadio('curvier')">
+                                            <div class="custom-radio-circle curvier" id="radio-curvier"></div>
+                                            <span class="small fw-bold text-uppercase d-block mt-2 tummy-radio-label">Curvier</span>
+                                        </div>
+                                    </div>
+                                    <button type="button"
+                                        class="btn btn-dark w-100 py-3 text-uppercase small fw-bold tracking-widest"
+                                        onclick="toggleTummyCollapse()">
+                                        Continue
+                                    </button>
+                                </div>
+                                <input type="hidden" id="tummy-shape" value="average">
+                            </div>
+                            <div id="measurementsSection">
+                                <div class="mb-4">
+                                    <label for="height" class="form-label small">Height (cm)</label>
+                                    <input type="number" id="height" class="form-control" 
+                                        required>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="weight" class="form-label small">Weight (kg)</label>
+                                    <input type="number" id="weight" class="form-control" 
+                                        required>
+                                </div>
+                                <button type="submit"
+                                    class="btn btn-dark btn-rect w-100 py-3 text-uppercase small fw-bold">Calculate
+                                    Size</button>
+                            </div>
+                        </form>
+                        <div id="size-result" class="alert mt-4 rounded-0 text-center d-none border-dark size-result-alert">
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <h6 class="text-uppercase small fw-bold mb-3">Measurement Chart</h6>
+                        <div id="modal-size-guide-text" class="size-chart-modal-content small theme-text-muted">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/size-calculator.js" defer></script>
+</main>
+
+<script>
+    // Global variable for product state
+    const URL_SLUG = "{{url_slug}}";
+    let currentImageIndex = 0;
+    let productImages = [];
+    let currentGalleryColorMap = []; // Links gallery indices to color names
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof initSizeCalculator === 'function') {
+            initSizeCalculator();
+        }
+        loadProductDetails();
+        loadGlobalSizeGuide();
+        loadShapeGuideOptions();
+    });
+
+    // Memory cache for API responses
+    async function fetchWithCache(url, expiryMinutes = 0) {
+        // ALWAYS FETCH FRESH DATA - Cache bypassed based on user request
+        const res = await fetch(url, { headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache', 'Expires': '0' } });
+        if (!res.ok) throw new Error('Network response was not ok');
+        const data = await res.json();
+        return data;
+    }
+
+    async function loadGlobalSizeGuide() {
+        try {
+            // Ensure settings are loaded
+            const settings = window.siteSettings || (window.getSettings ? await window.getSettings() : await fetchWithCache(`${API_URL}/admin/settings`));
+
+            // 1. Global Size Guide
+            if (settings.size_guide_text) {
+                const accordionText = document.getElementById('product-size-guide-text');
+                if (accordionText) accordionText.innerHTML = settings.size_guide_text.replace(/\n/g, '<br>');
+
+                const textContainer = document.getElementById('size-guide-text-container');
+                if (textContainer) textContainer.style.display = 'block';
+
+                const modalText = document.getElementById('modal-size-guide-text');
+                if (modalText) modalText.innerHTML = settings.size_guide_text.replace(/\n/g, '<br>');
+            }
+
+            // 2. Delivery & Returns
+            if (settings.legal_delivery) {
+                const deliveryEl = document.getElementById('delivery-content');
+                if (deliveryEl) deliveryEl.innerHTML = settings.legal_delivery.replace(/\n/g, '<br>');
+            }
+            if (settings.legal_returns) {
+                const returnsEl = document.getElementById('returns-content');
+                if (returnsEl) returnsEl.innerHTML = settings.legal_returns.replace(/\n/g, '<br>');
+            }
+
+        } catch (e) {
+            console.error('Error loading global info:', e);
+        }
+    }
+
+    async function loadShapeGuideOptions() {
+        try {
+            const options = await fetchWithCache(`${API_URL}/admin/product-size-options`);
+
+            if (options && options.length > 0) {
+                const container = document.getElementById('product-size-options-container');
+                const slider = document.getElementById('shape-guide-slider');
+                const header = document.getElementById('product-size-chart-header');
+
+                // Adjust slider for larger cards
+                slider.classList.remove('gap-3');
+                slider.classList.add('gap-4');
+
+                slider.innerHTML = options.map(opt => {
+                    const label = (opt.label || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                    return `
+                        <div class="size-chart-card text-center flex-shrink-0" style="width: 280px; max-width: 85vw;">
+                            <div class="size-chart-img-wrap rounded shadow-sm mb-3 overflow-hidden bg-white" style="border: 1px solid #eaeaea;">
+                                <img src="${opt.image_url}" alt="${label}" class="img-fluid w-100" style="object-fit: contain; max-height: 350px;" loading="lazy" width="280" height="350" draggable="false">
+                            </div>
+                            <span class="d-block fw-bold text-dark text-uppercase" style="font-size: 0.85rem; letter-spacing: 0.05em;">${label}</span>
+                        </div>
+                    `;
+                }).join('');
+
+                // Make the toggle header visible, but keep the container hidden (d-none) until clicked
+                if (header) header.classList.remove('d-none');
+            }
+        } catch (e) {
+            // silent fail
+        }
+    }
+
+
+    async function loadProductDetails() {
+        const slug = URL_SLUG;
+        if (!slug) return;
+
+        try {
+            const product = await fetchWithCache(`${API_URL}/products/${slug}`, 1); // 1 min cache for products
+
+            const pageTitle = `${product.name} | SABILORÉ`;
+            const pageUrl = window.location.href;
+            const pageImage = product.image ? (product.image.startsWith('http') ? product.image : window.BASE_URL + product.image) : null;
+
+            // Updated meta tags using centralized utility
+            if (window.SABILORE_UTILS && window.SABILORE_UTILS.updateSiteMeta) {
+                window.SABILORE_UTILS.updateSiteMeta(pageTitle, product.description, pageImage, pageUrl);
+            } else {
+                document.title = pageTitle;
+            }
+
+            // Tracking ViewContent
+            if (window.SabiloreTracking) {
+                window.SabiloreTracking.trackViewContent({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    category_name: product.category_name
+                });
+            }
+
+            // --- ADVANCED SEO: Dynamic JSON-LD Structured Data (Product Rich Result) ---
+            const existingSchema = document.getElementById('seo-product-schema');
+            if (existingSchema) existingSchema.remove();
+
+            // Build image list: use all variant images if available, fallback to main image
+            const allImages = [];
+            if (pageImage) allImages.push(pageImage);
+            // Add additional gallery images from variants (collected before this runs)
+            if (product.variants && product.variants.length > 0) {
+                product.variants.forEach(v => {
+                    if (v.image) {
+                        const vImg = v.image.startsWith('http') ? v.image : window.BASE_URL + v.image;
+                        if (!allImages.includes(vImg)) allImages.push(vImg);
+                    }
+                });
+            }
+
+            // Compute sale/regular price correctly
+            const schemaPrice = product.sale_price
+                ? Number(product.sale_price)
+                : Number(product.price);
+            const regularPrice = Number(product.price);
+
+            const isInStock = (product.stock_quantity > 0) ||
+                (product.variants && product.variants.some(v => v.stock > 0));
+
+            // Price valid until = 30 days from today (required for Google Merchant eligibility)
+            const priceValidDate = new Date();
+            priceValidDate.setDate(priceValidDate.getDate() + 30);
+            const priceValidUntil = priceValidDate.toISOString().split('T')[0];
+
+            const schemaData = {
+                "@context": "https://schema.org/",
+                "@type": "Product",
+                "name": product.name,
+                "image": allImages.length > 0 ? allImages : undefined,
+                "description": product.description
+                    ? product.description.replace(/<[^>]*>?/gm, '').replace(/\s+/g, ' ').trim().substring(0, 500)
+                    : `Shop ${product.name} at SABILORÉ — Premium fashion with fast delivery across Bangladesh.`,
+                "sku": product.sku || String(product.id),
+                "brand": {
+                    "@type": "Brand",
+                    "name": "SABILORÉ"
+                },
+                "category": product.category_name || "Fashion",
+                "offers": {
+                    "@type": "Offer",
+                    "url": pageUrl,
+                    "priceCurrency": "BDT",
+                    "price": schemaPrice,
+                    "priceValidUntil": priceValidUntil,
+                    "availability": isInStock
+                        ? "https://schema.org/InStock"
+                        : "https://schema.org/OutOfStock",
+                    "itemCondition": "https://schema.org/NewCondition",
+                    "seller": {
+                        "@type": "Organization",
+                        "name": "SABILORÉ"
+                    },
+                    "hasMerchantReturnPolicy": {
+                        "@type": "MerchantReturnPolicy",
+                        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+                        "merchantReturnDays": 7,
+                        "returnMethod": "https://schema.org/ReturnByMail",
+                        "returnFees": "https://schema.org/FreeReturn"
+                    }
+                }
+            };
+
+            // Add AggregateRating if product has reviews (future-proof)
+            if (product.rating && product.review_count > 0) {
+                schemaData.aggregateRating = {
+                    "@type": "AggregateRating",
+                    "ratingValue": product.rating,
+                    "reviewCount": product.review_count,
+                    "bestRating": 5,
+                    "worstRating": 1
+                };
+            }
+
+            const scriptEl = document.createElement('script');
+            scriptEl.type = 'application/ld+json';
+            scriptEl.id = 'seo-product-schema';
+            scriptEl.text = JSON.stringify(schemaData, null, 0);
+            document.head.appendChild(scriptEl);
+            // ----------------------------------------------------------------- // -----------------------------------------------------
+
+            document.getElementById('product-name').innerText = product.name;
+
+            // Handle Price & Discount
+            const priceEl = document.getElementById('product-price');
+            const salePriceEl = document.getElementById('product-sale-price');
+            const discountBadge = document.createElement('span');
+            discountBadge.className = 'badge bg-danger ms-2';
+
+            if (product.sale_price || product.discount_percentage > 0) {
+                const originalPrice = product.price;
+                const salePrice = product.sale_price || (originalPrice * (1 - product.discount_percentage / 100));
+                priceEl.dataset.price = salePrice;
+                priceEl.innerHTML = `<del class="text-muted small">৳${Number(originalPrice).toLocaleString()}</del> <span class="text-primary">৳${Number(salePrice).toLocaleString()}</span>`;
+                if (product.discount_percentage > 0) {
+                    discountBadge.innerText = `${product.discount_percentage}% OFF`;
+                    document.getElementById('product-price').appendChild(discountBadge);
+                }
+            } else {
+                priceEl.dataset.price = product.price;
+                priceEl.innerText = `${Number(product.price).toLocaleString()} BDT`;
+            }
+
+            // Top Selling Badge
+            if (product.is_top_selling) {
+                const topBadge = document.createElement('span');
+                topBadge.className = 'badge bg-warning text-dark ms-2';
+                topBadge.innerText = 'TOP SELLING';
+                document.getElementById('product-name').appendChild(topBadge);
+            }
+
+            document.getElementById('product-desc').innerText = product.description || '';
+            window._baseSku = product.sku;
+            const skuValEl = document.getElementById('prod-sku-val');
+            if (skuValEl) skuValEl.innerText = product.sku || '--';
+
+            // Build images array (up to 4)
+            const initialImages = [];
+            ['image', 'image2', 'image3', 'image4'].forEach(key => {
+                if (product[key]) {
+                    const url = product[key].startsWith('http') ? product[key] : BASE_URL + product[key];
+                    initialImages.push(url);
+                }
+            });
+
+            if (initialImages.length === 0) {
+                // No images found
+            }
+
+            window.mainProductImages = [...initialImages];
+            // Build main color map
+            window.mainProductColorMap = [
+                product.image1_color || '',
+                product.image2_color || '',
+                product.image3_color || '',
+                product.image4_color || ''
+            ];
+
+            renderGallery(initialImages, window.mainProductColorMap);
+
+            // Slider navigation
+            document.getElementById('slider-prev').onclick = () => {
+                switchImage((currentImageIndex - 1 + productImages.length) % productImages.length);
+            };
+            document.getElementById('slider-next').onclick = () => {
+                switchImage((currentImageIndex + 1) % productImages.length);
+            };
+
+            // Breadcrumb
+            if (product.category_name) {
+                document.getElementById('breadcrumb-category').innerText = product.category_name;
+                const trail = document.getElementById('breadcrumb-category-trail');
+                if (trail) trail.innerText = product.category_name;
+            }
+
+            // Dynamic Variants & Colors
+            if (product.variants && product.variants.length > 0) {
+                const pd = window.SABILORE_UTILS.ProductDetail;
+                const variants = product.variants;
+                const sizes = pd.getUniqueSizes(variants);
+                const colors = [...new Set(variants.map(v => v.color))].filter(Boolean);
+                const colorImageMap = pd.getColorImageMap(product);
+                window._colorImageMap = colorImageMap;
+
+                // Build Size UI
+                if (sizes.length > 0) {
+                    const sizeGrid = document.getElementById('size-selector-grid');
+                    const sizeSelector = document.getElementById('size-selector');
+
+                    sizeSelector.innerHTML = '<option value="">Select Size</option>' +
+                        sizes.map(s => `<option value="${s}">${s}</option>`).join('');
+
+                    sizeGrid.innerHTML = sizes.map(s => {
+                        const stock = variants.filter(v => v.size && v.size.toUpperCase().includes(s)).reduce((sum, v) => sum + v.stock, 0);
+                        const label = stock <= 0 ? 'Stock Out' : s;
+                        return `<button type="button" class="nike-size-btn" data-size="${s}" ${stock <= 0 ? 'disabled' : ''} onclick="selectSize(this)">${label}</button>`;
+                    }).join('');
+                }
+
+                // Build Color UI
+                if (colors.length > 0) {
+                    document.getElementById('color-section').style.display = 'block';
+                    document.getElementById('color-options').innerHTML = colors.map((c, idx) => {
+                        const imgs = colorImageMap[c.toLowerCase()];
+                        const swatchImg = imgs ? imgs[0] : null;
+                        return `
+                            <button class="nike-color-swatch-btn ${idx === 0 ? 'active' : ''}" onclick="selectColor(this)" data-color="${c}">
+                                ${swatchImg ? `<img src="${swatchImg}" alt="${c}" loading="lazy" width="58" height="58">` : `<div class="color-circle-fallback" style="background: ${c.toLowerCase()};"></div>`}
+                            </button>`;
+                    }).join('');
+
+                    if (colors[0] && colorImageMap[colors[0].toLowerCase()]) {
+                        renderGallery(colorImageMap[colors[0].toLowerCase()], []);
+                    }
+                }
+
+                window.updateStock = () => {
+                    window._isUpdatingStock = true;
+                    const size = document.getElementById('size-selector').value;
+                    const colorBtn = document.querySelector('.nike-color-swatch-btn.active');
+                    const color = colorBtn ? colorBtn.dataset.color : null;
+
+                    const variant = pd.updateStockStatus({
+                        variants, size, color,
+                        baseSku: window._baseSku,
+                        selectors: {
+                            stockStatus: 'stock-status',
+                            cartBtn: 'add-to-cart-btn',
+                            orderNowBtn: 'order-now-btn',
+                            price: 'product-price',
+                            skuVal: 'prod-sku-val'
+                        }
+                    });
+
+                    // Update Gallery based on selection
+                    if (variant && (variant.image1 || variant.image2 || variant.image3 || variant.image4)) {
+                        const vImgs = [];
+                        ['image1', 'image2', 'image3', 'image4'].forEach(f => {
+                            if (variant[f]) vImgs.push(variant[f].startsWith('http') ? variant[f] : window.BASE_URL + variant[f]);
+                        });
+                        renderGallery(vImgs, []);
+                    } else if (color) {
+                        const cImgs = colorImageMap[color.toLowerCase()];
+                        if (cImgs) renderGallery(cImgs, []);
+                    }
+
+                    window._isUpdatingStock = false;
+                };
+
+                document.getElementById('size-selector').addEventListener('change', window.updateStock);
+                window.updateStock();
+            } else {
+                // Non-variant stock display
+                const stockEl = document.getElementById('stock-status');
+                const stock = product.stock_quantity || 0;
+                stockEl.innerHTML = stock > 0 ? (stock < 5 ? `Low Stock: Only ${stock} left!` : `In Stock: ${stock} available`) : '<span class="text-danger">STOCK OUT</span>';
+                stockEl.className = stock > 0 ? (stock < 5 ? 'text-warning small fw-bold' : 'text-success small fw-bold') : 'text-danger small fw-bold';
+
+                if (stock <= 0) {
+                    document.getElementById('add-to-cart-btn').disabled = true;
+                    document.getElementById('order-now-btn').disabled = true;
+                    document.getElementById('add-to-cart-btn').innerHTML = 'Stock Out';
+                    document.getElementById('order-now-btn').innerHTML = 'Stock Out';
+                    document.getElementById('main-stock-out-badge').classList.remove('d-none');
+                }
+
+                if (product.colors) {
+                    let colorArray = [];
+                    try {
+                        let c = product.colors;
+                        if (typeof c === 'string') {
+                            c = c.trim();
+                            if (c.startsWith('"') && c.endsWith('"')) {
+                                try { c = JSON.parse(c).trim(); } catch (e) { }
+                            }
+                            try {
+                                const parsed = JSON.parse(c);
+                                colorArray = Array.isArray(parsed) ? parsed : [parsed];
+                            } catch (e) {
+                                if (!c.includes('{') && !c.includes('[')) {
+                                    colorArray = c.split(',').map(s => s.trim()).filter(Boolean);
+                                }
+                            }
+                        } else if (Array.isArray(c)) {
+                            colorArray = c;
+                        }
+                    } catch (e) { console.warn("Color parsing error:", e); }
+
+                    if (colorArray.length > 0) {
+                        document.getElementById('color-section').style.display = 'block';
+
+                        const imageColorMap = {};
+                        ['image1_color', 'image2_color', 'image3_color', 'image4_color'].forEach((field, i) => {
+                            if (product[field] && productImages[i]) {
+                                imageColorMap[product[field].toLowerCase()] = productImages[i];
+                            }
+                        });
+
+                        const uniqueParsed = [];
+                        const seenParsed = new Set();
+
+                        colorArray.forEach(color => {
+                            const name = (color.name || color).toString();
+                            if (name && !seenParsed.has(name.toLowerCase())) {
+                                seenParsed.add(name.toLowerCase());
+                                uniqueParsed.push({ name: name, hex: color.hex || color.hex_code || color.code || name.replace(/\s+/g, '') });
+                            }
+                        });
+
+                        document.getElementById('color-options').innerHTML = uniqueParsed.map((colorObj, idx) => {
+                            const colorName = colorObj.name;
+                            const lowerName = colorName.toLowerCase();
+                            const imgUrl = imageColorMap[lowerName] || null;
+
+                            if (imgUrl) {
+                                return `<button class="nike-color-swatch-btn ${idx === 0 ? 'active' : ''}" 
+                                        onclick="selectColor(this)" data-color="${colorName}">
+                                    <img src="${imgUrl}" alt="${colorName}" loading="lazy" width="58" height="58">
+                                </button>`;
+                            } else {
+                                return `<button class="nike-color-swatch-btn ${idx === 0 ? 'active' : ''}" 
+                                        onclick="selectColor(this)" data-color="${colorName}">
+                                    <div class="color-circle-fallback" style="background: ${colorObj.hex};"></div>
+                                </button>`;
+                            }
+                        }).join('');
+                    } else {
+                        document.getElementById('color-section').style.display = 'none';
+                    }
+                } else {
+                    document.getElementById('color-section').style.display = 'none';
+                }
+            }
+
+            if (product.relatedColors && product.relatedColors.length > 0) {
+                document.getElementById('related-colors-section').style.display = 'block';
+                document.getElementById('related-colors-list').innerHTML = product.relatedColors.map(rc => {
+                    const imgUrl = rc.image ? (rc.image.startsWith('http') ? rc.image : BASE_URL + rc.image) : '';
+                    return `
+                        <a href="/product/${rc.slug}" class="related-color-item" title="${rc.name}">
+                            <img src="${imgUrl}" alt="${rc.name}" class="rounded-1" style="width: 45px; height: 60px; object-fit: cover; border: 1px solid var(--border-color);" loading="lazy" width="45" height="60">
+                        </a>
+                    `;
+                }).join('');
+            }
+
+            // Product Specific Size Guide Image Override
+            if (product.size_guide_image) {
+                const imgUrl = product.size_guide_image.startsWith('http') ? product.size_guide_image : BASE_URL + product.size_guide_image;
+                const modalImg = document.getElementById('modal-size-guide-img');
+                if (modalImg) modalImg.src = imgUrl;
+                const accordionImg = document.getElementById('product-size-guide-img');
+                if (accordionImg) accordionImg.src = imgUrl;
+                document.getElementById('size-guide-img-container').style.display = 'block';
+            }
+
+            if (product.size_calculator_notes) {
+                document.getElementById('accordion-item-size').style.display = 'block';
+                document.getElementById('size-calc-content').innerHTML = product.size_calculator_notes;
+            } else {
+                document.getElementById('accordion-item-size').style.display = 'none';
+            }
+
+            if (product.product_details) {
+                document.getElementById('accordion-item-details').style.display = 'block';
+                document.getElementById('product-details-content').innerHTML = product.product_details.replace(/\n/g, '<br>');
+            } else {
+                document.getElementById('accordion-item-details').style.display = 'none';
+            }
+
+            if (product.care_instructions) {
+                document.getElementById('accordion-item-care').style.display = 'block';
+                document.getElementById('care-instructions-content').innerHTML = product.care_instructions.replace(/\n/g, '<br>');
+            } else {
+                document.getElementById('accordion-item-care').style.display = 'none';
+            }
+
+            // Load delivery info from admin settings (override default HTML if set)
+            if (window.getSettings) {
+                window.getSettings().then(settings => {
+                    const deliveryInfo = settings.delivery_info || settings.footer_delivery_info || '';
+                    if (deliveryInfo && deliveryInfo.trim()) {
+                        document.getElementById('delivery-info-content').innerHTML = `
+                            <div class="d-flex flex-column gap-3">
+                                <div class="d-flex align-items-start gap-3">
+                                    <i class="fas fa-truck mt-1" style="width:18px; color:#6200ee;"></i>
+                                    <div class="small theme-text-muted">${deliveryInfo.replace(/\n/g, '<br>')}</div>
+                                </div>
+                            </div>`;
+                    }
+                    // If no delivery_info in settings, the nice default HTML stays as-is
+                }).catch(() => {});
+            }
+
+            // Check overall stock
+            let totalStock = 0;
+            if (product.variants && product.variants.length > 0) {
+                totalStock = product.variants.reduce((sum, v) => sum + v.stock, 0);
+            } else {
+                totalStock = product.stock_quantity || 0;
+            }
+
+            if (totalStock <= 0) {
+                document.getElementById('main-stock-out-badge').classList.remove('d-none');
+                document.getElementById('add-to-cart-btn').disabled = true;
+                document.getElementById('order-now-btn').disabled = true;
+                document.getElementById('add-to-cart-btn').innerHTML = 'Stock Out';
+                document.getElementById('order-now-btn').innerHTML = 'Stock Out';
+            }
+
+            // Add to cart setup
+            document.getElementById('add-to-cart-btn').onclick = function () {
+                const size = document.getElementById('size-selector').value;
+                if (!size) {
+                    alert('Please select a size first!');
+                    return;
+                }
+                const activeColorBtn = document.querySelector('.nike-color-swatch-btn.active');
+                const color = activeColorBtn ? activeColorBtn.dataset.color : '';
+
+                this.classList.add('cart-added-status');
+                const originalContent = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-check me-2"></i> Added to Cart';
+                setTimeout(() => {
+                    this.classList.remove('cart-added-status');
+                    this.innerHTML = '<i class="fas fa-shopping-cart me-2"></i> Add to Cart';
+                }, 2000);
+
+                addToCart(product.id, size, color);
+            };
+
+            // Order now setup
+            document.getElementById('order-now-btn').onclick = async function () {
+                const size = document.getElementById('size-selector').value;
+                if (!size) {
+                    alert('Please select a size first!');
+                    return;
+                }
+                const activeColorBtn = document.querySelector('.nike-color-swatch-btn.active');
+                const color = activeColorBtn ? activeColorBtn.dataset.color : '';
+
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    addToCart(product.id, size, color);
+                    showMiniToast('Redirecting to Checkout... 🚚');
+                    setTimeout(() => window.location.href = '/checkout', 1000);
+                    return;
+                }
+
+                this.classList.add('cart-added-status');
+
+                try {
+                    const response = await fetch('/api/orders/express-checkout', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            product_id: product.id,
+                            size,
+                            color,
+                            tummy_shape: localStorage.getItem('last_tummy_shape') || null,
+                            quantity: 1
+                        })
+                    });
+
+                    const data = await response.json();
+                    if (response.ok) {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        showMiniToast('Express Order Placed! 🚀');
+                        setTimeout(() => window.location.href = '/orders', 2000);
+                    } else {
+                        alert(data.message || 'Error placing express order');
+                        this.classList.remove('cart-added-status');
+                    }
+                } catch (error) {
+                    console.error('Express checkout failed:', error);
+                    this.classList.remove('cart-added-status');
+                }
+            };
+
+            // Lazy-load Panzoom: library is NOT loaded on page at all
+            // It loads dynamically ONLY when user interacts (double-click/wheel)
+            setTimeout(() => {
+                const elem = document.getElementById('main-product-image');
+                if (elem) {
+                    let pzLoading = false;
+                    function loadAndInitPanzoom(callback) {
+                        if (window.pz) { callback(); return; }
+                        if (pzLoading) return;
+                        pzLoading = true;
+                        const script = document.createElement('script');
+                        script.src = 'https://cdn.jsdelivr.net/npm/@panzoom/panzoom/dist/panzoom.min.js';
+                        script.onload = () => {
+                            window.pz = Panzoom(elem, {
+                                maxScale: 4,
+                                minScale: 1,
+                                startScale: 1,
+                                contain: 'inside',
+                                step: 0.25,
+                                startX: 0,
+                                startY: 0,
+                            });
+                            callback();
+                        };
+                        document.head.appendChild(script);
+                    }
+
+                    elem.addEventListener('dblclick', (e) => {
+                        loadAndInitPanzoom(() => {
+                            const currentScale = window.pz.getScale();
+                            if (currentScale <= 1) {
+                                window.pz.zoom(2.5, { animate: true });
+                            } else {
+                                window.pz.reset({ animate: true });
+                            }
+                        });
+                    });
+
+                    elem.parentElement.addEventListener('wheel', (e) => {
+                        if (e.ctrlKey) {
+                            loadAndInitPanzoom(() => {
+                                window.pz.zoomWithWheel(e);
+                            });
+                        } else if (window.pz && window.pz.getScale() !== 1) {
+                            window.pz.zoomWithWheel(e);
+                        }
+                    });
+                }
+
+                // Auto-select color from URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const initialColor = urlParams.get('color');
+                if (initialColor) {
+                    const decodedColor = decodeURIComponent(initialColor).toLowerCase();
+                    const colorBtns = document.querySelectorAll('.nike-color-swatch-btn');
+                    for (const btn of colorBtns) {
+                        if (btn.dataset.color && btn.dataset.color.toLowerCase() === decodedColor) {
+                            if (!btn.disabled) {
+                                btn.click();
+                            }
+                            break;
+                        }
+                    }
+                }
+            }, 500);
+        } catch (error) {
+            console.error('Error loading product:', error);
+        }
+    }
+
+    function renderGallery(images, colorMap = []) {
+        if (!images || images.length === 0) return;
+
+        // Check if images are actually different
+        const isSameImages = JSON.stringify(images) === JSON.stringify(productImages);
+
+        productImages = images;
+        currentGalleryColorMap = colorMap;
+
+        if (isSameImages) return; // Don't reset index if same set
+
+        currentImageIndex = 0;
+
+        // Set main image
+        const mainImg = document.getElementById('main-product-image');
+        if (mainImg) {
+            window.SABILORE_UTILS.setResponsiveImage(mainImg, images[0]);
+            if (window.pz) window.pz.reset();
+        }
+
+        // Thumbnails removed per request
+
+
+        // Build slider dots
+        const dotsContainer = document.getElementById('slider-dots');
+        if (dotsContainer) {
+            if (images.length > 1) {
+                dotsContainer.innerHTML = images.map((_, idx) => `
+                    <span class="slider-dot ${idx === 0 ? 'active' : ''}" onclick="switchImage(${idx})"></span>
+                `).join('');
+            } else {
+                dotsContainer.innerHTML = '';
+            }
+        }
+    }
+
+    function switchImage(idx) {
+        if (idx < 0 || idx >= productImages.length) return;
+        currentImageIndex = idx;
+
+        const mainImg = document.getElementById('main-product-image');
+        mainImg.style.opacity = '0.3';
+        setTimeout(() => {
+            window.SABILORE_UTILS.setResponsiveImage(mainImg, productImages[idx]);
+            mainImg.style.opacity = '1';
+            if (window.pz) window.pz.reset();
+        }, 100);
+
+        // Link Thumbnail click to Color Swatch selection
+        const linkedColor = currentGalleryColorMap[idx];
+        if (linkedColor && linkedColor !== 'Default' && !window._isUpdatingStock) {
+            const colorBtn = document.querySelector(`.nike-color-swatch-btn[data-color="${linkedColor}"]`);
+            if (colorBtn && !colorBtn.classList.contains('active')) {
+                // selectColor will trigger updateStock()
+                selectColor(colorBtn);
+            }
+        }
+
+        // Update dots
+        document.querySelectorAll('.slider-dot').forEach((dot, i) => {
+            dot.classList.toggle('active', i === idx);
+        });
+    }
+
+    function selectSize(btn) {
+        if (!btn || btn.disabled) return;
+        const size = btn.dataset.size;
+        const selector = document.getElementById('size-selector');
+        selector.value = size;
+
+        document.querySelectorAll('.nike-size-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        if (window.updateStock) window.updateStock();
+    }
+
+    function selectColor(btn) {
+        if (!btn || btn.disabled) return;
+        const color = btn.dataset.color;
+
+        document.querySelectorAll('.nike-color-swatch-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        if (window.updateStock) window.updateStock();
+    }
+
+    // Touch swipe support for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    const mainImgContainer = document.querySelector('.main-image-slider');
+    if (mainImgContainer) {
+        mainImgContainer.addEventListener('touchstart', e => {
+            if (!window.pz || window.pz.getScale() === 1) {
+                touchStartX = e.changedTouches[0].screenX;
+            }
+        });
+        mainImgContainer.addEventListener('touchend', e => {
+            if (!window.pz || window.pz.getScale() === 1) {
+                touchEndX = e.changedTouches[0].screenX;
+                const diff = touchStartX - touchEndX;
+                if (Math.abs(diff) > 50) {
+                    if (diff > 0) {
+                        switchImage((currentImageIndex + 1) % productImages.length);
+                    } else {
+                        switchImage((currentImageIndex - 1 + productImages.length) % productImages.length);
+                    }
+                }
+            }
+        });
+    }
+</script>

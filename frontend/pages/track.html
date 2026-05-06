@@ -1,0 +1,390 @@
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+                <div class="card-body p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-circle mb-3 icon-box-80">
+                            <i class="fas fa-truck fa-2x"></i>
+                        </div>
+                        <h1 class="fw-bold">Track Your Order</h1>
+                        <p class="theme-text-muted">Enter your details to check your order status</p>
+                    </div>
+
+                    <form id="track-order-form">
+                        <div class="mb-4">
+                            <label class="form-label small fw-bold text-uppercase" for="track-order-number">Order ID</label>
+                            <input type="text" id="track-order-number" class="form-control track-input-field" 
+                                required autocomplete="off" value="#">
+                            <small class="theme-text-muted">Order number always starts with # — type the code after
+                                it</small>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label small fw-bold text-uppercase" for="track-phone">Phone Number</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-theme-light border-end-0"><i
+                                        class="fas fa-phone text-muted"></i></span>
+                                <input type="tel" id="track-phone" class="form-control border-start-0"
+                                     required>
+                            </div>
+                        </div>
+                        <button type="submit"
+                            class="btn btn-dark w-100 rounded-pill py-3 fw-bold text-uppercase tracking-wider"
+                            id="track-btn">
+                            Track Order Details
+                        </button>
+                    </form>
+                    <div id="track-feedback" class="mt-4 d-none"></div>
+                </div>
+            </div>
+
+            
+            <div id="track-result" class="d-none">
+                <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="fw-bold mb-0">Order Information</h5>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="copyTrackingLink()">
+                                <i class="fas fa-copy me-1"></i> Copy Link
+                            </button>
+                            <span id="res-status" class="badge rounded-pill px-3 py-2"></span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-6 col-sm-4">
+                            <small class="theme-text-muted d-block text-uppercase fw-bold track-result-small-label">Order Number</small>
+                            <strong id="res-order-num" class="text-primary"></strong>
+                        </div>
+                        <div class="col-6 col-sm-4">
+                            <small class="theme-text-muted d-block text-uppercase fw-bold track-result-small-label">Date Placed</small>
+                            <strong id="res-date"></strong>
+                        </div>
+                        <div class="col-6 col-sm-4">
+                            <small class="theme-text-muted d-block text-uppercase fw-bold track-result-small-label">Total Amount</small>
+                            <strong id="res-total"></strong>
+                        </div>
+                    </div>
+
+                    
+                    <div class="tracking-timeline mb-4">
+                        <div id="step-pending" class="timeline-step">
+                            <div class="step-dot"></div>
+                            <div class="step-label">Pending</div>
+                        </div>
+                        <div id="step-processing" class="timeline-step">
+                            <div class="step-dot"></div>
+                            <div class="step-label">Processing</div>
+                        </div>
+                        <div id="step-shipped" class="timeline-step">
+                            <div class="step-dot"></div>
+                            <div class="step-label">Shipped</div>
+                        </div>
+                        <div id="step-delivered" class="timeline-step">
+                            <div class="step-dot"></div>
+                            <div class="step-label">Delivered</div>
+                        </div>
+                    </div>
+
+                    <h6 class="fw-bold mb-3">Items in this Order</h6>
+                    <div id="res-items" class="mb-0"></div>
+                </div>
+            </div>
+            
+            <div class="p-4 bg-light rounded-4 border mt-4 text-center">
+                <h5 class="fw-bold mb-3">Still Need Help?</h5>
+                <div class="d-flex flex-wrap justify-content-center gap-4">
+                    <div class="d-flex align-items-center text-start">
+                        <i class="fas fa-envelope fs-3 text-primary me-3"></i>
+                        <div>
+                            <span class="d-block small text-muted text-uppercase fw-bold support-method-label">Email Us</span>
+                            <strong>sabiloreofficial@gmail.com</strong>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center text-start">
+                        <i class="fab fa-whatsapp fs-3 text-success me-3"></i>
+                        <div>
+                            <span class="d-block small text-muted text-uppercase fw-bold support-method-label">Phone/WhatsApp</span>
+                            <strong>01748 211 022</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .tracking-timeline {
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+        padding-top: 10px;
+        margin-bottom: 30px;
+    }
+
+    .tracking-timeline::before {
+        content: '';
+        position: absolute;
+        top: 24px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--border-color);
+        z-index: 1;
+    }
+
+    .timeline-step {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        flex: 1;
+    }
+
+    .step-dot {
+        width: 30px;
+        height: 30px;
+        background: var(--card-bg);
+        border: 2px solid var(--border-color);
+        border-radius: 50%;
+        margin: 0 auto 10px;
+        transition: all 0.3s;
+    }
+
+    .step-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--secondary);
+        text-transform: uppercase;
+    }
+
+    .timeline-step.active .step-dot {
+        background: var(--primary);
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.2);
+    }
+
+    .timeline-step.active .step-label {
+        color: var(--primary);
+    }
+
+    .timeline-step.completed .step-dot {
+        background: #28a745;
+        border-color: #28a745;
+    }
+
+    .timeline-step.completed .step-dot::after {
+        content: '✓';
+        color: #fff;
+        font-size: 14px;
+        line-height: 26px;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('track-order-form');
+        const orderInput = document.getElementById('track-order-number');
+        const phoneInput = document.getElementById('track-phone');
+
+        // ── # PREFIX GUARD ──────────────────────────────────────
+        // Ensure value always starts with '#' on page load
+        if (!orderInput.value.startsWith('#')) {
+            orderInput.value = '#';
+        }
+
+        // Prevent deleting the '#' via keyboard
+        orderInput.addEventListener('keydown', (e) => {
+            const v = orderInput.value;
+            const pos = orderInput.selectionStart;
+            const end = orderInput.selectionEnd;
+
+            // Block Backspace/Delete when it would remove the '#'
+            if (e.key === 'Backspace') {
+                if (v === '#' || (pos <= 1 && end <= 1)) {
+                    e.preventDefault();
+                }
+            }
+            if (e.key === 'Delete') {
+                if (v === '#' || (pos === 0 && end <= 1)) {
+                    e.preventDefault();
+                }
+            }
+        });
+
+        // Restore '#' if somehow removed (paste, drag-drop, etc.)
+        orderInput.addEventListener('input', () => {
+            if (!orderInput.value.startsWith('#')) {
+                const cur = orderInput.value.replace(/^#+/, '');
+                orderInput.value = '#' + cur;
+                orderInput.setSelectionRange(orderInput.value.length, orderInput.value.length);
+            }
+            // Reset results when user types again
+            document.getElementById('track-result')?.classList.add('d-none');
+            document.getElementById('track-feedback')?.classList.add('d-none');
+            scheduleAutoDetect();
+        });
+
+        // Keep cursor after '#' when clicking at position 0
+        orderInput.addEventListener('click', () => {
+            if (orderInput.selectionStart < 1) {
+                orderInput.setSelectionRange(1, 1);
+            }
+        });
+
+        // Also trigger auto-detect when phone field changes
+        phoneInput.addEventListener('input', () => {
+            document.getElementById('track-result')?.classList.add('d-none');
+            document.getElementById('track-feedback')?.classList.add('d-none');
+            scheduleAutoDetect();
+        });
+
+        // ── AUTO-DETECT ─────────────────────────────────────────
+        let autoDetectTimer = null;
+        function scheduleAutoDetect() {
+            clearTimeout(autoDetectTimer);
+            const orderVal = orderInput.value.trim();
+            const phoneVal = phoneInput.value.trim();
+            const orderCode = orderVal.replace(/^#+/, '');
+
+            // Only auto-detect if order ID has content beyond '#' and phone is filled
+            if (orderCode.length >= 3 && phoneVal.length >= 11) {
+                // Show subtle detecting hint
+                orderInput.style.borderColor = '#6c757d';
+                autoDetectTimer = setTimeout(() => {
+                    orderInput.style.borderColor = '';
+                    form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+                }, 700); // 700ms debounce
+            }
+        }
+
+        // Auto-fill from URL params
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('order_id') && params.get('phone')) {
+            const raw = params.get('order_id').replace(/^#+/, '');
+            orderInput.value = '#' + raw;
+            phoneInput.value = params.get('phone');
+            setTimeout(() => {
+                form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+            }, 300);
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('track-btn');
+            const feedback = document.getElementById('track-feedback');
+            const resultDiv = document.getElementById('track-result');
+
+            // Always send with # prefix to the backend
+            const rawVal = orderInput.value.trim().replace(/^#+/, '');
+            const order_number = rawVal ? '#' + rawVal : '';
+            const phone = phoneInput.value.trim();
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Tracking...';
+            feedback.classList.add('d-none');
+            resultDiv.classList.add('d-none');
+
+            try {
+                const res = await fetch(`${API_URL}/orders/track`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ order_number, phone })
+                });
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || 'Tracking failed');
+
+                const order = data.order;
+                const items = data.items;
+
+                // Show result
+                resultDiv.classList.remove('d-none');
+                document.getElementById('res-order-num').textContent = order.order_number;
+                document.getElementById('res-date').textContent = new Date(order.created_at).toLocaleDateString();
+                document.getElementById('res-total').textContent = `৳${Number(order.total_amount).toLocaleString()}`;
+
+                const statusBadge = document.getElementById('res-status');
+                statusBadge.textContent = order.status.toUpperCase();
+                statusBadge.className = `badge rounded-pill px-3 py-2 bg-${getStatusColorClass(order.status)} bg-opacity-10 text-${getStatusColorClass(order.status)}`;
+
+                // Update Timeline
+                updateTimeline(order.status);
+
+                const itemsList = document.getElementById('res-items');
+                itemsList.innerHTML = items.map(item => {
+                    let imgToUse = item.variant_image || item.image;
+                    let imgSrc = imgToUse ? (imgToUse.startsWith('http') ? imgToUse : (imgToUse.startsWith('/') ? imgToUse : '/' + imgToUse)) : '/img/placeholder.png';
+                    // Fix double slashes just in case
+                    imgSrc = imgSrc.replace(/([^:]\/)\/+/g, "$1");
+
+                    return `
+                    <div class="d-flex align-items-center p-3 bg-theme-light rounded-3 mb-2 border">
+                        <a href="/product/${item.slug}">
+                            <img loading="lazy" decoding="async" src="${imgSrc}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;" class="me-3">
+                        </a>
+                        <div class="flex-grow-1">
+                            <a href="/product/${item.slug}" class="text-decoration-none text-body">
+                                <h6 class="mb-0 fw-bold small">${item.name}</h6>
+                            </a>
+                            <small class="theme-text-muted">${item.size ? 'Size: ' + item.size + ' · ' : ''}${item.color ? 'Color: ' + item.color + ' · ' : ''}Qty: ${item.quantity}</small>
+                        </div>
+                        <div class="text-end">
+                            <span class="fw-bold small">৳${(item.quantity * item.price).toLocaleString()}</span>
+                        </div>
+                    </div>
+                `}).join('');
+
+                window.scrollTo({ top: resultDiv.offsetTop - 50, behavior: 'smooth' });
+
+            } catch (err) {
+                feedback.className = 'alert alert-danger small';
+                feedback.textContent = err.message;
+                feedback.classList.remove('d-none');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Track Order Details';
+            }
+        });
+
+        function getStatusColorClass(status) {
+            const s = status.toLowerCase();
+            if (s === 'pending') return 'warning';
+            if (s === 'processing') return 'info';
+            if (s === 'shipped') return 'primary';
+            if (s === 'delivered' || s === 'completed') return 'success';
+            return 'secondary';
+        }
+
+        function updateTimeline(status) {
+            const s = status.toLowerCase();
+            const steps = ['pending', 'processing', 'shipped', 'delivered'];
+            const currentIndex = steps.indexOf(s === 'completed' ? 'delivered' : s);
+
+            steps.forEach((step, idx) => {
+                const el = document.getElementById(`step-${step}`);
+                if (!el) return;
+                el.classList.remove('active', 'completed');
+                if (idx < currentIndex) el.classList.add('completed');
+                if (idx === currentIndex) el.classList.add('active');
+            });
+        }
+
+        window.copyTrackingLink = () => {
+            const num = orderInput.value.trim().replace(/^#+/, '');
+            const phone = phoneInput.value.trim();
+            const url = `${window.location.origin}/track?order_id=${encodeURIComponent('#' + num)}&phone=${encodeURIComponent(phone)}`;
+
+            navigator.clipboard.writeText(url).then(() => {
+                const btn = document.querySelector('[onclick="copyTrackingLink()"]');
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check me-1"></i> Copied!';
+                btn.classList.replace('btn-outline-secondary', 'btn-success');
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.classList.replace('btn-success', 'btn-outline-secondary');
+                }, 2000);
+            });
+        };
+    });
+</script>

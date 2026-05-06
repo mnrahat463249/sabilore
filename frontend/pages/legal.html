@@ -1,0 +1,95 @@
+<div class="container py-5">
+    <div class="max-width-800 mx-auto">
+        <h1 id="content-title" class="fw-bold mb-2">Loading...</h1>
+        <p id="last-updated" class="theme-text-muted mb-5 small">Last updated: --</p>
+
+        <div id="content-sections">
+            
+        </div>
+
+        <div class="mt-5 pt-4 border-top">
+            <a href="/home" class="btn btn-outline-dark rounded-pill px-5 py-2 text-uppercase fw-bold btn-legal-back">Back to Home</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const path = globalThis.location.pathname.replace('/', '');
+        const settingKey = `legal_${path}`;
+
+        try {
+            // Use shared settings cache — no extra API call if main.js already loaded settings
+            const settings = globalThis.siteSettings ||
+                await (globalThis.getSettings ? globalThis.getSettings() : fetch('/api/admin/settings').then(r => r.json()));
+            const contentHtml = settings[settingKey];
+
+
+            // Map path to friendly title
+            const titles = {
+                'terms': 'Terms & Conditions',
+                'privacy': 'Privacy Policy',
+                'delivery': 'Delivery Information'
+            };
+
+            if (contentHtml) {
+                document.getElementById('content-title').innerText = titles[path] || 'Information';
+                document.getElementById('last-updated').innerText = `Last updated: ${new Date().toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}`;
+
+                // Content is now stored as raw HTML/Rich Text in the DB
+                const animateClass = settings.policy_animation_enabled === 'yes' ? 'policy-animate-block' : '';
+                document.getElementById('content-sections').innerHTML = `
+                    <div class="legal-content-body theme-text-muted ${animateClass}">
+                        ${contentHtml}
+                    </div>
+                `;
+
+                if (settings.policy_animation_enabled === 'yes') {
+                    setTimeout(() => {
+                        const block = document.querySelector('.policy-animate-block');
+                        if (block) block.classList.add('visible');
+                    }, 50);
+                }
+
+                document.title = `${titles[path] || 'Legal'} | SABILORÉ`;
+            } else {
+                document.getElementById('content-sections').innerHTML = '<p class="text-muted">Content is being updated. Please check back later.</p>';
+            }
+        } catch (error) {
+            console.error('Failed to load content:', error);
+            document.getElementById('content-sections').innerHTML = '<p class="text-danger">Failed to load content. Please try again.</p>';
+        }
+    });
+</script>
+
+<style>
+    .max-width-800 {
+        max-width: 800px;
+    }
+
+    .tracking-wider {
+        letter-spacing: 0.1em;
+    }
+
+    
+    .policy-animate-block {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+
+    .policy-animate-block.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .policy-animate-block p,
+    .policy-animate-block li {
+        transition: color 0.3s ease;
+    }
+
+    .policy-animate-block p:hover,
+    .policy-animate-block li:hover {
+        color: var(--bs-body-color) !important;
+    }
+</style>

@@ -1,0 +1,12 @@
+{
+  "threshold": 5,
+  "reporters": ["console", "time"],
+  "ignore": [
+    "node_modules/**",
+    "scripts/**",
+    "uploads/**",
+    "**/*.min.js",
+    "**/*.min.css"
+  ],
+  "absolute": true
+}

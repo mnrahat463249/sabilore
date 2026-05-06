@@ -1,0 +1,40 @@
+.profile-sidebar .nav-pills .nav-link {
+    border-radius:0!important;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    padding:12px 20px;
+}
+
+.profile-sidebar .nav-pills .nav-link.active {
+    background:var(--dark);
+    color:var(--white);
+}
+
+.orders-table-wrap {
+    overflow-x:auto;
+}
+
+.orders-table td {
+    padding:14px 10px;
+    vertical-align:middle;
+}
+
+.stat-card {
+    border:1px solid var(--border-color);
+    padding:20px;
+    text-align:center;
+}
+
+@media (width <= 991px) {
+    .profile-sidebar .nav-pills {
+        flex-direction:row!important;
+        overflow-x:auto;
+        white-space:nowrap;
+    }
+
+    .profile-sidebar .nav-pills .nav-link {
+        padding:8px 15px;
+        font-size:.8rem;
+    }
+}

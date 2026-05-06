@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 ">
+    <title>SABILORÉ | Activity Logs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+
+<body>
+    
+    <div id="admin-layout-placeholder"></div>
+
+    <div class="container-fluid">
+        <div class="row">
+            
+            <div class="admin-main-content p-5">
+                <div class="d-flex justify-content-between align-items-center mb-5">
+                    <div>
+                        <h2 class="fw-bold mb-1">Activity Logs</h2>
+                        <p class="text-muted mb-0">Track all administrative actions and system changes</p>
+                    </div>
+                </div>
+
+                <div class="card p-4 border-0 shadow-sm rounded-4">
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead class="bg-light small text-muted">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Admin</th>
+                                    <th>Action</th>
+                                    <th>Details</th>
+                                    <th>Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logs-tbody">
+                                <tr>
+                                    <td colspan="5" class="text-center py-4">Loading logs...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAdminLayout();
+            loadLogs();
+        });
+
+        async function loadLogs() {
+            const tbody = document.getElementById('logs-tbody');
+            try {
+                const res = await adminFetch(`${ADMIN_API_URL}/activity-logs`);
+                const logs = await res.json();
+
+                if (logs.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">No activity recorded yet</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = logs.map(l => `
+                    <tr>
+                        <td>${l.id}</td>
+                        <td><span class="badge bg-light text-dark border rounded-pill px-3">${l.admin_email || 'System'}</span></td>
+                        <td><strong class="text-primary">${l.action}</strong></td>
+                        <td><div class="small text-muted text-truncate" style="max-width:400px">${l.details || '—'}</div></td>
+                        <td class="text-muted small">${new Date(l.created_at).toLocaleString()}</td>
+                    </tr>
+                `).join('');
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger py-4">Failed to load activity logs</td></tr>';
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 ">
+    <title>SABILORÉ | Reports & Analytics</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .report-card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, .06);
+        }
+
+        .stat-big {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #111;
+        }
+
+        .progress-bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #198754;
+            background: #d1fae5;
+            border-radius: 20px;
+            padding: 3px 10px;
+        }
+
+        .live-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #198754;
+            animation: pulse-dot 1.2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.7); }
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div id="admin-layout-placeholder"></div>
+
+    
+    <div class="admin-main-content p-5">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <div class="d-flex align-items-center gap-3 mb-1">
+                    <h2 class="fw-bold mb-0">Reports &amp; Analytics</h2>
+                    <span class="live-badge"><span class="live-dot"></span> LIVE</span>
+                </div>
+                <p class="text-muted mb-0">Revenue, orders, and customer insights — auto-refreshes every 60s</p>
+            </div>
+            <button class="btn btn-outline-dark rounded-pill px-4" onclick="loadReports()">
+                <i class="fas fa-sync-alt me-2"></i>Refresh Now
+            </button>
+        </div>
+
+        
+        <h6 class="text-muted text-uppercase fw-bold small mb-3">Revenue Summary</h6>
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="card report-card p-4">
+                    <div class="d-flex align-items-center gap-3 mb-2">
+                        <div class="stat-icon bg-success bg-opacity-10 text-success"><i class="fas fa-coins"></i></div>
+                        <small class="text-muted text-uppercase fw-bold">All-Time Revenue</small>
+                    </div>
+                    <div class="stat-big" id="rev-all">—</div>
+                    <small class="text-muted">From completed orders</small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card report-card p-4">
+                    <div class="d-flex align-items-center gap-3 mb-2">
+                        <div class="stat-icon bg-primary bg-opacity-10 text-primary"><i class="fas fa-calendar-check"></i></div>
+                        <small class="text-muted text-uppercase fw-bold">This Month</small>
+                    </div>
+                    <div class="stat-big" id="rev-month">—</div>
+                    <small class="text-muted" id="rev-month-label">Current month</small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card report-card p-4">
+                    <div class="d-flex align-items-center gap-3 mb-2">
+                        <div class="stat-icon bg-warning bg-opacity-10 text-warning"><i class="fas fa-calendar-minus"></i></div>
+                        <small class="text-muted text-uppercase fw-bold">Last Month</small>
+                    </div>
+                    <div class="stat-big" id="rev-last">—</div>
+                    <small class="text-muted" id="rev-last-label">Previous month</small>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row g-4 mb-5">
+            
+            <div class="col-md-6">
+                <div class="card report-card p-4 h-100">
+                    <h5 class="fw-bold mb-4">Orders by Status</h5>
+                    <div id="orders-status-breakdown">
+                        <div class="text-center py-3"><span class="spinner-border spinner-border-sm"></span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card report-card p-4 h-100">
+                    <h5 class="fw-bold mb-4">Customer Insights</h5>
+                    <div id="customer-insights">
+                        <div class="text-center py-3"><span class="spinner-border spinner-border-sm"></span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="card report-card p-4">
+            <h5 class="fw-bold mb-4"><i class="fas fa-trophy text-warning me-2"></i>Top Selling Products</h5>
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead class="bg-light small text-muted">
+                        <tr>
+                            <th>#</th>
+                            <th>Product</th>
+                            <th>Units Sold</th>
+                            <th>Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody id="top-products-tbody">
+                        <tr>
+                            <td colspan="4" class="text-center py-4"><span class="spinner-border spinner-border-sm me-2"></span>Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAdminLayout();
+            loadReports();
+            // Set month labels
+            const now = new Date();
+            const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+            document.getElementById('rev-month-label').textContent = months[now.getMonth()] + ' ' + now.getFullYear();
+            const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+            document.getElementById('rev-last-label').textContent = months[lastMonth.getMonth()] + ' ' + lastMonth.getFullYear();
+        });
+
+        async function loadReports() {
+            const res = await adminFetch(`${ADMIN_API_URL}/reports`);
+            if (!res) {
+                // adminFetch already shows a toast — render visible error states
+                const errHtml = '<p class="text-danger text-center small py-2"><i class="fas fa-exclamation-triangle me-1"></i>Failed to load. Please refresh or re-login.</p>';
+                document.getElementById('rev-all').textContent = '—';
+                document.getElementById('rev-month').textContent = '—';
+                document.getElementById('rev-last').textContent = '—';
+                document.getElementById('orders-status-breakdown').innerHTML = errHtml;
+                document.getElementById('customer-insights').innerHTML = errHtml;
+                document.getElementById('top-products-tbody').innerHTML = '<tr><td colspan="4" class="text-center py-4 text-danger">Failed to load data.</td></tr>';
+                return;
+            }
+
+            let data;
+            try { data = await res.json(); }
+            catch (e) {
+                console.error('[Reports] JSON parse error:', e);
+                typeof showToast === 'function' && showToast('Failed to parse analytics data.', 'error');
+                return;
+            }
+
+            // Revenue cards (Animated)
+            const formatBdt = n => (n||0).toLocaleString() + ' BDT';
+            
+            const updateRevCard = (id, newVal) => {
+                const el = document.getElementById(id);
+                if (el && el.textContent !== formatBdt(newVal)) {
+                    animateValue(id, parseInt(el.textContent.replace(/\D/g,'')) || 0, newVal || 0, 800);
+                }
+            };
+
+            updateRevCard('rev-all', data.revenue?.allTime);
+            updateRevCard('rev-month', data.revenue?.thisMonth);
+            updateRevCard('rev-last', data.revenue?.lastMonth);
+
+
+            // Orders by Status
+            const statusColors = { Pending: 'warning', Processing: 'info', Completed: 'success', Cancelled: 'danger' };
+            const totalOrders = (data.ordersByStatus || []).reduce((s, o) => s + Number(o.count), 0);
+            document.getElementById('orders-status-breakdown').innerHTML = totalOrders === 0
+                ? '<p class="text-muted text-center py-3">No orders yet</p>'
+                : (data.ordersByStatus || []).map(o => {
+                    const pct   = totalOrders ? Math.round((o.count / totalOrders) * 100) : 0;
+                    const color = statusColors[o.status] || 'secondary';
+                    return `
+                        <div class="mb-3">
+                            <div class="progress-bar-label">
+                                <span class="fw-semibold">${o.status}</span>
+                                <span>${o.count} orders (${pct}%)</span>
+                            </div>
+                            <div class="progress" style="height:8px;border-radius:20px;">
+                                <div class="progress-bar bg-${color}" style="width:${pct}%;border-radius:20px;"></div>
+                            </div>
+                        </div>`;
+                }).join('');
+
+            // Customer Insights
+            const cs = data.customers || {};
+            const activeRatio = cs.total ? Math.round((cs.active / cs.total) * 100) : 0;
+            document.getElementById('customer-insights').innerHTML = `
+                <div class="row g-3 text-center">
+                    <div class="col-4">
+                        <div class="p-3 bg-light rounded-3">
+                            <h3 class="fw-bold mb-0">${cs.total || 0}</h3>
+                            <small class="text-muted">Total</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3 rounded-3" style="background:#d1fae5;">
+                            <h3 class="fw-bold mb-0 text-success">${cs.active || 0}</h3>
+                            <small class="text-muted">Active</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3 rounded-3" style="background:#fee2e2;">
+                            <h3 class="fw-bold mb-0 text-danger">${cs.blocked || 0}</h3>
+                            <small class="text-muted">Blocked</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="progress-bar-label">
+                        <span>Active Ratio</span><span>${activeRatio}%</span>
+                    </div>
+                    <div class="progress" style="height:8px;border-radius:20px;">
+                        <div class="progress-bar bg-success" style="width:${activeRatio}%;border-radius:20px;"></div>
+                    </div>
+                </div>`;
+
+            // Top Products
+            const tbody    = document.getElementById('top-products-tbody');
+            const products = data.topProducts || [];
+            tbody.innerHTML = products.length === 0
+                ? '<tr><td colspan="4" class="text-center py-4 text-muted">No order data yet</td></tr>'
+                : products.map((p, i) => {
+                    const img   = p.image ? getImageUrl(p.image) : 'https://via.placeholder.com/40x40';
+                    const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}.`;
+                    return `
+                    <tr>
+                        <td class="fw-bold">${medal}</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <img loading="lazy" decoding="async" src="${img}" width="40" height="40" class="rounded object-fit-cover" onerror="this.src='https://via.placeholder.com/40x40'">
+                                <span class="fw-semibold">${p.name}</span>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-dark rounded-pill px-3 py-2">${p.total_sold} units</span></td>
+                        <td class="fw-semibold text-success">${Number(p.revenue).toLocaleString()} BDT</td>
+                    </tr>`;
+                }).join('');
+        }
+
+
+        // ── Live Auto-Refresh every 10 seconds ─────────────────────────────────
+        let _reportsTimer = setInterval(loadReports, 10000);
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                clearInterval(_reportsTimer);
+            } else {
+                loadReports();
+                _reportsTimer = setInterval(loadReports, 10000);
+            }
+        });
+    </script>
+</body>
+
+</html>

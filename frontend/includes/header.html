@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+    <link rel="apple-touch-icon" href="{{site_favicon_href}}">
+    <link rel="icon" type="{{site_favicon_type}}" sizes="32x32" href="{{site_favicon_href}}">
+    <link rel="icon" type="{{site_favicon_type}}" sizes="16x16" href="{{site_favicon_href}}">
+    <link rel="shortcut icon" href="{{site_favicon_href}}">
+
+    <style>
+        .header-count-badge {
+            position: absolute !important;
+            top: -3px !important;
+            right: -3px !important;
+            width: 18px !important;
+            height: 18px !important;
+            min-width: 18px !important;
+            background: #7E3AF2 !important; /* Bright Purple */
+            color: #ffffff !important;
+            border-radius: 50% !important;
+            font-size: 10px !important;
+            font-weight: 900 !important;
+            display: none !important;
+            align-items: center !important;
+            justify-content: center !important;
+            border: 1.5px solid #ffffff !important;
+            z-index: 999999 !important;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3) !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            pointer-events: none !important;
+            transform: none !important; /* Ensure no transform interferes */
+
+        }
+        
+        .header-action-icon {
+            position: relative !important;
+            overflow: visible !important;
+            display: flex !important;
+        }
+    </style>
+
+
+
+
+    
+    <script>
+        // Force critical session storage clear on version update (injected dynamically from backend)
+        const V = '{{cache_version}}';
+        if (sessionStorage.getItem('V') !== V) {
+            sessionStorage.clear();
+            sessionStorage.setItem('V', V);
+        }
+        window.BASE_URL = ''; // Set to production domain if needed later
+        
+        // Global Fast Settings Fetcher to prevent duplicate API calls
+        window.getSiteSettingsFast = function() {
+            if (window._fastSettingsPromise) return window._fastSettingsPromise;
+            
+            window._fastSettingsPromise = fetch(`${window.API_URL || '/api'}/admin/settings`, { headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache', 'Expires': '0' } })
+                .then(r => r.ok ? r.json() : null)
+                .then(s => {
+                    if (s) { 
+                        window.siteSettings = s; // Immediately populate state
+                    }
+                    return s;
+                }).catch(() => null);
+                
+            return window._fastSettingsPromise;
+        };
+    </script>
+
+    
+    <script>
+    (function(){
+        var t=localStorage.getItem('theme')||'light';
+        document.documentElement.setAttribute('data-theme',t);
+    })();
+    </script>
+
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+
+    
+    
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <meta name="format-detection" content="telephone=no">
+
+    
+    <link rel="preload" href="/js/main.min.js?v={{cache_version}}" as="script">
+    {{logo_preload}}
+
+
+    
+    {{hero_preload}}
+
+    
+    <link rel="manifest" href="/manifest.json">
+
+    <title>{{page_title}}</title>
+    <meta name="description" content="{{meta_description}}">
+    <meta name="keywords" content="fashion, clothing, premium fashion, Bangladesh fashion, sabilore, SABILORÉ, new arrivals, season end sale, women fashion, men fashion, hoodie, streetwear, Dhaka fashion">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta name="author" content="SABILORÉ">
+    <meta name="rating" content="general">
+    <meta name="language" content="en">
+    <meta name="geo.region" content="BD">
+    <meta name="geo.placename" content="Dhaka, Bangladesh">
+    <link rel="canonical" href="{{canonical_url}}">
+
+
+    
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:title" content="{{page_title}}">
+    <meta property="og:description" content="{{meta_description}}">
+    <meta property="og:url" content="{{canonical_url}}">
+    <meta property="og:site_name" content="SABILORÉ">
+    <meta property="og:image" content="https://sabilore.com/img/og-cover.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="SABILORÉ — Premium Fashion & Accessories">
+
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@sabilore">
+    <meta name="twitter:creator" content="@sabilore">
+    <meta name="twitter:title" content="{{page_title}}">
+    <meta name="twitter:description" content="{{meta_description}}">
+    <meta name="twitter:image" content="https://sabilore.com/img/og-cover.jpg">
+    <meta name="twitter:image:alt" content="SABILORÉ — Premium Fashion & Accessories">
+
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ClothingStore",
+      "name": "SABILORÉ",
+      "alternateName": "Sabilore",
+      "url": "https://sabilore.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "{{site_logo}}",
+        "width": 200,
+        "height": 60
+      },
+      "image": "https://sabilore.com/img/og-cover.jpg",
+      "description": "Premium fashion & clothing brand in Bangladesh. Shop new arrivals, season end sale, hoodies, streetwear and more with fast delivery across Bangladesh.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Dhaka",
+        "addressCountry": "BD"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+880-1748-211022",
+        "contactType": "customer service",
+        "areaServed": "BD",
+        "availableLanguage": ["Bengali", "English"]
+      },
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+          "opens": "09:00",
+          "closes": "22:00"
+        }
+      ],
+      "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-22:00",
+      "currenciesAccepted": "BDT",
+      "paymentAccepted": "Cash, bKash",
+      "sameAs": [
+        "https://www.facebook.com/share/1BHZrFARw3/",
+        "https://www.instagram.com/sabiloreofficial"
+      ]
+    }
+    </script>
+
+    
+    <style>{{critical_css}}</style>
+
+    
+    <link rel="preload" href="/css/style.min.css?v={{cache_version}}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="/css/bootstrap.min.css?v={{cache_version}}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <style>
+        /* === MOBILE FULL-SCREEN MENU === */
+        @media (min-width: 992px) {
+            #navbarNavUnified { display: none !important; }
+        }
+        @media (max-width: 991.98px) {
+            #navbarNavUnified {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                bottom: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                background: var(--bg-body, #F8F8F6) !important;
+                z-index: 10000 !important;
+                display: none !important;
+                flex-direction: column !important;
+                justify-content: center !important;
+                align-items: center !important;
+                overflow-y: auto !important;
+                overflow-x: hidden !important;
+            }
+            #navbarNavUnified.custom-show {
+                display: flex !important;
+                animation: menuSlideIn 0.3s ease-out forwards;
+            }
+            @keyframes menuSlideIn {
+                from { transform: translateX(100%); }
+                to   { transform: translateX(0); }
+            }
+            #navbarNavUnified .desktop-nav-links {
+                display: flex !important;
+                flex-direction: column !important;
+                width: 100% !important;
+                margin-top: 60px !important;
+                padding: 0 !important;
+                list-style: none !important;
+            }
+            #navbarNavUnified .desktop-nav-links .nav-link {
+                color: var(--text-main, #1a1a1a) !important;
+                font-size: 1.4rem !important;
+                font-weight: 700 !important;
+                text-transform: uppercase !important;
+                letter-spacing: 0.08em !important;
+                padding: 18px 24px !important;
+                display: block !important;
+                text-align: center !important;
+                border-bottom: 1px solid var(--border-color, #e5e5e3) !important;
+                text-decoration: none !important;
+            }
+            #navbarNavUnified .desktop-nav-links li:last-child .nav-link {
+                border-bottom: none !important;
+            }
+            #navbarNavUnified .desktop-nav-links .nav-link.active,
+            #navbarNavUnified .desktop-nav-links .nav-link:hover {
+                color: var(--primary, #6200ee) !important;
+            }
+            .mobile-menu-close-btn {
+                position: absolute !important;
+                top: 16px !important;
+                right: 16px !important;
+                width: 44px !important;
+                height: 44px !important;
+                background: transparent !important;
+                border: 1.5px solid var(--border-color, #e5e5e3) !important;
+                border-radius: 50% !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                cursor: pointer !important;
+                z-index: 10001 !important;
+                color: var(--text-main, #1a1a1a) !important;
+            }
+            /* Prevent body scroll when menu is open */
+            body.menu-open {
+                overflow: hidden !important;
+            }
+        }
+    </style>
+    {{page_styles}}
+
+    <noscript>
+        <link rel="stylesheet" href="/css/style.min.css?v={{cache_version}}">
+        <link rel="stylesheet" href="/css/bootstrap.min.css?v={{cache_version}}">
+    </noscript>
+
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
+
+    <!-- Font Awesome via CDN (self-hosted webfonts not available) -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" crossorigin="anonymous">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous"></noscript>
+
+    
+    {{google_pixel_code}}
+    {{meta_pixel_code}}
+
+    
+    <script src="/js/tracking.min.js?v={{cache_version}}" defer></script>
+
+    
+    <script>
+    (function(){
+        var prefetched=new Set();
+        function pf(url){if(prefetched.has(url))return;prefetched.add(url);var l=document.createElement('link');l.rel='prefetch';l.href=url;document.head.appendChild(l);}
+        document.addEventListener('mouseover',function(e){var a=e.target.closest('a[href]');if(!a)return;var u=a.getAttribute('href');if(u&&u.startsWith('/')&&!u.startsWith('//'))pf(u);});
+        document.addEventListener('touchstart',function(e){var a=e.target.closest('a[href]');if(!a)return;var u=a.getAttribute('href');if(u&&u.startsWith('/')&&!u.startsWith('//'))pf(u);},{passive:true});
+    })();
+    </script>
+
+
+    
+    <link rel="preload" href="/api/admin/settings" as="fetch" crossorigin="anonymous">
+    <link rel="prefetch" href="/api/products" crossorigin="anonymous">
+</head>
+
+<body data-image-mode="{{image_display_mode}}">
+
+    <div class="site-header-sticky-wrapper">
+    
+    <div class="ticker-isolation-wrap">
+        
+        <div class="logo-ticker-bar" aria-hidden="true">
+            <div class="logo-ticker-track" id="logo-ticker-track">
+                
+            </div>
+        </div>
+    </div>
+
+    
+    <nav class="navbar navbar-expand-lg main-site-navbar py-0">
+        <div
+            class="container-fluid px-2 px-lg-4 d-flex align-items-center justify-content-between flex-nowrap site-header-container">
+
+            
+            <div class="d-flex align-items-center flex-shrink-0 site-header-side-col">
+                <a class="navbar-brand d-flex align-items-center justify-content-center me-0 z-index-1050 navbar-brand-min-width" href="/">
+                    <span class="logo-shine-wrapper text-start">
+                        
+                        <img loading="eager" decoding="async"
+                            src="{{site_logo}}"
+                            alt="{{site_name}} Logo" id="nav-logo-img"
+                            class="site-logo-img site-logo-responsive responsive-logo-size"
+                            data-logo-visible="{{site_logo_visible}}"
+                            width="200" height="60">
+                        
+                        <span id="nav-logo-text"
+                            class="fw-bold text-uppercase nav-logo-text-style"
+                            data-display="{{site_name_visible}}">{{site_name_text}}</span>
+                        <script>
+                            (function(){
+                                var img=document.getElementById('nav-logo-img');
+                                var txt=document.getElementById('nav-logo-text');
+                                if(img){ img.style.display=img.getAttribute('data-logo-visible')||''; }
+                                if(txt){ txt.style.display=txt.getAttribute('data-display')||'none'; }
+                            })();
+                        </script>
+                    </span>
+
+                </a>
+            </div>
+
+            
+            <div class="flex-grow-1 d-none d-lg-flex justify-content-center align-items-center">
+                <ul class="navbar-nav d-flex flex-row align-items-center gap-0">
+                    <li class="nav-item"><a class="nav-link {{active_home}}" href="/home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link {{active_shop}}" href="/shop">Shop</a></li>
+                    <li class="nav-item"><a class="nav-link {{active_categories}}" href="/categories">Collections</a></li>
+                    <li class="nav-item"><a class="nav-link {{active_new-arrivals}}" href="/new-arrivals">New Arrival</a></li>
+                    <li class="nav-item"><a class="nav-link {{active_blog}}" href="/blog">Editorial</a></li>
+                    <li class="nav-item"><a class="nav-link {{active_track}}" href="/track">Track</a></li>
+                </ul>
+            </div>
+
+            
+            <div class="d-flex align-items-center justify-content-end flex-shrink-0 site-header-side-col z-index-2000">
+
+                
+                <div class="d-flex align-items-center header-icons-gap">
+
+                    
+                    <button type="button" id="desktop-search-btn"
+                        class="header-action-icon bg-transparent border-0 text-dark hover-opacity" aria-label="Search" title="Search">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"
+                            class="header-icon-size">
+                            <circle cx="11" cy="11" r="7"></circle>
+                            <line x1="16" y1="16" x2="21" y2="21"></line>
+                        </svg>
+                    </button>
+
+                    
+                    <a href="/favorites" class="header-action-icon theme-text-main position-relative hover-opacity text-decoration-none" aria-label="Favorites" title="Favorites">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"
+                            class="header-icon-size" id="header-fav-icon">
+                            <path
+                                d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0l-1 1-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1 7.8 7.8 7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z">
+                            </path>
+                        </svg>
+                        <span id="fav-count-desktop"
+                            class="position-absolute text-white d-flex align-items-center justify-content-center header-count-badge"></span>
+                    </a>
+
+                    
+                    <button class="header-action-icon theme-toggle bg-transparent border-0 text-dark hover-opacity" aria-label="Toggle Theme">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"
+                            fill="currentColor" stroke="none" class="theme-icon header-icon-size">
+                            <path
+                                d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.936.566-3.745 1.545-5.252A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0010.502-8.252A9.718 9.718 0 0121.752 15.002z">
+                            </path>
+                        </svg>
+                    </button>
+
+                    
+                    <a href="/cart" class="header-action-icon theme-text-main position-relative hover-opacity text-decoration-none" aria-label="Shopping Cart" title="Cart">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"
+                            class="header-icon-size" id="header-cart-icon">
+                            <path d="M2.5 3h3l2.8 12.5h10l3.5-9H7"></path>
+                            <path d="M7.5 11h11"></path>
+                            <circle cx="9" cy="20" r="1.5" fill="currentColor" stroke="none"></circle>
+                            <circle cx="17.5" cy="20" r="1.5" fill="currentColor" stroke="none"></circle>
+                        </svg>
+                        <span id="cart-count"
+                            class="position-absolute text-white d-flex align-items-center justify-content-center header-count-badge"></span>
+                    </a>
+                </div>
+
+                
+                <div class="d-none d-lg-flex align-items-center ms-lg-4">
+                    <div id="auth-ui-desktop" class="d-none d-lg-block">
+                        <div id="auth-guest-desktop">
+                            <a href="/login"
+                                class="small fw-bold text-uppercase text-dark text-decoration-none">Login</a>
+                        </div>
+                        <div id="user-menu-desktop" class="dropdown d-none">
+                            <a class="nav-link dropdown-toggle p-0 hover-opacity d-flex align-items-center justify-content-center"
+                                href="#" role="button" data-bs-toggle="dropdown" aria-label="User Account">
+                                <i class="fas fa-user-circle header-icon-size"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end border border-dark rounded-0 shadow-none mt-2">
+                                <li><a class="dropdown-item py-2 text-uppercase fw-bold small"
+                                        href="/profile">Profile</a></li>
+                                <li><a class="dropdown-item py-2 text-uppercase fw-bold small" href="/orders">Orders</a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider border-dark">
+                                </li>
+                                <li><a class="dropdown-item py-2 text-uppercase fw-bold small text-danger" href="#"
+                                        onclick="logoutUser(event)">Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <button id="custom-menu-toggler" class="header-action-icon bg-transparent border-0 text-dark ms-2 ms-sm-4 hover-opacity" type="button" aria-controls="navbarNavUnified" aria-expanded="false" aria-label="Toggle navigation" title="Menu">
+                    <span class="hamburger-box">
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    
+</div>
+
+    <div id="navbarNavUnified" role="dialog" aria-modal="true" aria-label="Navigation Menu">
+        <div class="d-flex flex-column justify-content-center align-items-center h-100 w-100 position-relative">
+            <button type="button" id="custom-menu-close" class="mobile-menu-close-btn" aria-label="Close navigation">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+            <ul class="navbar-nav desktop-nav-links w-100">
+                <li class="nav-item"><a class="nav-link {{active_home}}" href="/home">Home</a></li>
+                <li class="nav-item"><a class="nav-link {{active_shop}}" href="/shop">Shop</a></li>
+                <li class="nav-item"><a class="nav-link {{active_categories}}" href="/categories">Collections</a></li>
+                <li class="nav-item"><a class="nav-link {{active_new-arrivals}}" href="/new-arrivals">New Arrival</a></li>
+                <li class="nav-item"><a class="nav-link {{active_blog}}" href="/blog">Editorial</a></li>
+                <li class="nav-item"><a class="nav-link {{active_track}}" href="/track">Track</a></li>
+            </ul>
+
+            <div class="mt-4 px-4 pb-4 w-100" style="max-width: 400px;">
+                <div class="position-relative d-flex align-items-center" style="border-bottom: 1.5px solid var(--border-color,#e5e5e3); padding-bottom: 8px;">
+                    <input type="text" id="mobile-search-input"
+                        class="border-0 bg-transparent w-100 outline-none pe-4 shadow-none"
+                        placeholder="Search..."
+                        style="font-size:0.9rem; color:var(--text-main); outline:none;">
+                    <button type="button" id="mobile-search-btn" aria-label="Search"
+                        class="bg-transparent border-0 p-0 position-absolute end-0" style="color:var(--text-main);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="7"></circle>
+                            <line x1="16" y1="16" x2="21" y2="21"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div id="mobile-auth-placeholder" class="mt-3"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="header-search-wrap" class="header-search-container border-bottom">
+        <div class="container-fluid px-2 px-lg-4 h-100">
+            <div class="search-content-inner d-flex align-items-center h-100 py-3">
+                <div class="search-input-group flex-grow-1 position-relative me-3">
+                    <input type="text" id="header-search-input"
+                        class="modern-search-input border-0 bg-transparent w-100"
+                         autocomplete="off">
+                    <div class="search-underline"></div>
+                </div>
+                <button type="button" id="header-search-submit-btn" aria-label="Submit search" title="Search"
+                    class="bg-transparent border-0 text-dark p-0 hover-opacity me-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="7"></circle>
+                        <line x1="16" y1="16" x2="21" y2="21"></line>
+                    </svg>
+                </button>
+                <button type="button" id="header-search-close-btn" aria-label="Close search" title="Close"
+                    class="bg-transparent border-0 text-dark p-0 hover-opacity">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+<script>
+(function() {
+    function initMobileMenu() {
+        var toggler = document.getElementById('custom-menu-toggler');
+        var closeBtn = document.getElementById('custom-menu-close');
+        var menu = document.getElementById('navbarNavUnified');
+        if (!menu) return;
+
+        function openMenu() {
+            menu.classList.add('custom-show');
+            document.body.classList.add('menu-open');
+            if (toggler) toggler.setAttribute('aria-expanded', 'true');
+        }
+        function closeMenu() {
+            menu.classList.remove('custom-show');
+            document.body.classList.remove('menu-open');
+            if (toggler) toggler.setAttribute('aria-expanded', 'false');
+        }
+        function toggleMenu() {
+            if (menu.classList.contains('custom-show')) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
+        }
+
+        if (toggler) {
+            toggler.addEventListener('click', function(e) {
+                e.preventDefault();
+                toggleMenu();
+            });
+        }
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                closeMenu();
+            });
+        }
+
+        /* Close on ESC key */
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && menu.classList.contains('custom-show')) {
+                closeMenu();
+            }
+        });
+
+        /* Mobile search inside menu */
+        var mobileSearchBtn = document.getElementById('mobile-search-btn');
+        var mobileSearchInput = document.getElementById('mobile-search-input');
+        if (mobileSearchBtn && mobileSearchInput) {
+            mobileSearchBtn.addEventListener('click', function() {
+                var q = mobileSearchInput.value.trim();
+                if (q) window.location.href = '/shop?search=' + encodeURIComponent(q);
+            });
+            mobileSearchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    var q = mobileSearchInput.value.trim();
+                    if (q) window.location.href = '/shop?search=' + encodeURIComponent(q);
+                }
+            });
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initMobileMenu);
+    } else {
+        initMobileMenu();
+    }
+})();
+</script>
+</header>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 ">
+    <title>SABILORÉ | Newsletter Subscriptions</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+
+<body>
+    
+    <div id="admin-layout-placeholder"></div>
+
+    <div class="admin-main-content p-5">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <h2 class="fw-bold mb-0">Newsletter Subscriptions</h2>
+            <div class="d-flex gap-2">
+                <button id="refresh-newsletter-btn" class="btn btn-outline-primary rounded-pill px-4">
+                    <i id="refresh-icon" class="fas fa-sync-alt me-2"></i> Refresh
+                </button>
+                <button class="btn btn-outline-dark rounded-pill px-4" onclick="exportNewsletter()">
+                    <i class="fas fa-download me-2"></i> Export (CSV)
+                </button>
+            </div>
+        </div>
+
+        <div class="card p-4">
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead class="bg-light small">
+                        <tr>
+                            <th>ID</th>
+                            <th>Email Address</th>
+                            <th>Subscribed Date</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-newsletter-table">
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-4"><span
+                                    class="spinner-border spinner-border-sm me-2"></span>Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="js/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAdminLayout();
+            loadSubscribers();
+
+            const refreshBtn = document.getElementById('refresh-newsletter-btn');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', () => {
+                    loadSubscribers(true); // manual refresh
+                });
+            }
+        });
+
+        async function loadSubscribers(isManual = false) {
+            if (!checkAdminAuth()) return;
+            const tableBody = document.getElementById('admin-newsletter-table');
+            const syncIcon = document.getElementById('refresh-icon');
+
+            if (syncIcon) syncIcon.classList.add('fa-spin');
+            if (!tableBody) return;
+
+            try {
+                const res = await adminFetch('/api/admin/newsletter');
+                if (!res) {
+                    tableBody.innerHTML = '<tr><td colspan="4" class="text-center text-danger py-4">Failed to fetch data</td></tr>';
+                    return;
+                }
+
+                const emails = await res.json();
+
+                if (!Array.isArray(emails)) {
+                    console.error('Invalid response format:', emails);
+                    const msg = emails && emails.message ? emails.message : 'Invalid data format';
+                    tableBody.innerHTML = `<tr><td colspan="4" class="text-center text-danger py-4">Error: ${msg}</td></tr>`;
+                    return;
+                }
+
+                if (emails.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4">No newsletter subscriptions yet</td></tr>';
+                    return;
+                }
+
+                tableBody.innerHTML = emails.map(e => `
+                    <tr>
+                        <td class="fw-semibold">#${e.id}</td>
+                        <td>${e.email}</td>
+                        <td class="text-muted">${new Date(e.created_at).toLocaleDateString()} ${new Date(e.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+                        <td class="text-end">
+                            <button onclick="deleteNewsletter(${e.id})" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                <i class="fas fa-trash me-1"></i> Remove
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+
+                if (isManual) showToast('Subscription list updated', 'success');
+            } catch (err) {
+                console.error('Newsletter load error:', err);
+                tableBody.innerHTML = '<tr><td colspan="4" class="text-center text-danger py-4">An error occurred while loading data</td></tr>';
+            } finally {
+                if (syncIcon) syncIcon.classList.remove('fa-spin');
+            }
+        }
+
+        async function deleteNewsletter(id) {
+            if (!confirm('Are you sure you want to remove this email?')) return;
+            const res = await adminFetch(`/api/admin/newsletter/${id}`, { method: 'DELETE' });
+            if (res && res.ok) {
+                showToast('Email removed', 'success');
+                loadSubscribers();
+            } else {
+                showToast('Failed to remove email', 'error');
+            }
+        }
+
+        function exportNewsletter() {
+            const table = document.getElementById('admin-newsletter-table');
+            const rows = table.querySelectorAll('tr');
+            if (rows.length === 0 || rows[0].innerText.includes('No newsletter')) {
+                showToast('No data to export', 'warning');
+                return;
+            }
+
+            let csv = 'ID,Email,Date\n';
+            rows.forEach(row => {
+                const cols = row.querySelectorAll('td');
+                if (cols.length >= 3) {
+                    const id = cols[0].innerText.replace('#', '');
+                    const email = cols[1].innerText;
+                    const date = cols[2].innerText;
+                    csv += `${id},${email},${date}\n`;
+                }
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('hidden', '');
+            a.setAttribute('href', url);
+            a.setAttribute('download', 'newsletter_subscriptions.csv');
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    </script>
+</body>
+
+</html>

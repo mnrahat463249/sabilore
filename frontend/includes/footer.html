@@ -1,0 +1,174 @@
+
+<footer id="site-footer">
+
+    <div class="footer-glow-top"></div>
+
+    <div class="footer-inner">
+
+        
+        <div class="footer-area-brand">
+            <a href="/" class="footer-logo-link">
+                <img loading="lazy" decoding="async"
+                    src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="SABILORÉ"
+                    id="footer-logo-img" class="site-logo-img footer-logo-img-el" width="200"
+                    height="60">
+                <span class="site-name-text footer-brand-text">SABILORÉ</span>
+            </a>
+            <p class="footer-tagline">Premium fashion for everyone.<br>Modern designs &amp; exceptional service.</p>
+            
+            <div class="footer-social-row">
+                <a href="https://www.facebook.com/share/1BHZrFARw3/?mibextid=wwXIfr" target="_blank"
+                    rel="noopener noreferrer" class="footer-social-btn" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.instagram.com/sabiloreofficial?igsh=MWV4YzBwYWlkcG95dg%3D%3D&utm_source=qr"
+                    target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="Instagram"><i
+                        class="fab fa-instagram"></i></a>
+                <a href="https://wa.me/8801812244988" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="WhatsApp"><i
+                        class="fab fa-whatsapp"></i></a>
+                <a href="mailto:sabiloreofficial@gmail.com" class="footer-social-btn" aria-label="Email"><i
+                        class="fas fa-envelope"></i></a>
+            </div>
+        </div>
+
+        
+        <div class="footer-area-nav">
+            
+            <div class="footer-nav-group">
+                <p class="footer-section-label">Quick Links</p>
+                <div class="footer-chip-row">
+                    <a href="/home" class="footer-chip">Home</a>
+                    <a href="/shop" class="footer-chip">Shop</a>
+                    <a href="/categories" class="footer-chip">Collections</a>
+                    <a href="/blog" class="footer-chip">Blog</a>
+                    <a href="/cart" class="footer-chip">Cart</a>
+                </div>
+            </div>
+            
+            <div class="footer-nav-row">
+                <div class="footer-nav-group">
+                    <p class="footer-section-label">Support</p>
+                    <ul class="footer-link-list">
+                        <li><a href="/faq" onclick="event.preventDefault();showFooterDrawer('faq')">FAQ</a></li>
+                        <li><a href="/support" onclick="event.preventDefault();showFooterDrawer('support')">Support</a></li>
+                        <li><a href="/delivery" onclick="event.preventDefault();showFooterDrawer('delivery')">Delivery Info</a></li>
+                        <li><a href="/track">Track Order <i class="fas fa-external-link-alt footer-external-icon"></i></a></li>
+                        <li><a href="/return-portal">Exchange &amp; Returns</a></li>
+                        <li><a href="/contact" onclick="event.preventDefault();showFooterDrawer('contact')">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-nav-group">
+                    <p class="footer-section-label">Legal</p>
+                    <ul class="footer-link-list">
+                        <li><a href="/terms">Terms &amp; Conditions</a></li>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="footer-area-newsletter">
+            <p class="footer-section-label">Newsletter</p>
+            <p class="footer-nl-sub">Exclusive deals &amp; new arrivals straight to your inbox.</p>
+            <div class="footer-nl-form">
+                <input type="email" id="newsletter-email" name="newsletter_email" 
+                    class="footer-nl-input">
+                <button type="button" onclick="subscribeNewsletter()" class="footer-nl-btn">Join</button>
+            </div>
+            <div id="newsletter-status" class="footer-nl-status d-none"></div>
+        </div>
+
+    </div>
+
+    
+    <div class="footer-bottom-bar">
+        <div class="footer-bottom-inner">
+            <span class="footer-copy">© <span id="footer-year">2026</span> <span class="site-name-text">SABILORÉ</span>.
+                All rights reserved.</span>
+            <div id="payment-logos-footer" class="footer-payment-logos"></div>
+            <span class="footer-dev">Developed by MD NAZIBULLAH AL RAHAT</span>
+        </div>
+    </div>
+
+</footer>
+
+
+<div id="footer-drawer-overlay" class="footer-drawer-overlay" onclick="closeFooterDrawer()"></div>
+<div id="footer-info-drawer" class="footer-info-drawer">
+    <div class="footer-drawer-header">
+        <h2 id="footer-drawer-title" class="mb-0 text-uppercase footer-drawer-title-text">
+            Information</h2>
+        <button class="btn-close" aria-label="Close" onclick="closeFooterDrawer()"></button>
+    </div>
+    <div id="footer-drawer-body" class="footer-drawer-body pb-5">
+        
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"
+    defer></script>
+
+<script>
+    // Load ticker texts from settings (sessionStorage cached for speed)
+    (function () {
+        const DEFAULTS = ['SABILORÉ™', 'NEW COLLECTION', 'PREMIUM FASHION', 'FREE DELIVERY', 'EXPLORE NOW'];
+        function buildTicker(texts) {
+            const track = document.getElementById('logo-ticker-track');
+            const bar = document.querySelector('.logo-ticker-bar');
+            if (!track || !bar) return;
+            bar.style.background = '#000000';
+            const items = texts.filter(t => t && t.trim());
+            if (items.length === 0) return;
+            const rep = Array(6).fill(items).flat();
+            const allItems = [...rep, ...rep];
+            track.style.animationDuration = `${allItems.length * 2.5}s`;
+            const html = allItems.map(t =>
+                `<span class="logo-ticker-item" style="color: #ffffff !important">${t} <span class="logo-ticker-dot" style="background-color: #ffffff !important; opacity: 0.5; margin-left: 10px;">•</span></span>`
+            ).join('');
+            track.innerHTML = html;
+        }
+        try {
+            buildTicker(DEFAULTS);
+            window.getSiteSettingsFast().then(s => {
+                if (!s) return;
+                buildTicker([
+                    s.ticker_text_1 !== undefined ? s.ticker_text_1 : DEFAULTS[0],
+                    s.ticker_text_2 !== undefined ? s.ticker_text_2 : DEFAULTS[1],
+                    s.ticker_text_3 !== undefined ? s.ticker_text_3 : DEFAULTS[2],
+                    s.ticker_text_4 !== undefined ? s.ticker_text_4 : DEFAULTS[3],
+                    s.ticker_text_5 !== undefined ? s.ticker_text_5 : DEFAULTS[4],
+                ]);
+            });
+        } catch (e) { buildTicker(DEFAULTS); }
+    })();
+
+    (function () {
+        const ticker = document.querySelector('.logo-ticker-bar');
+        if (!ticker) return;
+        
+    })();
+
+    // Enhanced Footer Accordion for Mobile
+    document.addEventListener('click', function (e) {
+        if (window.innerWidth > 991.98) return;
+        
+        const label = e.target.closest('.footer-section-label');
+        if (label) {
+            const group = label.closest('.footer-nav-group');
+            if (!group) return;
+            
+            // Close others
+            document.querySelectorAll('.footer-nav-group').forEach(g => {
+                if (g !== group) g.classList.remove('active');
+            });
+            // Toggle current
+            group.classList.toggle('active');
+        }
+    });
+</script>
+
+
+<script src="/js/main.min.js?v={{cache_version}}" defer></script>
+</body>
+
+</html>

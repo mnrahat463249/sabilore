@@ -1,0 +1,1911 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 ">
+    <title>SABILORÉ | Product Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/admin.js"></script>
+    <style>
+        .product-table th {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6c757d;
+            border-bottom: 2px solid #eee;
+        }
+
+        .preview-img {
+            max-height: 120px;
+            border-radius: 8px;
+            border: 2px dashed #ddd;
+            padding: 4px;
+        }
+
+        .custom-color-picker {
+            width: 40px !important;
+            height: 34px !important;
+            padding: 2px !important;
+            border-radius: 50rem 0 0 50rem !important;
+            cursor: pointer;
+            border: 1px solid #dee2e6;
+            border-right: none;
+        }
+
+        .rounded-end-pill {
+            border-top-right-radius: 50rem !important;
+            border-bottom-right-radius: 50rem !important;
+        }
+
+        .product-img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .color-preview {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+            border: 1px solid #ddd;
+            margin-right: 4px;
+        }
+
+        .variant-img-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div id="admin-layout-placeholder"></div>
+
+    <div class="admin-main-content p-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="fw-bold mb-0">Product Management</h3>
+            <button class="btn btn-primary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                <i class="fas fa-plus me-2"></i> Add Product
+            </button>
+        </div>
+
+        <div id="products-status" class="alert d-none rounded-4 mb-3"></div>
+
+        
+        <div class="row mb-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="input-group position-relative">
+                    <span class="input-group-text bg-white border-end-0 shadow-sm input-group-pill-start">
+                        <i class="fas fa-search text-muted"></i>
+                    </span>
+                    <input type="text" id="productSearchInput" class="form-control border-start-0 shadow-sm pe-5 input-group-pill-end"
+                        
+                        oninput="filterProducts()">
+                    <button id="clearProductSearch"
+                        class="btn btn-link position-absolute end-0 top-50 translate-middle-y text-muted d-none search-clear-btn"
+                        aria-label="Clear search" onclick="clearProductSearch()">
+                        <i class="fas fa-times-circle"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-auto d-flex align-items-center">
+                <span id="productCount" class="text-muted small"></span>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-4 shadow-sm p-4">
+            <div class="table-responsive">
+                <table class="table product-table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Category</th>
+                            <th>Colors</th>
+                            <th>Featured</th>
+                            <th>New Arrival</th>
+                            <th>Free Del.</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="products-tbody">
+                        <tr>
+                            <td colspan="8" class="text-center py-4">
+                                <div class="spinner-border spinner-border-sm text-muted"></div> Loading...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    </div>
+    </div>
+    </div>
+
+    
+    <div class="modal fade" id="addProductModal">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content rounded-4 border-0 shadow">
+                <div class="modal-header border-0 pb-0 px-4 pt-4">
+                    <div>
+                        <h5 class="fw-bold mb-0"><i class="fas fa-plus-circle text-primary me-2"></i>Add New Product
+                        </h5>
+                        <small class="text-muted">Fill in the required fields and save</small>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body px-4 py-3">
+                    <form id="add-product-form" enctype="multipart/form-data">
+
+                        
+                        <div class="bg-light rounded-3 p-3 mb-3">
+                            <h6 class="fw-bold text-muted text-uppercase small mb-3"><i
+                                    class="fas fa-info-circle me-2"></i>Basic Info</h6>
+                            <div class="row g-2">
+                                <div class="col-md-5"><label class="form-label small fw-semibold mb-1" for="prod-name-input">Product Name
+                                        *</label>
+                                    <input type="text" name="name" id="prod-name-input"
+                                        class="form-control form-control-sm rounded-pill"
+                                         required>
+                                </div>
+                                <div class="col-md-3"><label class="form-label small fw-semibold mb-1" for="add-price">Price (BDT)
+                                        *</label>
+                                    <input type="number" name="price" id="add-price"
+                                        class="form-control form-control-sm rounded-pill"  required>
+                                </div>
+                                <div class="col-md-2"><label class="form-label small fw-semibold mb-1" for="add-sale-price">Sale
+                                        Price</label>
+                                    <input type="number" name="sale_price" id="add-sale-price"
+                                        class="form-control form-control-sm rounded-pill" >
+                                </div>
+                                <div class="col-md-2"><label class="form-label small fw-semibold mb-1" for="add-discount">Discount
+                                        %</label>
+                                    <input type="number" name="discount_percentage" id="add-discount"
+                                        class="form-control form-control-sm rounded-pill"  min="0"
+                                        max="100">
+                                </div>
+                                <div class="col-md-4"><label class="form-label small fw-semibold mb-1" for="add-category-id">Category
+                                        *</label>
+                                    <select name="category_id" id="add-category-id"
+                                        class="form-select form-select-sm rounded-pill">
+                                        <option value="">Select...</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4"><label class="form-label small fw-semibold mb-1" for="add-sku">SKU</label>
+                                    <input type="text" name="sku" id="add-sku" class="form-control form-control-sm rounded-pill"
+                                        >
+                                </div>
+                                <div class="col-md-4"><label class="form-label small fw-semibold mb-1" for="add-tags">Tags</label>
+                                    <input type="text" name="tags" id="add-tags" class="form-control form-control-sm rounded-pill"
+                                        >
+                                </div>
+                                <div class="col-12"><label class="form-label small fw-semibold mb-1" for="add-prod-description">Description</label>
+                                    <textarea name="description" id="add-prod-description" class="form-control form-control-sm rounded-3" rows="2"
+                                        ></textarea>
+                                </div>
+                                <div class="col-4 d-flex align-items-center gap-3 pt-2">
+                                    <div class="form-check"><input class="form-check-input" type="checkbox"
+                                            name="is_featured" id="is_featured"><label class="form-check-label small"
+                                            for="is_featured">Featured</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="checkbox"
+                                            name="is_top_selling" id="is_top_selling"><label
+                                            class="form-check-label small" for="is_top_selling">Top Selling</label>
+                                    </div>
+                                    <div class="form-check"><input class="form-check-input" type="checkbox"
+                                            name="is_new_arrival" id="is_new_arrival"><label
+                                            class="form-check-label small" for="is_new_arrival">New Arrival</label>
+                                    </div>
+                                    <div class="form-check"><input class="form-check-input" type="checkbox"
+                                            name="is_on_sale" id="add-is-on-sale"
+                                            onchange="toggleAddSaleDates(this.checked)"><label
+                                            class="form-check-label small fw-bold text-danger" for="add-is-on-sale">🔥 Season End Sale</label>
+                                    </div>
+                                    <div class="form-check"><input class="form-check-input" type="checkbox"
+                                            name="is_free_delivery" id="add-is-free-delivery"><label
+                                            class="form-check-label small fw-bold text-free-delivery" for="add-is-free-delivery">🚚 Free Delivery</label>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-12 mt-1 d-none" id="add-sale-dates">
+                                    <div class="row g-2 p-2 bg-warning bg-opacity-10 border border-warning border-opacity-25 rounded-3">
+                                        <div class="col-md-6">
+                                            <label for="add-sale-start" class="form-label small fw-semibold mb-1">Sale Start Date</label>
+                                            <input type="datetime-local" id="add-sale-start" name="sale_start" class="form-control form-control-sm rounded-pill">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="add-sale-end" class="form-label small fw-semibold mb-1">Sale End Date</label>
+                                            <input type="datetime-local" id="add-sale-end" name="sale_end" class="form-control form-control-sm rounded-pill">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div class="bg-light rounded-3 p-3 mb-3">
+                            <h6 class="fw-bold text-muted text-uppercase small mb-3"><i
+                                    class="fas fa-images me-2"></i>Product Images + Color Links
+                                <span class="text-muted fw-normal ms-1 text-xs">(Recommended:
+                                    <b>900x1200 px</b> or 3:4 ratio for best performance)</span>
+                            </h6>
+                            <div class="row g-2">
+                                
+                                <div class="col-md-6">
+                                    <div class="border rounded-3 p-2 bg-white">
+                                        <div class="d-flex align-items-center gap-2 mb-1">
+                                            <img loading="lazy" decoding="async" id="add-img1-preview" src="https://via.placeholder.com/44"
+                                                class="rounded admin-img-preview-44" alt="Product image preview">
+                                            <div class="flex-fill">
+                                                <div class="small fw-bold mb-1">Image 1 (Main) *</div>
+                                                <input type="file" name="image"
+                                                    class="form-control form-control-sm rounded-pill" accept="image/*" aria-label="Upload product image"
+                                                    required onchange="previewImage(this,'add-img1-preview')">
+                                            </div>
+                                        </div>
+                                        <input type="text" name="image1_color" id="add-img1-color"
+                                            class="form-control form-control-sm rounded-pill" list="color-datalist"
+                                             aria-label="Link to color">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="border rounded-3 p-2 bg-white">
+                                        <div class="d-flex align-items-center gap-2 mb-1">
+                                            <img loading="lazy" decoding="async" id="add-img2-preview" src="https://via.placeholder.com/44"
+                                                class="rounded admin-img-preview-44" alt="Product image preview">
+                                            <div class="flex-fill">
+                                                <div class="small fw-bold mb-1">Image 2</div>
+                                                <input type="file" name="image2"
+                                                    class="form-control form-control-sm rounded-pill" accept="image/*" aria-label="Upload product image"
+                                                    onchange="previewImage(this,'add-img2-preview')">
+                                            </div>
+                                        </div>
+                                        <input type="text" name="image2_color" id="add-img2-color"
+                                            class="form-control form-control-sm rounded-pill" list="color-datalist"
+                                             aria-label="Link to color">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="border rounded-3 p-2 bg-white">
+                                        <div class="d-flex align-items-center gap-2 mb-1">
+                                            <img loading="lazy" decoding="async" id="add-img3-preview" src="https://via.placeholder.com/44"
+                                                class="rounded admin-img-preview-44" alt="Product image preview">
+                                            <div class="flex-fill">
+                                                <div class="small fw-bold mb-1">Image 3</div>
+                                                <input type="file" name="image3"
+                                                    class="form-control form-control-sm rounded-pill" accept="image/*" aria-label="Upload product image"
+                                                    onchange="previewImage(this,'add-img3-preview')">
+                                            </div>
+                                        </div>
+                                        <input type="text" name="image3_color" id="add-img3-color"
+                                            class="form-control form-control-sm rounded-pill" list="color-datalist"
+                                             aria-label="Link to color">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="border rounded-3 p-2 bg-white">
+                                        <div class="d-flex align-items-center gap-2 mb-1">
+                                            <img loading="lazy" decoding="async" id="add-img4-preview" src="https://via.placeholder.com/44"
+                                                class="rounded admin-img-preview-44" alt="Product image preview">
+                                            <div class="flex-fill">
+                                                <div class="small fw-bold mb-1">Image 4</div>
+                                                <input type="file" name="image4"
+                                                    class="form-control form-control-sm rounded-pill" accept="image/*" aria-label="Upload product image"
+                                                    onchange="previewImage(this,'add-img4-preview')">
+                                            </div>
+                                        </div>
+                                        <input type="text" name="image4_color" id="add-img4-color"
+                                            class="form-control form-control-sm rounded-pill" list="color-datalist"
+                                             aria-label="Link to color">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div class="bg-light rounded-3 p-3 mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="fw-bold text-muted text-uppercase small mb-0"><i
+                                        class="fas fa-palette me-2"></i>Product Colors</h6>
+                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill py-0 px-2"
+                                    onclick="toggleQuickColor('add')"><i class="fas fa-plus me-1"></i>New Color</button>
+                            </div>
+                            <div id="add-quick-color-form" class="bg-white p-2 rounded-3 mb-2 d-none border">
+                                <div class="row g-2 align-items-end">
+                                    <div class="col-5"><input type="text" id="add-q-name"
+                                            class="form-control form-control-sm rounded-pill"  aria-label="Color name">
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="input-group input-group-sm">
+                                            <input type="color" id="add-q-hex-picker"
+                                                class="form-control form-control-color custom-color-picker"
+                                                value="#000000" oninput="syncQuickHex('add','picker')" aria-label="Color picker">
+                                            <input type="text" id="add-q-hex" class="form-control rounded-end-pill"
+                                                 value="#000000"
+                                                oninput="syncQuickHex('add','input')" aria-label="Color hex code">
+                                        </div>
+                                    </div>
+                                    <div class="col-3"><button type="button"
+                                            class="btn btn-sm btn-dark w-100 rounded-pill"
+                                            onclick="quickSaveColor('add')">Save</button></div>
+                                </div>
+                            </div>
+                            <div id="add-color-options" class="d-flex flex-wrap gap-2"><span
+                                    class="text-muted small">Loading colors...</span></div>
+                            <input type="hidden" name="colors" id="add-colors-hidden">
+                        </div>
+
+                        
+                        <div class="mb-3">
+                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill w-100"
+                                data-bs-toggle="collapse" data-bs-target="#add-extra-details">
+                                <i class="fas fa-chevron-down me-1"></i> Additional Details (fabric, care, size
+                                notes...)
+                            </button>
+                            <div class="collapse mt-2" id="add-extra-details">
+                                <div class="bg-light rounded-3 p-3">
+                                    <div class="row g-2">
+                                        <div class="col-md-6"><label class="form-label small fw-semibold mb-1" for="add-product-details">Product Details</label>
+                                            <textarea name="product_details" id="add-product-details"
+                                                class="form-control form-control-sm rounded-3" rows="3"
+                                                ></textarea>
+                                        </div>
+                                        <div class="col-md-6"><label class="form-label small fw-semibold mb-1" for="add-size-calc-notes">Size Calculator Notes</label>
+                                            <textarea name="size_calculator_notes" id="add-size-calc-notes"
+                                                class="form-control form-control-sm rounded-3" rows="3"
+                                                ></textarea>
+                                        </div>
+                                        <div class="col-12"><label class="form-label small fw-semibold mb-1" for="add-care-instructions">Care Instructions</label>
+                                            <textarea name="care_instructions" id="add-care-instructions"
+                                                class="form-control form-control-sm rounded-3" rows="2"
+                                                ></textarea>
+                                        </div>
+                                        <div class="col-md-3"><label
+                                                class="form-label small fw-semibold mb-1">Weight</label>
+                                            <input type="text" name="weight"
+                                                class="form-control form-control-sm rounded-pill"
+                                                >
+                                        </div>
+                                        <div class="col-md-3"><label
+                                                class="form-label small fw-semibold mb-1">Height</label>
+                                            <input type="text" name="height"
+                                                class="form-control form-control-sm rounded-pill"
+                                                >
+                                        </div>
+                                        <div class="col-md-3"><label class="form-label small fw-semibold mb-1">Stock
+                                                (Main)</label>
+                                            <input type="number" name="stock_quantity"
+                                                class="form-control form-control-sm rounded-pill" >
+                                        </div>
+                                        <div class="col-md-3"><label
+                                                class="form-label small fw-semibold mb-1">Slug</label>
+                                            <input type="text" name="slug" id="prod-slug-input"
+                                                class="form-control form-control-sm rounded-pill"
+                                                >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div class="bg-light rounded-3 p-3">
+                            <h6 class="fw-bold text-muted text-uppercase small mb-3"><i
+                                    class="fas fa-layer-group me-2"></i>Sizes &amp; Stock (Variants)</h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm align-middle mb-0 bg-white rounded-3">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Size</th>
+                                            <th>Color</th>
+                                            <th>Images (4)</th>
+                                            <th>Stock</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="add-variants-tbody">
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted small py-2">No variants added
+                                                yet.</td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot class="border-top border-2">
+                                        <tr class="bg-light">
+                                            <td colspan="5" class="pt-3 pb-2 px-3">
+                                                <div class="row g-2 align-items-end">
+                                                    <div class="col-md-3">
+                                                        <label for="new-prod-var-color" class="form-label small fw-semibold mb-1">Color</label>
+                                                        <select id="new-prod-var-color"
+                                                            class="form-select form-select-sm">
+                                                            <option value="">Select Color</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label class="form-label small fw-semibold mb-1">Variant Images
+                                                            (Optional)</label>
+                                                        <div class="d-flex gap-1" id="new-prod-var-images-preview">
+                                                            <div class="position-relative admin-img-square-32"><img loading="lazy" decoding="async" id="new-pv-img1"
+                                                                    src="https://via.placeholder.com/32"
+                                                                    class="rounded border w-100 h-100 object-fit-cover" alt="Variant preview"><input
+                                                                    type="file"
+                                                                    class="position-absolute top-0 start-0 w-100 h-100 opacity-0 cursor-pointer"
+                                                                    aria-label="Upload variant image"
+                                                                    onchange="uploadVariantImage(this,'new-pv-img1')">
+                                                            </div>
+                                                            <div class="position-relative admin-img-square-32"><img loading="lazy" decoding="async" id="new-pv-img2"
+                                                                    src="https://via.placeholder.com/32"
+                                                                    class="rounded border w-100 h-100 object-fit-cover" alt="Variant preview"><input
+                                                                    type="file"
+                                                                    class="position-absolute top-0 start-0 w-100 h-100 opacity-0 cursor-pointer"
+                                                                    aria-label="Upload variant image"
+                                                                    onchange="uploadVariantImage(this,'new-pv-img2')">
+                                                            </div>
+                                                            <div class="position-relative admin-img-square-32"><img loading="lazy" decoding="async" id="new-pv-img3"
+                                                                    src="https://via.placeholder.com/32"
+                                                                    class="rounded border w-100 h-100 object-fit-cover" alt="Variant preview"><input
+                                                                    type="file"
+                                                                    class="position-absolute top-0 start-0 w-100 h-100 opacity-0 cursor-pointer"
+                                                                    aria-label="Upload variant image"
+                                                                    onchange="uploadVariantImage(this,'new-pv-img3')">
+                                                            </div>
+                                                            <div class="position-relative admin-img-square-32"><img loading="lazy" decoding="async" id="new-pv-img4"
+                                                                    src="https://via.placeholder.com/32"
+                                                                    class="rounded border w-100 h-100 object-fit-cover" alt="Variant preview"><input
+                                                                    type="file"
+                                                                    class="position-absolute top-0 start-0 w-100 h-100 opacity-0 cursor-pointer"
+                                                                    aria-label="Upload variant image"
+                                                                    onchange="uploadVariantImage(this,'new-pv-img4')">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="mt-3">
+                                                    <label class="form-label small fw-semibold mb-1 text-primary"><i
+                                                            class="fas fa-boxes me-1"></i>Enter Stock per Size</label>
+                                                    <div class="d-flex gap-3 flex-wrap">
+                                                        <div class="input-group input-group-sm input-group-100">
+                                                            <span class="input-group-text bg-white fw-medium">XS</span>
+                                                            <input type="number"
+                                                                class="form-control new-prod-var-stock-input"
+                                                                data-size="XS"  min="0">
+                                                        </div>
+                                                        <div class="input-group input-group-sm input-group-100">
+                                                            <span class="input-group-text bg-white fw-medium">S</span>
+                                                            <input type="number"
+                                                                class="form-control new-prod-var-stock-input"
+                                                                data-size="S"  min="0">
+                                                        </div>
+                                                        <div class="input-group input-group-sm input-group-100">
+                                                            <span class="input-group-text bg-white fw-medium">M</span>
+                                                            <input type="number"
+                                                                class="form-control new-prod-var-stock-input"
+                                                                data-size="M"  min="0">
+                                                        </div>
+                                                        <div class="input-group input-group-sm input-group-100">
+                                                            <span class="input-group-text bg-white fw-medium">L</span>
+                                                            <input type="number"
+                                                                class="form-control new-prod-var-stock-input"
+                                                                data-size="L"  min="0">
+                                                        </div>
+                                                        <div class="input-group input-group-sm input-group-100">
+                                                            <span class="input-group-text bg-white fw-medium">XL</span>
+                                                            <input type="number"
+                                                                class="form-control new-prod-var-stock-input"
+                                                                data-size="XL"  min="0">
+                                                        </div>
+                                                        <div class="input-group input-group-sm input-group-110">
+                                                            <span class="input-group-text bg-white fw-medium">XXL</span>
+                                                            <input type="number"
+                                                                class="form-control new-prod-var-stock-input"
+                                                                data-size="XXL"  min="0">
+                                                        </div>
+                                                        <div class="input-group input-group-sm input-group-120">
+                                                            <span
+                                                                class="input-group-text bg-white fw-medium">XXXL</span>
+                                                            <input type="number"
+                                                                class="form-control new-prod-var-stock-input"
+                                                                data-size="XXXL"  min="0">
+                                                        </div>
+                                                        <div class="input-group input-group-sm input-group-140">
+                                                            <span
+                                                                class="input-group-text bg-white fw-medium">Other</span>
+                                                            <input type="text" class="form-control"
+                                                                id="new-prod-var-custom-size" >
+                                                            <input type="number"
+                                                                class="form-control new-prod-var-stock-input"
+                                                                id="new-prod-var-custom-stock" class="form-control new-prod-var-stock-input input-width-xs"
+                                                                 min="0">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="mt-3 text-end">
+                                                    <button type="button"
+                                                        class="btn btn-sm btn-success px-4 rounded-pill"
+                                                        onclick="addTempVariant()">
+                                                        <i class="fas fa-plus me-1"></i> Add Variants
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4"
+                        data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary rounded-pill px-4" onclick="addProduct()"><i
+                            class="fas fa-plus me-2"></i>Add Product</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="modal fade" id="editProductModal">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content rounded-4 border-0 shadow">
+                <div class="modal-header border-0 pb-0 px-4 pt-4">
+                    <div>
+                        <h5 class="fw-bold mb-0"><i class="fas fa-edit text-primary me-2"></i>Edit Product</h5>
+                        <small class="text-muted">Update product details and save</small>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body px-4 py-3">
+                    <form id="edit-product-form">
+                        <input type="hidden" id="edit-product-id">
+                        <input type="hidden" id="edit-image-current">
+                        <input type="hidden" id="edit-image2-current">
+                        <input type="hidden" id="edit-image3-current">
+                        <input type="hidden" id="edit-image4-current">
+
+                        
+                        <div class="bg-light rounded-3 p-3 mb-3">
+                            <h6 class="fw-bold text-muted text-uppercase small mb-3"><i
+                                    class="fas fa-info-circle me-2"></i>Basic Info</h6>
+                            <div class="row g-2">
+                                <div class="col-md-5"><label for="edit-name" class="form-label small fw-semibold mb-1">Product Name
+                                        *</label>
+                                    <input type="text" id="edit-name" class="form-control form-control-sm rounded-pill"
+                                        required>
+                                </div>
+                                <div class="col-md-3"><label for="edit-price" class="form-label small fw-semibold mb-1">Price
+                                        (BDT)</label>
+                                    <input type="number" id="edit-price"
+                                        class="form-control form-control-sm rounded-pill">
+                                </div>
+                                <div class="col-md-2"><label for="edit-sale-price" class="form-label small fw-semibold mb-1">Sale
+                                        Price</label>
+                                    <input type="number" id="edit-sale-price"
+                                        class="form-control form-control-sm rounded-pill">
+                                </div>
+                                <div class="col-md-2"><label for="edit-discount" class="form-label small fw-semibold mb-1">Discount
+                                        %</label>
+                                    <input type="number" id="edit-discount"
+                                        class="form-control form-control-sm rounded-pill" min="0" max="100">
+                                </div>
+                                <div class="col-md-4"><label for="edit-category-id" class="form-label small fw-semibold mb-1">Category</label>
+                                    <select id="edit-category-id" class="form-select form-select-sm rounded-pill">
+                                        <option value="">Loading...</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4"><label class="form-label small fw-semibold mb-1" for="edit-sku">SKU</label>
+                                    <input type="text" name="sku" id="edit-sku"
+                                        class="form-control form-control-sm rounded-pill"
+                                        >
+                                </div>
+                                <div class="col-md-4"><label class="form-label small fw-semibold mb-1" for="edit-tags">Tags</label>
+                                    <input type="text" id="edit-tags" class="form-control form-control-sm rounded-pill"
+                                        >
+                                </div>
+                                <div class="col-12"><label class="form-label small fw-semibold mb-1" for="edit-description">Description</label>
+                                    <textarea id="edit-description" class="form-control form-control-sm rounded-3"
+                                        rows="2" ></textarea>
+                                </div>
+                                <div class="col-12 d-flex gap-3 pt-1 flex-wrap">
+                                    <div class="form-check"><input class="form-check-input" type="checkbox"
+                                            id="edit-is-featured"><label class="form-check-label small"
+                                            for="edit-is-featured">Featured</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="checkbox"
+                                            id="edit-is-top-selling"><label class="form-check-label small"
+                                            for="edit-is-top-selling">Top Selling</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="checkbox"
+                                            id="edit-is-new-arrival"><label class="form-check-label small"
+                                            for="edit-is-new-arrival">New Arrival</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="checkbox"
+                                            id="edit-is-on-sale"
+                                            onchange="toggleEditSaleDates(this.checked)"><label
+                                            class="form-check-label small fw-bold text-danger" for="edit-is-on-sale">🔥 Season End Sale</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="checkbox"
+                                            id="edit-is-free-delivery"><label
+                                            class="form-check-label small fw-bold text-free-delivery" for="edit-is-free-delivery">🚚 Free Delivery</label></div>
+                                </div>
+                                
+                                <div class="col-12 mt-1 d-none" id="edit-sale-dates">
+                                    <div class="row g-2 p-2 bg-warning bg-opacity-10 border border-warning border-opacity-25 rounded-3">
+                                        <div class="col-md-6">
+                                            <label for="edit-sale-start" class="form-label small fw-semibold mb-1">Sale Start Date</label>
+                                            <input type="datetime-local" id="edit-sale-start" class="form-control form-control-sm rounded-pill">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="edit-sale-end" class="form-label small fw-semibold mb-1">Sale End Date</label>
+                                            <input type="datetime-local" id="edit-sale-end" class="form-control form-control-sm rounded-pill">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div class="bg-light rounded-3 p-3 mb-3">
+                            <h6 class="fw-bold text-muted text-uppercase small mb-3"><i
+                                    class="fas fa-images me-2"></i>Product Images + Color Links
+                                <span class="text-muted fw-normal ms-1 text-xs">(Recommended:
+                                    <b>900x1200 px</b> or 3:4 ratio)</span>
+                            </h6>
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <div class="border rounded-3 p-2 bg-white">
+                                        <div class="d-flex align-items-center gap-2 mb-1">
+                                            <img loading="lazy" decoding="async" id="edit-img1-preview" src="https://via.placeholder.com/44"
+                                                class="rounded admin-img-preview-44" alt="Product image preview">
+                                            <div class="flex-fill">
+                                                <div class="small fw-bold mb-1">Image 1 (Main)</div>
+                                                <input type="file" id="edit-img1-input"
+                                                    class="form-control form-control-sm rounded-pill" accept="image/*" aria-label="Upload product image"
+                                                    onchange="previewImage(this,'edit-img1-preview')">
+                                            </div>
+                                        </div>
+                                        <input type="text" name="image1_color" id="edit-img1-color"
+                                            class="form-control form-control-sm rounded-pill" list="color-datalist"
+                                             aria-label="Link to color">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="border rounded-3 p-2 bg-white">
+                                        <div class="d-flex align-items-center gap-2 mb-1">
+                                            <img loading="lazy" decoding="async" id="edit-img2-preview" src="https://via.placeholder.com/44"
+                                                class="rounded admin-img-preview-44" alt="Product image preview">
+                                            <div class="flex-fill">
+                                                <div class="small fw-bold mb-1">Image 2</div>
+                                                <input type="file" id="edit-img2-input"
+                                                    class="form-control form-control-sm rounded-pill" accept="image/*" aria-label="Upload product image"
+                                                    onchange="previewImage(this,'edit-img2-preview')">
+                                            </div>
+                                        </div>
+                                        <input type="text" name="image2_color" id="edit-img2-color"
+                                            class="form-control form-control-sm rounded-pill" list="color-datalist"
+                                             aria-label="Link to color">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="border rounded-3 p-2 bg-white">
+                                        <div class="d-flex align-items-center gap-2 mb-1">
+                                            <img loading="lazy" decoding="async" id="edit-img3-preview" src="https://via.placeholder.com/44"
+                                                class="rounded admin-img-preview-44" alt="Product image preview">
+                                            <div class="flex-fill">
+                                                <div class="small fw-bold mb-1">Image 3</div>
+                                                <input type="file" id="edit-img3-input"
+                                                    class="form-control form-control-sm rounded-pill" accept="image/*" aria-label="Upload product image"
+                                                    onchange="previewImage(this,'edit-img3-preview')">
+                                            </div>
+                                        </div>
+                                        <input type="text" name="image3_color" id="edit-img3-color"
+                                            class="form-control form-control-sm rounded-pill" list="color-datalist"
+                                             aria-label="Link to color">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="border rounded-3 p-2 bg-white">
+                                        <div class="d-flex align-items-center gap-2 mb-1">
+                                            <img loading="lazy" decoding="async" id="edit-img4-preview" src="https://via.placeholder.com/44"
+                                                class="rounded admin-img-preview-44" alt="Product image preview">
+                                            <div class="flex-fill">
+                                                <div class="small fw-bold mb-1">Image 4</div>
+                                                <input type="file" id="edit-img4-input"
+                                                    class="form-control form-control-sm rounded-pill" accept="image/*" aria-label="Upload product image"
+                                                    onchange="previewImage(this,'edit-img4-preview')">
+                                            </div>
+                                        </div>
+                                        <input type="text" name="image4_color" id="edit-img4-color"
+                                            class="form-control form-control-sm rounded-pill" list="color-datalist"
+                                             aria-label="Link to color">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div class="bg-light rounded-3 p-3 mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="fw-bold text-muted text-uppercase small mb-0"><i
+                                        class="fas fa-palette me-2"></i>Product Colors</h6>
+                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill py-0 px-2"
+                                    onclick="toggleQuickColor('edit')"><i class="fas fa-plus me-1"></i>New
+                                    Color</button>
+                            </div>
+                            <div id="edit-quick-color-form" class="bg-white p-2 rounded-3 mb-2 d-none border">
+                                <div class="row g-2 align-items-end">
+                                    <div class="col-5"><input type="text" id="edit-q-name"
+                                            class="form-control form-control-sm rounded-pill"  aria-label="Color name">
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="input-group input-group-sm">
+                                            <input type="color" id="edit-q-hex-picker"
+                                                class="form-control form-control-color custom-color-picker"
+                                                value="#000000" oninput="syncQuickHex('edit','picker')" aria-label="Color picker">
+                                            <input type="text" id="edit-q-hex" class="form-control rounded-end-pill"
+                                                 value="#000000"
+                                                oninput="syncQuickHex('edit','input')" aria-label="Color hex code">
+                                        </div>
+                                    </div>
+                                    <div class="col-3"><button type="button"
+                                            class="btn btn-sm btn-dark w-100 rounded-pill"
+                                            onclick="quickSaveColor('edit')">Save</button></div>
+                                </div>
+                            </div>
+                            <div id="edit-color-options" class="d-flex flex-wrap gap-2"><span
+                                    class="text-muted small">Loading colors...</span></div>
+                            <input type="hidden" id="edit-colors-hidden">
+                        </div>
+
+                        
+                        <div class="mb-3">
+                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill w-100"
+                                data-bs-toggle="collapse" data-bs-target="#edit-extra-details">
+                                <i class="fas fa-chevron-down me-1"></i> Additional Details (fabric, care, size
+                                notes...)
+                            </button>
+                            <div class="collapse mt-2" id="edit-extra-details">
+                                <div class="bg-light rounded-3 p-3">
+                                    <div class="row g-2">
+                                        <div class="col-md-6"><label for="edit-product-details" class="form-label small fw-semibold mb-1">Product
+                                                Details</label>
+                                            <textarea id="edit-product-details"
+                                                class="form-control form-control-sm rounded-3" rows="3"
+                                                ></textarea>
+                                        </div>
+                                        <div class="col-md-6"><label for="edit-size-calc-notes" class="form-label small fw-semibold mb-1">Size
+                                                Calculator Notes</label>
+                                            <textarea id="edit-size-calc-notes"
+                                                class="form-control form-control-sm rounded-3" rows="3"
+                                                ></textarea>
+                                        </div>
+                                        <div class="col-12"><label for="edit-care-instructions" class="form-label small fw-semibold mb-1">Care
+                                                Instructions</label>
+                                            <textarea id="edit-care-instructions"
+                                                class="form-control form-control-sm rounded-3" rows="2"
+                                                ></textarea>
+                                        </div>
+                                        <div class="col-md-3"><label for="edit-weight"
+                                                class="form-label small fw-semibold mb-1">Weight</label>
+                                            <input type="text" id="edit-weight"
+                                                class="form-control form-control-sm rounded-pill"
+                                                >
+                                        </div>
+                                        <div class="col-md-3"><label
+                                                class="form-label small fw-semibold mb-1" for="edit-height">Height</label>
+                                            <input type="text" id="edit-height"
+                                                class="form-control form-control-sm rounded-pill"
+                                                >
+                                        </div>
+                                        <div class="col-md-3"><label for="edit-stock-quantity" class="form-label small fw-semibold mb-1">Stock
+                                                (Main)</label>
+                                            <input type="number" id="edit-stock-quantity"
+                                                class="form-control form-control-sm rounded-pill" >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div class="bg-light rounded-3 p-3">
+                            <h6 class="fw-bold text-muted text-uppercase small mb-3"><i
+                                    class="fas fa-layer-group me-2"></i>Sizes &amp; Stock (Variants)</h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm align-middle mb-0 bg-white rounded-3">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Size</th>
+                                            <th>Color</th>
+                                            <th>Images</th>
+                                            <th>Stock</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="edit-variants-tbody">
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted small py-2">Loading
+                                                variants...</td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot class="border-top border-2">
+                                        <tr class="bg-light">
+                                            <td colspan="5" class="pt-3 pb-2 px-3">
+                                                <div class="row g-2 align-items-end">
+                                                    <div class="col-md-3">
+                                                        <label for="new-var-color" class="form-label small fw-semibold mb-1">Color</label>
+                                                        <select id="new-var-color" class="form-select form-select-sm">
+                                                            <option value="">Select Color</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label class="form-label small fw-semibold mb-1">Variant Images
+                                                            (Optional)</label>
+                                                        <div class="d-flex gap-1">
+                                                            <div class="position-relative admin-img-square-32"><img loading="lazy" decoding="async" id="new-v-img1"
+                                                                    src="https://via.placeholder.com/32"
+                                                                    class="rounded border w-100 h-100 object-fit-cover" alt="Variant preview"><input
+                                                                    type="file"
+                                                                    class="position-absolute top-0 start-0 w-100 h-100 opacity-0 cursor-pointer"
+                                                                    aria-label="Upload variant image"
+                                                                    onchange="uploadVariantImage(this,'new-v-img1')">
+                                                            </div>
+                                                            <div class="position-relative admin-img-square-32"><img loading="lazy" decoding="async" id="new-v-img2"
+                                                                    src="https://via.placeholder.com/32"
+                                                                    class="rounded border w-100 h-100 object-fit-cover" alt="Variant preview"><input
+                                                                    type="file"
+                                                                    class="position-absolute top-0 start-0 w-100 h-100 opacity-0 cursor-pointer"
+                                                                    aria-label="Upload variant image"
+                                                                    onchange="uploadVariantImage(this,'new-v-img2')">
+                                                            </div>
+                                                            <div class="position-relative admin-img-square-32"><img loading="lazy" decoding="async" id="new-v-img3"
+                                                                    src="https://via.placeholder.com/32"
+                                                                    class="rounded border w-100 h-100 object-fit-cover" alt="Variant preview"><input
+                                                                    type="file"
+                                                                    class="position-absolute top-0 start-0 w-100 h-100 opacity-0 cursor-pointer"
+                                                                    aria-label="Upload variant image"
+                                                                    onchange="uploadVariantImage(this,'new-v-img3')">
+                                                            </div>
+                                                            <div class="position-relative admin-img-square-32"><img loading="lazy" decoding="async" id="new-v-img4"
+                                                                    src="https://via.placeholder.com/32"
+                                                                    class="rounded border w-100 h-100 object-fit-cover" alt="Variant preview"><input
+                                                                    type="file"
+                                                                    class="position-absolute top-0 start-0 w-100 h-100 opacity-0 cursor-pointer"
+                                                                    aria-label="Upload variant image"
+                                                                    onchange="uploadVariantImage(this,'new-v-img4')">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="mt-3">
+                                                    <label class="form-label small fw-semibold mb-1 text-primary"><i
+                                                            class="fas fa-boxes me-1"></i>Enter Stock per Size</label>
+                                                    <div class="d-flex gap-3 flex-wrap">
+                                                        <div class="input-group input-group-sm input-group-100">
+                                                            <span class="input-group-text bg-white fw-medium">XS</span>
+                                                            <input type="number"
+                                                                class="form-control new-var-stock-input" data-size="XS"
+                                                                 min="0">
+                                                        </div>
+                                                        <div class="input-group input-group-sm input-group-100">
+                                                            <span class="input-group-text bg-white fw-medium">S</span>
+                                                            <input type="number"
+                                                                class="form-control new-var-stock-input" data-size="S"
+                                                                 min="0">
+                                                        </div>
+                                                        <div class="input-group input-group-sm input-group-100">
+                                                            <span class="input-group-text bg-white fw-medium">M</span>
+                                                            <input type="number"
+                                                                class="form-control new-var-stock-input" data-size="M"
+                                                                 min="0">
+                                                        </div>
+                                                        <div class="input-group input-group-sm input-group-100">
+                                                            <span class="input-group-text bg-white fw-medium">L</span>
+                                                            <input type="number"
+                                                                class="form-control new-var-stock-input" data-size="L"
+                                                                 min="0">
+                                                        </div>
+                                                        <div class="input-group input-group-sm input-group-100">
+                                                            <span class="input-group-text bg-white fw-medium">XL</span>
+                                                            <input type="number"
+                                                                class="form-control new-var-stock-input" data-size="XL"
+                                                                 min="0">
+                                                        </div>
+                                                        <div class="input-group input-group-sm input-group-110">
+                                                            <span class="input-group-text bg-white fw-medium">XXL</span>
+                                                            <input type="number"
+                                                                class="form-control new-var-stock-input" data-size="XXL"
+                                                                 min="0">
+                                                        </div>
+                                                        <div class="input-group input-group-sm input-group-120">
+                                                            <span
+                                                                class="input-group-text bg-white fw-medium">XXXL</span>
+                                                            <input type="number"
+                                                                class="form-control new-var-stock-input"
+                                                                data-size="XXXL"  min="0">
+                                                        </div>
+                                                        <div class="input-group input-group-sm input-group-140">
+                                                            <span
+                                                                class="input-group-text bg-white fw-medium">Other</span>
+                                                            <input type="text" class="form-control"
+                                                                id="new-var-custom-size" >
+                                                            <input type="number"
+                                                                class="form-control new-var-stock-input"
+                                                                id="new-var-custom-stock" class="form-control new-var-stock-input input-width-xs"
+                                                                 min="0">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="mt-3 text-end">
+                                                    <button type="button"
+                                                        class="btn btn-sm btn-success px-4 rounded-pill"
+                                                        onclick="addVariant()">
+                                                        <i class="fas fa-plus me-1"></i> Add Variants
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4"
+                        data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary rounded-pill px-4" onclick="updateProduct()"><i
+                            class="fas fa-save me-2"></i>Update Product</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="js/admin.js"></script>
+    <script>
+        // Helper to preview image after selecting file
+        function previewImage(input, previewId) {
+            const preview = document.getElementById(previewId);
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        // getImageUrl is available from admin.js
+        function showProductStatus(message, isSuccess = true) {
+            showToast(message, isSuccess ? 'success' : 'error');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAdminLayout();
+            loadProducts();
+            loadGlobalColors();
+
+            // Fetch categories fresh when Add Product modal opens
+            const addProductModalEl = document.getElementById('addProductModal');
+            if (addProductModalEl) {
+                addProductModalEl.addEventListener('show.bs.modal', () => {
+                    loadCategories();
+                });
+            }
+
+            // Auto-generate slug from name
+            const nameInput = document.getElementById('prod-name-input');
+            const slugInput = document.getElementById('prod-slug-input');
+            if (nameInput && slugInput) {
+                nameInput.addEventListener('input', () => {
+                    slugInput.value = nameInput.value.toLowerCase()
+                        .replace(/[^a-z0-9\s-]/g, '')
+                        .replace(/\s+/g, '-')
+                        .replace(/-+/g, '-');
+                });
+            }
+
+            // ── DISCOUNT AUTO-CALCULATION ────────────────────────
+            // ADD MODAL: sale_price ↔ discount_percentage auto-sync
+            function setupDiscountSync(priceId, salePriceId, discountId) {
+                const priceEl = document.getElementById(priceId);
+                const saleEl = document.getElementById(salePriceId);
+                const discEl = document.getElementById(discountId);
+                if (!priceEl || !saleEl || !discEl) return;
+
+                // When sale_price changes → auto-calc discount %
+                saleEl.addEventListener('input', () => {
+                    const price = parseFloat(priceEl.value);
+                    const sale = parseFloat(saleEl.value);
+                    if (price > 0 && sale > 0 && sale < price) {
+                        discEl.value = Math.round((1 - sale / price) * 100);
+                    } else {
+                        discEl.value = '';
+                    }
+                });
+
+                // When discount % changes → auto-calc sale_price
+                discEl.addEventListener('input', () => {
+                    const price = parseFloat(priceEl.value);
+                    const disc = parseFloat(discEl.value);
+                    if (price > 0 && disc > 0 && disc < 100) {
+                        saleEl.value = Math.round(price * (1 - disc / 100));
+                    } else if (disc === 0) {
+                        saleEl.value = '';
+                    }
+                });
+
+                // When price changes → recalc if sale_price is set
+                priceEl.addEventListener('input', () => {
+                    const price = parseFloat(priceEl.value);
+                    const sale = parseFloat(saleEl.value);
+                    if (price > 0 && sale > 0 && sale < price) {
+                        discEl.value = Math.round((1 - sale / price) * 100);
+                    }
+                });
+            }
+
+            // Add modal: price field is [name="price"], but no IDs — get by name
+            // Add modal uses form inputs with name attr, not IDs for price/sale_price
+            // Let's set IDs for them via JS targeting
+            const addForm = document.getElementById('add-product-form');
+            if (addForm) {
+                const addPrice = addForm.querySelector('[name="price"]');
+                const addSale = addForm.querySelector('[name="sale_price"]');
+                const addDisc = addForm.querySelector('[name="discount_percentage"]');
+                if (addPrice) addPrice.id = 'add-price';
+                if (addSale) addSale.id = 'add-sale-price';
+                if (addDisc) addDisc.id = 'add-discount-pct';
+            }
+            setupDiscountSync('add-price', 'add-sale-price', 'add-discount-pct');
+
+            // Edit modal
+            setupDiscountSync('edit-price', 'edit-sale-price', 'edit-discount');
+        });
+
+
+        // --- NEW: Load Global Colors for Checkboxes ---
+        let allGlobalColors = [];
+        async function loadGlobalColors() {
+            try {
+                const res = await adminFetch('/colors');
+                if (res) {
+                    allGlobalColors = await res.json();
+                }
+            } catch (e) {
+                console.error('Failed to load global colors:', e);
+            }
+
+            // Preserve current selections if any
+            const addSelected = window.getSelectedColorsAsJson('add-color-options');
+            const editSelected = window.getSelectedColorsAsJson('edit-color-options');
+
+            window.renderColorCheckboxes('add-color-options', addSelected, allGlobalColors);
+            window.renderColorCheckboxes('edit-color-options', editSelected, allGlobalColors);
+
+            // Image-color text inputs: use product-selected colors (for autocomplete)
+            const addImgDropdowns = ['add-img1-color', 'add-img2-color', 'add-img3-color', 'add-img4-color'];
+            const editImgDropdowns = ['edit-img1-color', 'edit-img2-color', 'edit-img3-color', 'edit-img4-color'];
+            populateImageColorDropdowns(addImgDropdowns, null, JSON.parse(addSelected));
+            populateImageColorDropdowns(editImgDropdowns, null, JSON.parse(editSelected));
+
+            // Variant color SELECTS: always use ALL global colors so admin can assign any color
+            populateVariantColorSelect('new-var-color');
+            populateVariantColorSelect('new-prod-var-color');
+        }
+
+        // Populate a variant-row color <select> with ALL global colors
+        function populateVariantColorSelect(selectId, currentValue) {
+            const el = document.getElementById(selectId);
+            if (!el) return;
+            const saved = currentValue || el.value;
+            el.innerHTML = '<option value="">Select Color</option>';
+            (allGlobalColors || []).forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.name;
+                opt.textContent = c.name;
+                if (saved && saved.toLowerCase() === c.name.toLowerCase()) opt.selected = true;
+                el.appendChild(opt);
+            });
+        }
+
+        // Populate image-color link datalist and selects
+        function populateImageColorDropdowns(dropdownIds, selectedValues, colorsToShow) {
+            let colors = [];
+            try {
+                if (typeof colorsToShow === 'string') {
+                    const trimmed = colorsToShow.trim();
+                    if (trimmed.startsWith('[') || trimmed.startsWith('{')) {
+                        colors = JSON.parse(trimmed);
+                    } else {
+                        colors = trimmed.split(',').map(c => c.trim()).filter(Boolean);
+                    }
+                } else if (Array.isArray(colorsToShow)) {
+                    colors = colorsToShow;
+                }
+            } catch (e) {
+                console.error('Error parsing colors for dropdown:', e);
+            }
+
+            const uniqueColors = [];
+            const seen = new Set();
+            (Array.isArray(colors) ? colors : []).forEach(c => {
+                const name = (typeof c === 'string' ? c : (c.name || '')).toString();
+                if (name && !seen.has(name.toLowerCase())) {
+                    seen.add(name.toLowerCase());
+                    uniqueColors.push({ name });
+                }
+            });
+
+            // Update the datalist for input fields
+            const datalist = document.getElementById('color-datalist');
+            if (datalist) {
+                datalist.innerHTML = uniqueColors.map(c => `<option value="${c.name}">`).join('');
+            }
+
+            dropdownIds.forEach((id, i) => {
+                const el = document.getElementById(id);
+                if (!el) return;
+
+                if (el.tagName === 'SELECT') {
+                    const currentVal = selectedValues ? selectedValues[i] : el.value;
+                    el.innerHTML = '<option value="">No color link</option>';
+                    uniqueColors.forEach(c => {
+                        const opt = document.createElement('option');
+                        opt.value = c.name;
+                        opt.textContent = c.name;
+                        if (currentVal && currentVal.toLowerCase() === c.name.toLowerCase()) opt.selected = true;
+                        el.appendChild(opt);
+                    });
+                } else if (el.tagName === 'INPUT') {
+                    if (selectedValues && selectedValues[i]) {
+                        el.value = selectedValues[i];
+                    }
+                }
+            });
+        }
+
+
+        function toggleColorCheckbox(checkboxEl, containerId) {
+            checkboxEl.parentElement.classList.toggle('active', checkboxEl.checked);
+
+            // Sync mapping dropdowns AND variant color selects
+            const selectedColors = JSON.parse(getSelectedColorsAsJson(containerId));
+            const isEdit = containerId.includes('edit');
+            const dropdowns = isEdit ?
+                ['edit-img1-color', 'edit-img2-color', 'edit-img3-color', 'edit-img4-color', 'new-var-color'] :
+                ['add-img1-color', 'add-img2-color', 'add-img3-color', 'add-img4-color', 'new-prod-var-color'];
+
+            populateImageColorDropdowns(dropdowns, null, selectedColors);
+
+            // If editing, also update any existing variant color selects in the table
+            if (isEdit) {
+                document.querySelectorAll('.variant-color-select').forEach(sel => {
+                    const currentVal = sel.value;
+                    populateImageColorDropdowns([sel.id], [currentVal], selectedColors);
+                });
+            }
+        }
+
+
+
+        async function uploadVariantImage(input, previewId) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                // Flash loading state
+                const img = document.getElementById(previewId);
+                img.style.opacity = '0.5';
+
+                const res = await adminFetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await res.json();
+
+                if (res.ok) {
+                    img.src = getImageUrl(result.imageUrl);
+                    img.setAttribute('data-path', result.imageUrl);
+                } else {
+                    alert('Upload failed: ' + result.message);
+                }
+                img.style.opacity = '1';
+            } catch (e) {
+                console.error('Variant image upload error:', e);
+                alert('Connection error during upload');
+            }
+        }
+
+        async function loadProducts() {
+            const tbody = document.getElementById('products-tbody');
+            if (!tbody) return;
+            try {
+                const response = await adminFetch('/products');
+                if (!response) return;
+
+                const products = await response.json();
+                window._cachedProducts = products; // Store for filtering
+
+                renderProducts(products);
+            } catch (e) {
+                console.error('Load products error:', e);
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center text-danger py-4">Failed to load products.</td></tr>';
+            }
+        }
+
+        function filterProducts() {
+            const query = document.getElementById('productSearchInput').value.toLowerCase().trim();
+            const clearBtn = document.getElementById('clearProductSearch');
+
+            if (clearBtn) {
+                if (query) clearBtn.classList.remove('d-none');
+                else clearBtn.classList.add('d-none');
+            }
+
+            if (!window._cachedProducts) return;
+
+            if (!query) {
+                renderProducts(window._cachedProducts);
+                return;
+            }
+
+            const filtered = window._cachedProducts.filter(p =>
+                (p.name || '').toLowerCase().includes(query) ||
+                (p.sku || '').toLowerCase().includes(query) ||
+                (p.category_name && p.category_name.toLowerCase().includes(query)) ||
+                (p.slug && p.slug.toLowerCase().includes(query))
+            );
+
+            renderProducts(filtered);
+        }
+
+
+        function clearProductSearch() {
+            const input = document.getElementById('productSearchInput');
+            input.value = '';
+            filterProducts();
+            input.focus();
+        }
+
+        function renderProducts(products) {
+            const tbody = document.getElementById('products-tbody');
+            const countEl = document.getElementById('productCount');
+            if (!tbody) return;
+
+            if (countEl) {
+                countEl.textContent = `${products.length} product${products.length !== 1 ? 's' : ''} found`;
+            }
+
+            if (products.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">No products found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = products.map(p => {
+                const imgSrc = getImageUrl(p.image);
+                let colorDots = '';
+                if (p.colors) {
+                    try {
+                        const colors = JSON.parse(p.colors);
+                        colorDots = colors.map(c => `<span class="color-preview" style="background:${c.hex_code || c.hex || '#ccc'}" title="${c.name || ''}"></span>`).join('');
+                    } catch (e) {
+                        colorDots = `<small class="text-muted">${p.colors}</small>`;
+                    }
+                }
+
+                return `<tr>
+                    <td>${imgSrc ? `<img src="${imgSrc}" loading="lazy" decoding="async" class="product-img" onerror="this.src='https://via.placeholder.com/50'">` : '-'}</td>
+                    <td><strong>${p.name}</strong><br><small class="text-muted">${p.sku || p.slug || ''}</small></td>
+                    <td>${Number(p.price).toLocaleString()} BDT</td>
+                    <td>${p.category_name || p.category_id || '-'}</td>
+                    <td>${colorDots || '-'}</td>
+                    <td>${p.is_featured ? '<span class="badge bg-success">Yes</span>' : '<span class="badge bg-secondary">No</span>'}</td>
+                    <td>${p.is_new_arrival ? '<span class="badge bg-info">Yes</span>' : '<span class="badge bg-secondary">No</span>'}</td>
+                    <td>${p.is_free_delivery ? '<span class="badge badge-free-delivery">🚚 Free</span>' : '<span class="badge bg-secondary">No</span>'}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary rounded-pill me-1" onclick="editProduct(${p.id})"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-outline-danger rounded-pill" onclick="deleteProduct(${p.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+
+
+        async function addProduct() {
+            const form = document.getElementById('add-product-form');
+
+            // Set hidden colors input before creating FormData
+            document.getElementById('add-colors-hidden').value = window.getSelectedColorsAsJson('add-color-options');
+
+            // FormData automatically captures ALL named fields (including name="sku")
+            const formData = new FormData(form);
+
+            // Handle checkboxes (unchecked boxes are not included in FormData by default)
+            formData.set('is_featured', document.getElementById('is_featured').checked ? 1 : 0);
+            formData.set('is_top_selling', document.getElementById('is_top_selling').checked ? 1 : 0);
+            formData.set('is_new_arrival', document.getElementById('is_new_arrival').checked ? 1 : 0);
+            formData.set('is_on_sale', document.getElementById('add-is-on-sale').checked ? 1 : 0);
+            formData.set('is_free_delivery', document.getElementById('add-is-free-delivery').checked ? 1 : 0);
+            if (document.getElementById('add-is-on-sale').checked) {
+                const sStart = document.querySelector('#add-sale-dates input[name="sale_start"]')?.value;
+                const sEnd   = document.querySelector('#add-sale-dates input[name="sale_end"]')?.value;
+                if (sStart) formData.set('sale_start', sStart); else formData.delete('sale_start');
+                if (sEnd)   formData.set('sale_end', sEnd);   else formData.delete('sale_end');
+            }
+
+            // Add variants as JSON string
+            formData.append('variants', JSON.stringify(tempAddVariants));
+
+            const btn = document.querySelector('#addProductModal .btn-primary');
+            if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving...'; }
+
+            try {
+                const response = await adminFetch('/products', {
+                    method: 'POST',
+                    body: formData
+                });
+                if (!response) {
+                    showProductStatus('Server error. Please try again.', false);
+                    return;
+                }
+                const result = await response.json();
+                if (response.ok) {
+                    showProductStatus('✅ Product added successfully!', true);
+                    bootstrap.Modal.getInstance(document.getElementById('addProductModal')).hide();
+                    form.reset();
+                    tempAddVariants = []; // Clear temp variants
+                    renderAddVariants(); // Reset UI
+                    loadProducts();
+                } else {
+                    showProductStatus('❌ ' + (result.message || 'Failed to add product'), false);
+                }
+            } catch (e) {
+                showProductStatus('❌ Error: ' + e.message, false);
+            } finally {
+                if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-plus me-2"></i>Add Product'; }
+            }
+        }
+
+        async function editProduct(id) {
+            try {
+                let product = (window._cachedProducts || []).find(p => p.id == id);
+                if (!product) {
+                    // fallback: re-fetch
+                    const response = await adminFetch('/products');
+                    if (!response) return;
+                    const products = await response.json();
+                    window._cachedProducts = products;
+                    product = products.find(p => p.id == id);
+                }
+                if (!product) { console.error('Product not found for id:', id); return; }
+
+                document.getElementById('edit-product-id').value = id;
+                document.getElementById('edit-name').value = product.name || '';
+                document.getElementById('edit-sku').value = product.sku || '';
+                document.getElementById('edit-price').value = product.price || '';
+                document.getElementById('edit-description').value = product.description || '';
+
+                // Render checked colors
+                window.renderColorCheckboxes('edit-color-options', product.colors, allGlobalColors);
+                document.getElementById('edit-colors-hidden').value = product.colors || '';
+                // Pre-fill image previews
+                const setPreview = (id, path) => {
+                    const el = document.getElementById(id);
+                    if (el) el.src = getImageUrl(path, 'https://via.placeholder.com/50');
+                };
+                setPreview('edit-img1-preview', product.image);
+                setPreview('edit-img2-preview', product.image2);
+                setPreview('edit-img3-preview', product.image3);
+                setPreview('edit-img4-preview', product.image4);
+
+                // Pre-fill image-color link dropdowns (text inputs only, NOT variant selects)
+                populateImageColorDropdowns(
+                    ['edit-img1-color', 'edit-img2-color', 'edit-img3-color', 'edit-img4-color'],
+                    [product.image1_color || '', product.image2_color || '', product.image3_color || '', product.image4_color || ''],
+                    product.colors // items to show
+                );
+                // Variant color selects always use ALL global colors
+                populateVariantColorSelect('new-var-color');
+                // Dimensions removed per user request
+                document.getElementById('edit-product-details').value = product.product_details || '';
+                document.getElementById('edit-size-calc-notes').value = product.size_calculator_notes || '';
+                document.getElementById('edit-care-instructions').value = product.care_instructions || '';
+                document.getElementById('edit-tags').value = product.tags || '';
+
+                // Store current image paths so they aren't lost if not updating files
+                document.getElementById('edit-image-current').value = product.image || '';
+                document.getElementById('edit-image2-current').value = product.image2 || '';
+                document.getElementById('edit-image3-current').value = product.image3 || '';
+                document.getElementById('edit-image4-current').value = product.image4 || '';
+                document.getElementById('edit-is-featured').checked = !!product.is_featured;
+                document.getElementById('edit-is-top-selling').checked = !!product.is_top_selling;
+                document.getElementById('edit-is-new-arrival').checked = !!product.is_new_arrival;
+                // Season End Sale
+                const isOnSale = !!product.is_on_sale;
+                document.getElementById('edit-is-on-sale').checked = isOnSale;
+                toggleEditSaleDates(isOnSale);
+                // Free Delivery
+                document.getElementById('edit-is-free-delivery').checked = !!product.is_free_delivery;
+                if (product.sale_start) {
+                    const sStart = new Date(product.sale_start);
+                    document.getElementById('edit-sale-start').value = sStart.toISOString().slice(0,16);
+                }
+                if (product.sale_end) {
+                    const sEnd = new Date(product.sale_end);
+                    document.getElementById('edit-sale-end').value = sEnd.toISOString().slice(0,16);
+                }
+                document.getElementById('edit-sale-price').value = product.sale_price || '';
+                document.getElementById('edit-discount').value = product.discount_percentage || '';
+                document.getElementById('edit-category-id').value = product.category_id || '';
+                document.getElementById('edit-weight').value = product.weight || '';
+                document.getElementById('edit-height').value = product.height || '';
+                document.getElementById('edit-stock-quantity').value = product.stock_quantity || 0;
+
+                // Show the modal
+                const modalEl = document.getElementById('editProductModal');
+                let modal = bootstrap.Modal.getInstance(modalEl);
+                if (!modal) modal = new bootstrap.Modal(modalEl);
+                modal.show();
+
+                // Load variants for this product
+                loadVariants(id);
+            } catch (e) {
+                console.error('Edit product error:', e);
+            }
+        }
+
+        // --- NEW: Variants Management ---
+        async function loadVariants(productId) {
+            const tbody = document.getElementById('edit-variants-tbody');
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted small"><div class="spinner-border spinner-border-sm"></div> Loading...</td></tr>';
+            try {
+                const res = await adminFetch(`/products/${productId}/variants`);
+                if (!res) return;
+                const variants = await res.json();
+                if (variants.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted small">No variants added yet.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = variants.map(v => `
+                    <tr>
+                        <td><input type="text" class="form-control form-control-sm" id="var-size-${v.id}" value="${v.size || ''}"></td>
+                        <td><select class="form-select form-select-sm variant-color-select" id="var-color-${v.id}">
+                            <option value="${v.color || ''}">${v.color || 'Select Color'}</option>
+                        </select></td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                ${[1, 2, 3, 4].map(idx => `
+                                    <div class="position-relative admin-img-square-md">
+                                        <img loading="lazy" decoding="async" id="var-img${idx}-${v.id}" 
+                                             src="${getImageUrl(v['image' + idx], 'https://via.placeholder.com/34')}" 
+                                             class="rounded border variant-img-thumb"
+                                             data-path="${v['image' + idx] || ''}">
+                                        <input type="file" class="position-absolute top-0 start-0 w-100 h-100 opacity-0 cursor-pointer" onchange="uploadVariantImage(this, 'var-img${idx}-${v.id}')">
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </td>
+                        <td><input type="number" class="form-control form-control-sm input-width-sm" id="var-stock-${v.id}" value="${v.stock || 0}" min="0"></td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="saveVariant(${v.id})" title="Save"><i class="fas fa-save"></i></button>
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteVariant(${v.id})" title="Delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+
+                // Populate color selects in the variants table
+                const colorOptions = document.getElementById('new-var-color')?.innerHTML || '';
+                document.querySelectorAll('.variant-color-select').forEach(sel => {
+                    const currentVal = sel.value;
+                    sel.innerHTML = colorOptions;
+                    sel.value = currentVal;
+                });
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger small">Error loading variants.</td></tr>';
+            }
+        }
+
+        async function addVariant() {
+            const productId = document.getElementById('edit-product-id').value;
+            if (!productId) return;
+
+            const color = document.getElementById('new-var-color').value;
+            const image1 = document.getElementById('new-v-img1').getAttribute('data-path') || '';
+            const image2 = document.getElementById('new-v-img2').getAttribute('data-path') || '';
+            const image3 = document.getElementById('new-v-img3').getAttribute('data-path') || '';
+            const image4 = document.getElementById('new-v-img4').getAttribute('data-path') || '';
+
+            const stockInputs = document.querySelectorAll('.new-var-stock-input');
+            const promises = [];
+
+            stockInputs.forEach(input => {
+                const stockVal = input.value.trim();
+                let sizeVal = input.getAttribute('data-size');
+
+                // For 'Other' size
+                if (input.id === 'new-var-custom-stock') {
+                    sizeVal = document.getElementById('new-var-custom-size').value.trim();
+                }
+
+                if (stockVal && parseInt(stockVal) >= 0 && sizeVal && color) {
+                    promises.push(adminFetch(`/products/${productId}/variants`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            product_id: productId,
+                            size: sizeVal,
+                            color,
+                            stock: parseInt(stockVal),
+                            image1, image2, image3, image4
+                        })
+                    }));
+                    input.value = ''; // clear input
+                }
+            });
+
+            if (promises.length === 0) {
+                showSabiloreModal("Please enter a stock quantity for at least one size, and ensure a color is selected.", 'warning', 'INPUT REQUIRED');
+                return;
+            }
+
+            try {
+                await Promise.all(promises);
+
+                // Clear other inputs after processing all requested sizes
+                document.getElementById('new-var-custom-size').value = '';
+                [1, 2, 3, 4].forEach(idx => {
+                    const img = document.getElementById(`new-v-img${idx}`);
+                    img.src = 'https://via.placeholder.com/34';
+                    img.removeAttribute('data-path');
+                });
+                loadVariants(productId);
+            } catch (e) {
+                console.error('Add variant error:', e);
+            }
+        }
+
+        // --- ADD PRODUCT MODAL VARIANTS (In-Memory) ---
+        let tempAddVariants = [];
+        function addTempVariant() {
+            const color = document.getElementById('new-prod-var-color').value;
+            const images = [1, 2, 3, 4].map(idx => document.getElementById(`new-pv-img${idx}`).getAttribute('data-path') || '');
+
+            const stockInputs = document.querySelectorAll('.new-prod-var-stock-input');
+            let addedCount = 0;
+
+            stockInputs.forEach(input => {
+                const stockVal = input.value.trim();
+                let sizeVal = input.getAttribute('data-size');
+
+                // For 'Other' size
+                if (input.id === 'new-prod-var-custom-stock') {
+                    sizeVal = document.getElementById('new-prod-var-custom-size').value.trim();
+                }
+
+                if (stockVal && parseInt(stockVal) >= 0 && sizeVal && color) {
+                    tempAddVariants.push({
+                        id: Date.now() + Math.random(), // Unique temporary UI ID
+                        size: sizeVal,
+                        color: color,
+                        stock: parseInt(stockVal),
+                        image1: images[0],
+                        image2: images[1],
+                        image3: images[2],
+                        image4: images[3]
+                    });
+                    addedCount++;
+                    // Reset this specific input
+                    input.value = '';
+                }
+            });
+
+            if (addedCount === 0) {
+                showSabiloreModal("Please enter a stock quantity for at least one size, and ensure a color is selected.", 'warning', 'INPUT REQUIRED');
+                return;
+            }
+
+            // Clear other inputs
+            document.getElementById('new-prod-var-custom-size').value = '';
+            // document.getElementById('new-prod-var-color').value = ''; // keep color around for convenience? 
+
+            [1, 2, 3, 4].forEach(idx => {
+                const img = document.getElementById(`new-pv-img${idx}`);
+                img.src = 'https://via.placeholder.com/34';
+                img.removeAttribute('data-path');
+            });
+
+            renderAddVariants();
+        }
+
+        function removeTempVariant(id) {
+            tempAddVariants = tempAddVariants.filter(v => v.id !== id);
+            renderAddVariants();
+        }
+
+        function renderAddVariants() {
+            const tbody = document.getElementById('add-variants-tbody');
+            if (tempAddVariants.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted small">No variants added yet.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = tempAddVariants.map(v => `
+                <tr>
+                    <td>${v.size || '-'}</td>
+                    <td>${v.color || '-'}</td>
+                    <td>
+                        <div class="d-flex gap-1">
+                            ${[1, 2, 3, 4].map(idx => `<img loading="lazy" decoding="async" src="${getImageUrl(v['image' + idx], 'https://via.placeholder.com/24')}" class="rounded border admin-img-square-sm">`).join('')}
+                        </div>
+                    </td>
+                    <td>${v.stock}</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeTempVariant(${v.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function saveVariant(variantId) {
+            const size = document.getElementById(`var-size-${variantId}`).value;
+            const color = document.getElementById(`var-color-${variantId}`).value;
+            const stock = document.getElementById(`var-stock-${variantId}`).value;
+            const image1 = document.getElementById(`var-img1-${variantId}`).getAttribute('data-path');
+            const image2 = document.getElementById(`var-img2-${variantId}`).getAttribute('data-path');
+            const image3 = document.getElementById(`var-img3-${variantId}`).getAttribute('data-path');
+            const image4 = document.getElementById(`var-img4-${variantId}`).getAttribute('data-path');
+
+            try {
+                const res = await adminFetch(`/variants/${variantId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ size, color, stock, image1, image2, image3, image4 })
+                });
+                if (res.ok) {
+                    // flash success on button
+                    const btn = document.querySelector(`button[onclick="saveVariant(${variantId})"]`);
+                    const originalHtml = btn.innerHTML;
+                    btn.classList.replace('btn-outline-primary', 'btn-success');
+                    btn.innerHTML = '<i class="fas fa-check"></i>';
+                    setTimeout(() => {
+                        btn.classList.replace('btn-success', 'btn-outline-primary');
+                        btn.innerHTML = originalHtml;
+                    }, 1500);
+                } else {
+                    alert('Update failed');
+                }
+            } catch (e) { }
+        }
+
+        async function deleteVariant(variantId) {
+            const confirmed = await showSabiloreConfirm('Are you sure you want to delete this variant?', 'CONFIRM DELETE');
+            if (!confirmed) return;
+            const productId = document.getElementById('edit-product-id').value;
+            try {
+                const res = await adminFetch(`/variants/${variantId}`, {
+                    method: 'DELETE'
+                });
+                if (res.ok) {
+                    showSabiloreModal('Variant deleted successfully', 'success', 'DELETED');
+                    loadVariants(productId);
+                }
+            } catch (e) { }
+        }
+        // --- END Variants Management ---
+
+        async function updateProduct() {
+            const id = document.getElementById('edit-product-id').value;
+            const formData = new FormData();
+
+            formData.append('name', document.getElementById('edit-name').value);
+            formData.append('sku', document.getElementById('edit-sku').value);
+            formData.append('price', document.getElementById('edit-price').value);
+            formData.append('description', document.getElementById('edit-description').value);
+            formData.append('colors', getSelectedColorsAsJson('edit-color-options'));
+            formData.append('product_details', document.getElementById('edit-product-details').value);
+            formData.append('size_calculator_notes', document.getElementById('edit-size-calc-notes').value);
+            formData.append('care_instructions', document.getElementById('edit-care-instructions').value);
+            formData.append('tags', document.getElementById('edit-tags').value);
+            formData.append('is_featured', document.getElementById('edit-is-featured').checked ? 1 : 0);
+            formData.append('is_top_selling', document.getElementById('edit-is-top-selling').checked ? 1 : 0);
+            formData.append('is_new_arrival', document.getElementById('edit-is-new-arrival').checked ? 1 : 0);
+            formData.append('is_on_sale', document.getElementById('edit-is-on-sale').checked ? 1 : 0);
+            formData.append('is_free_delivery', document.getElementById('edit-is-free-delivery').checked ? 1 : 0);
+            formData.append('sale_start', document.getElementById('edit-sale-start').value || '');
+            formData.append('sale_end', document.getElementById('edit-sale-end').value || '');
+            formData.append('sale_price', document.getElementById('edit-sale-price').value || '');
+            formData.append('discount_percentage', document.getElementById('edit-discount').value || 0);
+            formData.append('category_id', document.getElementById('edit-category-id').value);
+            formData.append('weight', document.getElementById('edit-weight').value);
+            formData.append('height', document.getElementById('edit-height').value);
+            formData.append('stock_quantity', document.getElementById('edit-stock-quantity').value || 0);
+
+            // Image-color link mapping
+            formData.append('image1_color', document.getElementById('edit-img1-color').value || '');
+            formData.append('image2_color', document.getElementById('edit-img2-color').value || '');
+            formData.append('image3_color', document.getElementById('edit-img3-color').value || '');
+            formData.append('image4_color', document.getElementById('edit-img4-color').value || '');
+
+            // Files
+            const fileInputs = {
+                'image': 'edit-img1-input',
+                'image2': 'edit-img2-input',
+                'image3': 'edit-img3-input',
+                'image4': 'edit-img4-input'
+            };
+            for (const [key, inputId] of Object.entries(fileInputs)) {
+                const input = document.getElementById(inputId);
+                if (input && input.files[0]) {
+                    formData.append(key, input.files[0]);
+                } else {
+                    // Send existing path if no new file
+                    const currentPath = document.getElementById(`edit-${key}-current`).value;
+                    formData.append(key, currentPath);
+                }
+            }
+
+            try {
+                const response = await adminFetch(`/products/${id}`, {
+                    method: 'PUT',
+                    body: formData
+                });
+
+                if (!response) return;
+                const result = await response.json();
+                if (response.ok) {
+                    showProductStatus('Product updated!', true);
+                    bootstrap.Modal.getInstance(document.getElementById('editProductModal')).hide();
+                    loadProducts();
+                } else {
+                    showProductStatus(result.message || 'Update failed', false);
+                }
+            } catch (e) {
+                showProductStatus('Error: ' + e.message, false);
+            }
+        }
+
+        async function deleteProduct(id) {
+            const confirmed = await showSabiloreConfirm('Are you sure you want to delete this product? This will remove all associated variants and data.', 'CONFIRM DELETE');
+            if (!confirmed) return;
+            try {
+                const response = await adminFetch(`/products/${id}`, {
+                    method: 'DELETE'
+                });
+                if (response && response.ok) {
+                    showSabiloreModal('Product deleted successfully!', 'success', 'DELETED');
+                    loadProducts();
+                }
+            } catch (e) {
+                showSabiloreModal('Error: ' + e.message, 'error', 'DELETE FAILED');
+            }
+        }
+
+        function showProductStatus(message, success) {
+            const el = document.getElementById('products-status');
+            el.className = `alert ${success ? 'alert-success' : 'alert-danger'} rounded-4`;
+            el.innerHTML = `<i class="fas ${success ? 'fa-check-circle' : 'fa-exclamation-triangle'} me-2"></i> ${message}`;
+            el.classList.remove('d-none');
+            setTimeout(() => el.classList.add('d-none'), 5000);
+        }
+
+        function toggleQuickColor(prefix) {
+            const form = document.getElementById(`${prefix}-quick-color-form`);
+            form.classList.toggle('d-none');
+        }
+
+        function toggleAddSaleDates(show) {
+            const el = document.getElementById('add-sale-dates');
+            if (el) el.style.display = show ? '' : 'none';
+        }
+
+        function toggleEditSaleDates(show) {
+            const el = document.getElementById('edit-sale-dates');
+            if (el) el.style.display = show ? '' : 'none';
+        }
+
+        function syncQuickHex(prefix, type) {
+            const picker = document.getElementById(`${prefix}-q-hex-picker`);
+            const input = document.getElementById(`${prefix}-q-hex`);
+            if (type === 'picker') {
+                input.value = picker.value.toUpperCase();
+            } else {
+                let val = input.value.trim();
+                if (val && !val.startsWith('#')) {
+                    val = '#' + val;
+                    input.value = val;
+                }
+                if (/^#([A-Fa-f0-9]{6})$/.test(val)) {
+                    picker.value = val;
+                }
+            }
+        }
+
+        async function quickSaveColor(prefix) {
+            const nameEl = document.getElementById(`${prefix}-q-name`);
+            const hexEl = document.getElementById(`${prefix}-q-hex`);
+            const name = nameEl.value.trim();
+            let hex = hexEl.value.trim();
+
+            if (!name) return alert('Please enter a color name');
+            if (!hex) return alert('Please enter a hex code');
+
+            if (!hex.startsWith('#')) hex = '#' + hex;
+
+            try {
+                const response = await adminFetch('/colors', {
+                    method: 'POST',
+                    body: JSON.stringify({ name, hex_code: hex, status: 'active' }),
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (response && response.ok) {
+                    showProductStatus('New color added globally!', true);
+                    nameEl.value = '';
+                    hexEl.value = '#000000';
+                    const pickerEl = document.getElementById(`${prefix}-q-hex-picker`);
+                    if (pickerEl) pickerEl.value = '#000000';
+                    toggleQuickColor(prefix);
+
+                    // Refresh colors and keep current selection
+                    await loadGlobalColors();
+
+                    // The new color should now be in allGlobalColors, but we need to select it
+                    // renderColorCheckboxes was called in loadGlobalColors, but it cleared selection.
+                    // This is a bit tricky, but for now, they can just click it.
+                }
+            } catch (e) {
+                console.error('Quick add color error:', e);
+                alert('Failed to add color. It might already exist.');
+            }
+        }
+
+        function adminLogout() {
+            localStorage.removeItem('admin_token');
+            localStorage.removeItem('admin_user');
+            window.location.href = 'login';
+        }
+    </script>
+    <datalist id="size-presets">
+        <option value="XS">
+        <option value="S">
+        <option value="M">
+        <option value="L">
+        <option value="XL">
+        <option value="XXL">
+        <option value="XXXL">
+        <option value="FREE SIZE">
+    </datalist>
+    <datalist id="color-datalist"></datalist>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAdminLayout();
+            loadAdminProducts();
+        });
+    </script>
+</body>
+
+</html>

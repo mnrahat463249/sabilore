@@ -1,0 +1,30 @@
+User-agent: *
+Allow: /
+
+# Block backend API (not useful for indexing)
+Disallow: /api/
+# Block admin panel
+Disallow: /admin/
+# Block user-specific / transactional pages (no SEO value)
+Disallow: /profile/
+Disallow: /orders/
+Disallow: /checkout/
+Disallow: /cart/
+# Block raw uploads folder
+Disallow: /uploads/
+
+# Allow major crawlers explicitly
+User-agent: Googlebot
+Allow: /
+
+# Allow Google's mobile crawler — all frontend pages are mobile-friendly
+User-agent: Googlebot-Smartphone
+Allow: /
+
+User-agent: Googlebot-Mobile
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+Sitemap: https://sabilore.com/sitemap.xml

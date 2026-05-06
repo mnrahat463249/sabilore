@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 ">
+    <title>SABILORÉ | Category Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/admin.js"></script>
+    <style>
+        .cat-card {
+            border-radius: 16px;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #eee;
+        }
+
+        .cat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .cat-media-wrap {
+            position: relative;
+            width: 100%;
+            height: clamp(120px, 30vw, 200px);
+            
+            background: #f8f9fa;
+            overflow: hidden;
+        }
+
+        .cat-card-img,
+        .cat-card-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .media-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .cat-card-body {
+            padding: clamp(12px, 3vw, 20px);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cat-name {
+            font-weight: 700;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            margin-bottom: 2px;
+            color: #111;
+        }
+
+        .cat-slug {
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 15px;
+        }
+
+        .cat-actions {
+            margin-top: auto;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            
+        }
+
+        .cat-select-box {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10;
+        }
+
+        .cat-select-box input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #0d6efd;
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+        }
+
+        .cat-card.selected {
+            border: 2px solid #0d6efd;
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+        }
+
+        #bulk-delete-bar {
+            display: none;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 12px;
+            padding: 10px 18px;
+            margin-bottom: 18px;
+            align-items: center;
+            gap: 12px;
+        }
+
+        #bulk-delete-bar.show {
+            display: flex;
+        }
+
+        .btn-action {
+            flex: 1;
+            border-radius: 8px;
+            padding: clamp(5px, 1.5vw, 8px);
+            font-size: clamp(0.7rem, 2vw, 0.85rem);
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-add-new {
+            border: 2px dashed #ddd;
+            background: #fafafa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            min-height: clamp(200px, 40vw, 350px);
+        }
+
+        .card-add-new:hover {
+            background: #fff;
+            border-color: #0d6efd;
+            color: #0d6efd;
+        }
+
+        .preview-area {
+            width: 100%;
+            height: 150px;
+            border: 2px dashed #eee;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            overflow: hidden;
+            background: #fdfdfd;
+        }
+
+        .preview-area img,
+        .preview-area video {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div id="admin-layout-placeholder"></div>
+
+    
+    <div class="col-md-9 offset-md-3 col-lg-10 offset-lg-2 p-4 p-md-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold mb-1">Category Management</h2>
+                <p class="text-muted mb-0">Add and manage your shop categories with images or videos</p>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <div class="form-check mb-0 me-1">
+                    <input class="form-check-input" type="checkbox" id="selectAllCheckbox" title="Select All"
+                        onchange="toggleSelectAll(this)">
+                    <label class="form-check-label small fw-semibold" for="selectAllCheckbox">সব</label>
+                </div>
+                <button class="btn btn-primary rounded-pill px-4" onclick="openAddModal()">
+                    <i class="fas fa-plus me-2"></i> Add New Category
+                </button>
+            </div>
+        </div>
+
+        
+        <div id="bulk-delete-bar">
+            <span id="selected-count" class="fw-semibold">0 টি selected</span>
+            <button class="btn btn-danger btn-sm rounded-pill px-4" onclick="bulkDeleteCategories()">
+                <i class="fas fa-trash me-2"></i> Delete Selected
+            </button>
+            <button class="btn btn-light btn-sm rounded-pill px-3" onclick="clearSelection()">
+                Cancel
+            </button>
+        </div>
+
+        <div class="row g-4" id="categories-grid">
+            <div class="col-12 text-center py-5">
+                <span class="spinner-border spinner-border-sm me-2"></span> Loading...
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
+    
+    <div class="modal fade" id="categoryModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg admin-modal-rounded">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold" id="modalTitle">Add Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="categoryForm">
+                    <input type="hidden" id="categoryId">
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label for="catName" class="form-label small fw-bold text-uppercase">Category Name</label>
+                            <input type="text" class="form-control rounded-pill border-light-subtle" id="catName"
+                                required >
+                        </div>
+                        <div class="mb-3">
+                            <label for="catSlug" class="form-label small fw-bold text-uppercase">Slug (URL friendly)</label>
+                            <input type="text" class="form-control rounded-pill border-light-subtle" id="catSlug"
+                                required >
+                        </div>
+
+                        <fieldset class="mb-3">
+                            <legend class="form-label small fw-bold text-uppercase">Display Active Media</legend>
+                            <div class="d-flex gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="activeMedia" id="displayImage"
+                                        value="image" checked>
+                                    <label class="form-check-label" for="displayImage">Image</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="activeMedia" id="displayVideo"
+                                        value="video">
+                                    <label class="form-check-label" for="displayVideo">Video</label>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="catImage" class="form-label small fw-bold text-uppercase">Image</label>
+                                <div class="preview-area" id="imagePreview">
+                                    <span class="text-muted small">No Image</span>
+                                </div>
+                                <input type="file" class="form-control form-control-sm" id="catImage" accept="image/*"
+                                    onchange="previewMedia(this, 'image')">
+                            </div>
+                            <div class="col-6">
+                                <label for="catVideo" class="form-label small fw-bold text-uppercase">Video</label>
+                                <div class="preview-area" id="videoPreview">
+                                    <span class="text-muted small">No Video</span>
+                                </div>
+                                <input type="file" class="form-control form-control-sm" id="catVideo" accept="video/*"
+                                    onchange="previewMedia(this, 'video')">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-light rounded-pill px-4"
+                            data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary rounded-pill px-4">Save Category</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const grid = document.getElementById('categories-grid');
+        const modal = new bootstrap.Modal(document.getElementById('categoryModal'));
+        const form = document.getElementById('categoryForm');
+
+        async function loadCategories() {
+            try {
+                const res = await fetch(`${ADMIN_API_URL}/categories`, { headers: authHeaders() });
+                const categories = await res.json();
+
+                let html = categories.map(cat => {
+                    const imgSrc = getImageUrl(cat.image);
+                    const vidSrc = getImageUrl(cat.video);
+
+                    return `
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <div class="cat-card" id="cat-card-${cat.id}" onclick="toggleCardSelection(event, ${cat.id})">
+                            <div class="cat-media-wrap">
+                                <div class="cat-select-box">
+                                    <input type="checkbox" data-id="${cat.id}" onchange="onCatSelect()" onclick="event.stopPropagation()">
+                                </div>
+                                ${cat.active_media === 'video' && cat.video
+                            ? `<video src="${vidSrc}" class="cat-card-video" autoplay muted loop playsinline></video>
+                                       <span class="media-badge">Video</span>`
+                            : `<img loading="lazy" decoding="async" src="${imgSrc || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWVlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJJbnRlcixBcmlhbCIgZm9udC1zaXplPSIxNiIgZmlsbD0iI2FhYSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg=='}" 
+                                             class="cat-card-img" alt="${cat.name}">`
+                        }
+                            </div>
+                            <div class="cat-card-body">
+                                <div class="cat-name">${cat.name}</div>
+                                <div class="cat-slug">/${cat.slug}</div>
+                                <div class="cat-actions" onclick="event.stopPropagation(); return false;">
+                                    <button class="btn btn-outline-primary btn-action" onclick="openEditModal(${JSON.stringify(cat).replaceAll('"', '&quot;')})">
+                                        <i class="fas fa-edit me-1"></i> Edit
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-action" onclick="deleteCategory(${cat.id})">
+                                        <i class="fas fa-trash me-1"></i> Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                }).join('');
+
+                html += `
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <div class="cat-card card-add-new shadow-none" onclick="openAddModal()">
+                            <div class="text-center">
+                                <i class="fas fa-plus-circle fa-3x mb-3"></i>
+                                <div class="fw-bold">Add Category</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                grid.innerHTML = html;
+            } catch (err) {
+                console.error('Load categories error:', err);
+                grid.innerHTML = '<div class="col-12 text-center text-danger py-5">Failed to load categories.</div>';
+            }
+        }
+
+        function previewMedia(input, type) {
+            const preview = document.getElementById(`${type}Preview`);
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    preview.innerHTML = type === 'image'
+                        ? `<img loading="lazy" decoding="async" src="${e.target.result}">`
+                        : `<video src="${e.target.result}" autoplay muted loop playsinline></video>`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function openAddModal() {
+            form.reset();
+            document.getElementById('categoryId').value = '';
+            document.getElementById('modalTitle').innerText = 'Add Category';
+            document.getElementById('imagePreview').innerHTML = '<span class="text-muted small">No Image</span>';
+            document.getElementById('videoPreview').innerHTML = '<span class="text-muted small">No Video</span>';
+            document.getElementById('displayImage').checked = true;
+            modal.show();
+        }
+
+        function openEditModal(cat) {
+            form.reset();
+            document.getElementById('categoryId').value = cat.id;
+            document.getElementById('modalTitle').innerText = 'Edit Category';
+            document.getElementById('catName').value = cat.name;
+            document.getElementById('catSlug').value = cat.slug;
+
+            if (cat.image) {
+                const imgSrc = getImageUrl(cat.image);
+                document.getElementById('imagePreview').innerHTML = `<img loading="lazy" decoding="async" src="${imgSrc}" onerror="this.src='https://via.placeholder.com/150x150?text=No+Image'">`;
+            } else {
+                document.getElementById('imagePreview').innerHTML = '<span class="text-muted small">No Image</span>';
+            }
+
+            if (cat.video) {
+                const vidSrc = getImageUrl(cat.video);
+                document.getElementById('videoPreview').innerHTML = `<video src="${vidSrc}" autoplay muted loop playsinline></video>`;
+            } else {
+                document.getElementById('videoPreview').innerHTML = '<span class="text-muted small">No Video</span>';
+            }
+
+            if (cat.active_media === 'video') {
+                document.getElementById('displayVideo').checked = true;
+            } else {
+                document.getElementById('displayImage').checked = true;
+            }
+
+            modal.show();
+        }
+
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('categoryId').value;
+            const saveBtn = document.getElementById('saveBtn');
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Saving...';
+
+            const formData = new FormData();
+            formData.append('name', document.getElementById('catName').value);
+            formData.append('slug', document.getElementById('catSlug').value);
+
+            const activeMedia = document.querySelector('input[name="activeMedia"]:checked').value;
+            formData.append('active_media', activeMedia);
+
+            const imgFile = document.getElementById('catImage').files[0];
+            if (imgFile) formData.append('image', imgFile);
+
+            const vidFile = document.getElementById('catVideo').files[0];
+            if (vidFile) formData.append('video', vidFile);
+
+            try {
+                const url = id ? `${ADMIN_API_URL}/categories/${id}` : `${ADMIN_API_URL}/categories`;
+                const method = id ? 'PUT' : 'POST';
+
+                const res = await fetch(url, {
+                    method: method,
+                    headers: authHeaders(),
+                    body: formData
+                });
+
+                if (res.ok) {
+                    showToast('Category saved successfully!', 'success');
+                    modal.hide();
+                    loadCategories();
+                } else {
+                    const data = await res.json();
+                    showToast(data.message || 'Failed to save category', 'danger');
+                }
+            } catch (err) {
+                showToast('Network error occurred', 'danger');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = 'Save Category';
+            }
+        };
+
+        async function deleteCategory(id) {
+            const confirmed = await showSabiloreConfirm('Are you sure you want to delete this category? All products in this category will become uncategorized.', 'CONFIRM DELETE');
+            if (!confirmed) return;
+
+            try {
+                const res = await adminFetch(`${ADMIN_API_URL}/categories/${id}`, {
+                    method: 'DELETE'
+                });
+                if (res) {
+                    showSabiloreModal('Category deleted successfully', 'success', 'DELETED');
+                    loadCategories();
+                }
+            } catch (err) {
+                showSabiloreModal('Delete failed', 'error', 'ERROR');
+            }
+        }
+
+        function toggleCardSelection(event, id) {
+            const cb = document.querySelector(`.cat-select-box input[data-id="${id}"]`);
+            if (cb) {
+                cb.checked = !cb.checked;
+                onCatSelect();
+            }
+        }
+
+        function getSelectedIds() {
+            return [...document.querySelectorAll('.cat-select-box input[type="checkbox"]:checked')]
+                .map(cb => cb.dataset.id);
+        }
+
+        function onCatSelect() {
+            const ids = getSelectedIds();
+            const bar = document.getElementById('bulk-delete-bar');
+            const countEl = document.getElementById('selected-count');
+            countEl.textContent = `${ids.length} টি selected`;
+            bar.classList.toggle('show', ids.length > 0);
+
+            // highlight selected cards
+            document.querySelectorAll('.cat-select-box input[type="checkbox"]').forEach(cb => {
+                const card = document.getElementById(`cat-card-${cb.dataset.id}`);
+                if (card) card.classList.toggle('selected', cb.checked);
+            });
+
+            // sync "select all" checkbox
+            const all = document.querySelectorAll('.cat-select-box input[type="checkbox"]');
+            const selectAll = document.getElementById('selectAllCheckbox');
+            if (selectAll) selectAll.checked = all.length > 0 && ids.length === all.length;
+        }
+
+        function toggleSelectAll(masterCb) {
+            document.querySelectorAll('.cat-select-box input[type="checkbox"]').forEach(cb => {
+                cb.checked = masterCb.checked;
+            });
+            onCatSelect();
+        }
+
+        function clearSelection() {
+            document.querySelectorAll('.cat-select-box input[type="checkbox"]').forEach(cb => cb.checked = false);
+            const selectAll = document.getElementById('selectAllCheckbox');
+            if (selectAll) selectAll.checked = false;
+            onCatSelect();
+        }
+
+        async function bulkDeleteCategories() {
+            const ids = getSelectedIds().map(Number);
+            if (!ids.length) return;
+
+            const confirmed = await showSabiloreConfirm(`Are you sure you want to delete ${ids.length} categories? All products in these categories will become uncategorized.`, 'BULK DELETE');
+            if (!confirmed) return;
+
+            try {
+                const res = await adminFetch(`${ADMIN_API_URL}/categories/bulk-delete`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ids })
+                });
+
+                if (res) {
+                    showSabiloreModal(`${ids.length} categories deleted successfully.`, 'success', 'BULK DELETED');
+                    document.getElementById('selectAllCheckbox').checked = false;
+                    loadCategories();
+                }
+            } catch (e) {
+                console.error('Bulk delete error:', e);
+                showSabiloreModal('Bulk delete failed', 'error', 'ERROR');
+            }
+        }
+
+        function showToast(msg, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `alert alert-${type} shadow-lg mb-2`;
+            toast.innerHTML = msg;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAdminLayout();
+            loadCategories();
+        });
+    </script>
+</body>
+
+</html>

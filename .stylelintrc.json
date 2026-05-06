@@ -1,0 +1,33 @@
+{
+    "extends": "stylelint-config-standard",
+    "rules": {
+        "color-function-notation": "modern",
+        "alpha-value-notation": "percentage",
+        "property-no-vendor-prefix": [
+            true,
+            {
+                "ignoreProperties": ["backdrop-filter", "text-size-adjust", "font-smoothing", "osx-font-smoothing", "tap-highlight-color", "user-select", "user-drag", "background-clip"]
+            }
+        ],
+        "declaration-block-no-duplicate-properties": [
+            true,
+            {
+                "ignore": ["consecutive-duplicates-with-different-values"]
+            }
+        ],
+        "no-duplicate-selectors": true,
+        "declaration-block-single-line-max-declarations": null,
+        "no-descending-specificity": null,
+        "keyframes-name-pattern": null,
+        "selector-class-pattern": null,
+        "selector-id-pattern": null,
+        "custom-property-pattern": null,
+        "comment-empty-line-before": [
+            "always",
+            {
+                "except": ["first-nested"],
+                "ignore": ["stylelint-commands", "after-comment"]
+            }
+        ]
+    }
+}

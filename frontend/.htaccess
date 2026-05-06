@@ -1,0 +1,20 @@
+Options +FollowSymLinks
+RewriteEngine On
+RewriteBase /sabiloref/frontend/
+
+# --- Serve real files/directories directly ---
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# --- Product page with slug: /product/my-product-slug ---
+RewriteRule ^product/([^/]+)/?$ index.php?page=product&slug=$1 [QSA,L,B]
+
+# --- Shop with category filter: /shop/Summer%20Collection ---
+RewriteRule ^shop/([^/]+)/?$ index.php?page=shop&cat=$1 [QSA,L,B]
+
+# --- All simple pages: /shop  /cart  /home  /categories  /login  etc ---
+RewriteRule ^([a-zA-Z0-9_-]+)/?$ index.php?page=$1 [QSA,L]
+
+# --- Root → home ---
+RewriteRule ^$ index.php?page=home [QSA,L]

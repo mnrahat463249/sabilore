@@ -1,0 +1,52 @@
+{
+    "name": "SABILORÉ",
+    "short_name": "SABILORÉ",
+    "description": "Premium fashion and accessories — shop the latest collections.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#F8F8F6",
+    "theme_color": "#6200ee",
+    "orientation": "portrait-primary",
+    "scope": "/",
+    "lang": "en",
+    "categories": ["shopping", "fashion"],
+    "icons": [
+        {
+            "src": "/img/favicon.ico",
+            "sizes": "48x48",
+            "type": "image/x-icon"
+        },
+        {
+            "src": "/img/logo.webp",
+            "sizes": "192x192",
+            "type": "image/webp",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/img/logo.webp",
+            "sizes": "512x512",
+            "type": "image/webp",
+            "purpose": "any maskable"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Shop",
+            "short_name": "Shop",
+            "url": "/shop",
+            "description": "Browse all products"
+        },
+        {
+            "name": "New Arrivals",
+            "short_name": "New",
+            "url": "/new-arrivals",
+            "description": "See the latest arrivals"
+        },
+        {
+            "name": "Track Order",
+            "short_name": "Track",
+            "url": "/track",
+            "description": "Track your order"
+        }
+    ]
+}

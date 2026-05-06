@@ -1,0 +1,372 @@
+*,
+body {
+    margin:0;
+}
+
+* {
+    padding:0;
+    box-sizing:border-box;
+}
+
+body,
+html {
+    overflow-x:clip;
+    max-width:100%;
+    width:100%;
+    scroll-behavior:smooth;
+    background-color:var(--bg-body);
+}
+
+img,
+video {
+    max-width:100%;
+    height:auto;
+    object-fit:contain;
+}
+
+:root {
+    color-scheme:light;
+
+    --bg-body:#F8F8F6;
+    --text-main:#1a1a1a;
+    --header-bg:rgb(248 248 246 / 95%);
+    --primary:#6200ee;
+    --font-main:inter,sans-serif;
+    --border-color:#e5e5e3;
+}
+
+html[data-theme="dark"] {
+    color-scheme:dark;
+
+    --bg-body:#0a0514;
+    --text-main:#f0edff;
+    --header-bg:rgb(10 5 20 / 95%);
+    --primary:#8b5cf6;
+    --border-color:#2e2545;
+}
+
+body {
+    background-color:var(--bg-body)!important;
+    color:var(--text-main)!important;
+    font-family:var(--font-main);
+    opacity:0%;
+    transition:opacity .3s ease-in-out;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizespeed;
+}
+
+body.page-loaded {
+    opacity:100%;
+}
+
+.skeleton-loader {
+    background:linear-gradient(90deg,rgb(0 0 0 / 5%) 25%,rgb(0 0 0 / 8%) 50%,rgb(0 0 0 / 5%) 75%);
+    background-size:200% 100%;
+    animation:1.5s ease-in-out infinite skeleton-loading;
+    border-radius:4px;
+    display:inline-block;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position:200% 0;
+    }
+
+    100% {
+        background-position:-200% 0;
+    }
+}
+
+.logo-ticker-bar {
+    background:#000;
+    overflow:hidden;
+    padding:5px 0;
+    border-bottom:1px solid;
+    position:relative;
+    z-index:2;
+    max-height:40px;
+    opacity:100%;
+    transition:max-height .3s cubic-bezier(.4, 0, .2, 1),opacity .2s,padding .3s;
+    will-change:max-height,opacity;
+}
+
+.logo-ticker-bar.ticker-hidden {
+    max-height:0!important;
+    padding:0!important;
+    opacity:0%!important;
+    border:none!important;
+}
+
+.main-site-navbar {
+    padding-top:2px!important;
+    padding-bottom:2px!important;
+    min-height:unset!important;
+    background:var(--header-bg)!important;
+    border-bottom:1px solid var(--border-color);
+    position:relative!important;
+    z-index:1;
+}
+
+@media (width >= 768px) {
+    .main-site-navbar {
+        backdrop-filter:blur(8px);
+    }
+}
+
+.logo-ticker-track {
+    display:flex;
+    width:max-content;
+    animation:28s linear infinite logoTickerScroll;
+}
+
+.logo-ticker-item {
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    white-space:nowrap;
+    padding:0 18px;
+    font-size:.6rem;
+    font-weight:800;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:#fff;
+}
+
+@keyframes logoTickerScroll {
+    0% {
+        transform:translateX(0);
+    }
+
+    100% {
+        transform:translateX(-50%);
+    }
+}
+
+.logo-shine-wrapper {
+    position:relative;
+    display:flex;
+    align-items:center;
+    min-height:48px;
+}
+
+.simple-rainbow-glow::before {
+    content:'';
+    position:absolute;
+    inset:0 -10px 0 40%;
+    background:linear-gradient(100deg,rgb(255 182 193 / 40%) 0,rgb(255 255 153 / 40%) 35%,rgb(153 255 204 / 40%) 65%,rgb(153 204 255 / 40%) 100%);
+    background-size:200% auto;
+    z-index:-1;
+    filter:blur(12px);
+    animation:5s linear infinite slowRainbowPan;
+}
+
+@keyframes slowRainbowPan {
+    0% {
+        background-position:0 50%;
+    }
+
+    100% {
+        background-position:-200% 50%;
+    }
+}
+
+.hero-section {
+    width:100%;
+    height:85vh;
+    min-height:500px;
+    background:#000;
+    overflow:hidden;
+    position:relative;
+}
+
+.hero-bg-media {
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+}
+
+@media (width <= 767px) {
+    .hero-section {
+        height:auto;
+        min-height:60vw;
+        aspect-ratio:9/16;
+        max-height:85vh;
+    }
+
+    button {
+        min-height:44px;
+    }
+
+    .nav-link {
+        padding-top:8px!important;
+        padding-bottom:8px!important;
+    }
+}
+
+.site-logo-img {
+    max-height:42px!important;
+    width:auto!important;
+    object-fit:contain;
+}
+
+#nav-logo-text {
+    font-size:1rem!important;
+    letter-spacing:.12em!important;
+    line-height:1;
+}
+
+@media (width <= 576px) {
+    .main-site-navbar {
+        padding-top:0!important;
+        padding-bottom:0!important;
+    }
+
+    .main-site-navbar .navbar-brand {
+        padding-top:4px!important;
+        padding-bottom:4px!important;
+        margin-right:0!important;
+    }
+
+    #nav-logo-text {
+        font-size:.9rem!important;
+        letter-spacing:.1em!important;
+    }
+
+    .site-logo-img {
+        max-height:28px!important;
+    }
+
+    .site-header-container {
+        padding-left:12px!important;
+        padding-right:12px!important;
+    }
+}
+
+.nike-cta-primary,
+.nike-cta-secondary {
+    width:100%;
+    padding:14px 28px;
+    border:none;
+    border-radius:12px;
+    font-size:1rem;
+    font-weight:700;
+    text-transform:none;
+    letter-spacing:-.01em;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:.25s cubic-bezier(.4, 0, .2, 1);
+    position:relative;
+    overflow:hidden;
+    color:#fff!important;
+    gap:12px;
+    box-shadow:0 2px 8px rgb(0 0 0 / 8%);
+}
+
+.nike-cta-primary {
+    background:linear-gradient(180deg,#2ecc71 0,#27ae60 100%);
+    box-shadow:0 4px 0 #1e8449,0 6px 15px rgb(39 174 96 / 25%);
+}
+
+.nike-cta-primary:hover:not(:disabled) {
+    transform:translateY(-1px);
+    box-shadow:0 3px 0 #1e8449,0 8px 18px rgb(39 174 96 / 30%);
+    filter:brightness(1.05);
+}
+
+.nike-cta-secondary {
+    background:linear-gradient(180deg,#f1c40f 0,#f39c12 100%);
+    box-shadow:0 4px 0 #d68910,0 6px 15px rgb(243 156 18 / 25%);
+}
+
+.nike-cta-secondary:hover:not(:disabled) {
+    transform:translateY(-1px);
+    box-shadow:0 3px 0 #d68910,0 8px 18px rgb(243 156 18 / 30%);
+    filter:brightness(1.05);
+}
+
+.nike-cta-primary:active:not(:disabled),
+.nike-cta-secondary:active:not(:disabled) {
+    transform:translateY(3px);
+    box-shadow:none;
+}
+
+.nike-cta-primary:disabled,
+.nike-cta-secondary:disabled {
+    background:linear-gradient(180deg,#f0f0f0 0,#d8d8d8 100%)!important;
+    color:#888!important;
+    box-shadow:0 4px 0 #bdbdbd!important;
+    cursor:not-allowed;
+    transform:none!important;
+    opacity:100%;
+}
+
+#main-stock-out-badge {
+    margin-bottom:12px;
+}
+
+#main-stock-out-badge .badge {
+    background:0 0!important;
+    color:#ff4d4d!important;
+    font-weight:800;
+    font-size:.85rem;
+    letter-spacing:.08em;
+    padding:0!important;
+    text-transform:uppercase;
+}
+
+.nike-size-grid {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+}
+
+.nike-size-btn {
+    border:1.5px solid var(--border-color);
+    background:var(--card-bg,#fff);
+    padding:12px 5px;
+    border-radius:10px!important;
+    font-size:.82rem;
+    font-weight:700;
+    transition:.2s;
+    width:100%;
+    color:var(--text-main);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.nike-size-btn:hover:not(:disabled) {
+    border-color:var(--text-main);
+    background:rgb(0 0 0 / 2%);
+}
+
+.nike-size-btn.active {
+    background:var(--text-main);
+    color:var(--card-bg,#fff)!important;
+    border-color:var(--text-main);
+    box-shadow:0 4px 12px rgb(0 0 0 / 15%);
+}
+
+.nike-size-btn:disabled {
+    opacity:40%;
+    cursor:not-allowed;
+    background:#f5f5f5!important;
+    text-decoration:line-through;
+    border-color:#eee!important;
+}
+
+html[data-theme="dark"] .nike-cta-primary,
+html[data-theme="dark"] .nike-cta-secondary {
+    box-shadow:0 4px 20px rgb(0 0 0 / 40%),inset 0 -4px 0 rgb(0 0 0 / 20%);
+}
+
+html[data-theme="dark"] .nike-size-btn:hover:not(:disabled) {
+    background:rgb(255 255 255 / 5%);
+}
+
+html[data-theme="dark"] .nike-size-btn:disabled {
+    background:#1a1a1a!important;
+    border-color:#222!important;
+}

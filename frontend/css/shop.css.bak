@@ -1,0 +1,195 @@
+.nike-gallery-layout {
+    display:flex;
+    gap:12px;
+    justify-content:center;
+    width:100%;
+}
+
+.main-image-slider,
+.product-main-img {
+    display:block;
+    width:100%;
+    border-radius:0!important;
+}
+
+.nike-main-image-wrap {
+    flex:1;
+    min-width:0;
+}
+
+.main-image-slider {
+    position:relative;
+    overflow:hidden;
+    background:var(--light-gray);
+    box-shadow:var(--shadow-md);
+}
+
+.product-main-img {
+    height:auto;
+    aspect-ratio:3/4;
+    object-fit:cover;
+    object-position:center top;
+}
+
+.slider-dots,
+.slider-nav-btn {
+    position:absolute;
+    display:flex;
+    z-index:10;
+}
+
+.slider-nav-btn {
+    top:50%;
+    transform:translateY(-50%);
+    background:rgb(255 255 255 / 90%);
+    border:none;
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    box-shadow:0 2px 8px rgb(0 0 0 / 10%);
+    transition:.2s;
+    opacity:0%;
+    font-size:.9rem;
+}
+
+.main-image-slider:hover .slider-nav-btn {
+    opacity:100%;
+}
+
+.slider-prev {
+    left:12px;
+}
+
+.slider-next {
+    right:12px;
+}
+
+.slider-dots {
+    bottom:14px;
+    left:50%;
+    transform:translateX(-50%);
+    gap:6px;
+}
+
+.slider-dot {
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:rgb(255 255 255 / 50%);
+    cursor:pointer;
+    transition:.3s;
+}
+
+.slider-dot.active {
+    background:var(--white);
+    width:24px;
+    border-radius:4px;
+}
+
+.nike-size-grid {
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:8px;
+}
+
+.nike-size-btn {
+    padding:14px 10px;
+    border:1.5px solid var(--border-color);
+    border-radius:0!important;
+    background:0 0;
+    color:var(--text-main);
+    font-family:var(--font-main);
+    font-size:.88rem;
+    font-weight:500;
+    cursor:pointer;
+    transition:.15s;
+    text-align:center;
+}
+
+.nike-size-btn.active {
+    border-color:var(--dark);
+    border-width:2px;
+    font-weight:700;
+}
+
+.nike-color-swatches {
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+.nike-color-swatch-btn {
+    padding:0;
+    border:2px solid transparent;
+    border-radius:0!important;
+    background:0 0;
+    cursor:pointer;
+    width:58px;
+    height:58px;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.nike-color-swatch-btn.active {
+    border-color:var(--text-main);
+    transform:scale(1.05);
+}
+
+@media (width >= 992px) {
+    .nike-product-info {
+        position:sticky;
+        top:90px;
+        align-self:flex-start;
+    }
+}
+
+.filter-sort-row,
+.shop-filter-bar {
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+.filter-sort-row .form-select,
+.shop-filter-bar .form-select {
+    min-width:0;
+    flex:1 1 120px;
+}
+
+@keyframes slideInLeft {
+    from {
+        transform:translateX(-30px);
+        opacity:0%;
+    }
+
+    to {
+        transform:translateX(0);
+        opacity:100%;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform:translateX(30px);
+        opacity:0%;
+    }
+
+    to {
+        transform:translateX(0);
+        opacity:100%;
+    }
+}
+
+.slide-ltr {
+    opacity:0%;
+    animation:1s forwards slideInLeft;
+}
+
+.slide-rtl {
+    opacity:0%;
+    animation:1s forwards slideInRight;
+}

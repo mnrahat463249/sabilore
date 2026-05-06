@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 ">
+    <title>SABILORÉ | Blog Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+
+<body>
+    
+    <div id="admin-layout-placeholder"></div>
+
+    <div class="container-fluid">
+        <div class="row">
+            
+            <div class="admin-main-content p-5">
+                <div class="d-flex justify-content-between align-items-center mb-5">
+                    <div>
+                        <h2 class="fw-bold mb-1">Blog Manager</h2>
+                        <p class="text-muted mb-0">Create and manage published blog posts</p>
+                    </div>
+                    <button class="btn btn-primary rounded-pill px-4" data-bs-toggle="modal"
+                        data-bs-target="#blogModal">
+                        <i class="fas fa-plus me-2"></i> New Post
+                    </button>
+                </div>
+
+                <div class="row g-4" id="blog-posts-list">
+                    
+                    <div class="col-12 text-center py-5">
+                        <div class="spinner-border text-primary"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="modal fade" id="blogModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold" id="blogModalLabel">New Blog Post</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="blog-form">
+                        <input type="hidden" id="blog-id">
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label for="blog-title" class="form-label fw-bold">Title *</label>
+                                <input type="text" id="blog-title" class="form-control rounded-pill" required
+                                    >
+                            </div>
+                            <div class="col-md-4">
+                                <label for="blog-status" class="form-label fw-bold">Status</label>
+                                <select id="blog-status" class="form-select rounded-pill">
+                                    <option value="Draft">Draft</option>
+                                    <option value="Published">Published</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="blog-slug" class="form-label fw-bold">Slug *</label>
+                                <input type="text" id="blog-slug" class="form-control rounded-pill" required
+                                    >
+                            </div>
+                            <div class="col-md-6">
+                                <label for="blog-image" class="form-label fw-bold">Cover Media (Image/Video)</label>
+                                <input type="file" id="blog-image" class="form-control rounded-pill"
+                                    accept="image/*,video/mp4,video/webm,image/svg+xml" aria-label="Upload cover media">
+                                <small class="text-muted d-block mt-1 ps-2">Accepts JPG, PNG, SVG, GIF, MP4 (Max:
+                                    50MB)</small>
+                            </div>
+                            <div class="col-12">
+                                <label for="blog-excerpt" class="form-label fw-bold">Excerpt (Short description)</label>
+                                <textarea id="blog-excerpt" class="form-control rounded-4" rows="2"
+                                    ></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label for="blog-content" class="form-label fw-bold">Content (Full post HTML/Text) *</label>
+                                <textarea id="blog-content" class="form-control rounded-4" rows="10" required
+                                    ></textarea>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary w-100 rounded-pill py-2">Save Blog
+                                Post</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/admin.js"></script>
+    <script>
+        let allPosts = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAdminLayout();
+            loadPosts();
+
+            const titleIn = document.getElementById('blog-title');
+            const slugIn = document.getElementById('blog-slug');
+            titleIn.addEventListener('input', () => {
+                slugIn.value = titleIn.value.toLowerCase().replaceAll(/[^a-z0-9\s-]/g, '').replaceAll(/\s+/g, '-').replaceAll(/-+/g, '-');
+            });
+
+            document.getElementById('blog-form').addEventListener('submit', handleBlogSubmit);
+        });
+
+        async function loadPosts() {
+            const list = document.getElementById('blog-posts-list');
+            try {
+                const res = await adminFetch(`${ADMIN_API_URL}/blog`);
+                const posts = await res.json();
+
+                if (posts.length === 0) {
+                    list.innerHTML = '<div class="col-12 text-center py-5 text-muted">No blog posts yet. Start writing!</div>';
+                    return;
+                }
+
+                list.innerHTML = posts.map(p => {
+                    const ext = p.image ? p.image.split('.').pop().toLowerCase() : '';
+                    const isVideo = ['mp4', 'webm', 'ogg', 'mov'].includes(ext);
+                    const mediaUrl = getImageUrl(p.image);
+                    const mediaHtml = p.image
+                        ? (isVideo
+                            ? `<video src="${mediaUrl}" class="card-img-top" style="height:180px;object-fit:cover;" muted loop autoplay playsinline></video>`
+                            : `<img src="${mediaUrl}" loading="lazy" decoding="async" class="card-img-top" style="height:180px;object-fit:cover;" onerror="this.src='https://via.placeholder.com/350x180?text=Image+Not+Found'">`)
+                        : '<div class="bg-light d-flex align-items-center justify-content-center" style="height:180px"><i class="fas fa-image fa-3x text-muted"></i></div>';
+
+                    return `
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
+                            ${mediaHtml}
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="badge ${p.status === 'Published' ? 'bg-success' : 'bg-secondary'} rounded-pill">${p.status}</span>
+                                    <small class="text-muted">${new Date(p.created_at).toLocaleDateString()}</small>
+                                </div>
+                                <h5 class="fw-bold mb-2">${p.title}</h5>
+                                <p class="text-muted small mb-4 line-clamp-2">${p.excerpt || 'No excerpt provided...'}</p>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-outline-primary btn-sm rounded-pill flex-grow-1" onclick='editPost(${JSON.stringify(p).replaceAll("'", "&apos;")})'><i class="fas fa-edit me-1"></i> Edit</button>
+                                    <button class="btn btn-outline-danger btn-sm rounded-pill px-3" onclick="deletePost(${p.id})"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `}).join('');
+            } catch (e) {
+                list.innerHTML = '<div class="col-12 alert alert-danger">Failed to load blog posts</div>';
+            }
+        }
+
+        async function handleBlogSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('blog-id').value;
+            const formData = new FormData();
+            formData.append('title', document.getElementById('blog-title').value);
+            formData.append('slug', document.getElementById('blog-slug').value);
+            formData.append('status', document.getElementById('blog-status').value);
+            formData.append('excerpt', document.getElementById('blog-excerpt').value);
+            formData.append('content', document.getElementById('blog-content').value);
+
+            const fileIn = document.getElementById('blog-image');
+            if (fileIn.files[0]) {
+                formData.append('image', fileIn.files[0]);
+            }
+
+            const url = id ? `${ADMIN_API_URL}/blog/${id}` : `${ADMIN_API_URL}/blog`;
+            const method = id ? 'PUT' : 'POST';
+
+            try {
+                const res = await adminFetch(url, {
+                    method: method,
+                    body: formData
+                });
+                if (res && res.ok) {
+                    showToast(id ? 'Post updated' : 'Post created', 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('blogModal')).hide();
+                    document.getElementById('blog-form').reset();
+                    document.getElementById('blog-id').value = '';
+                    loadPosts();
+                }
+            } catch (err) {
+                showToast('Action failed', 'error');
+            }
+        }
+
+        async function editPost(p) {
+            document.getElementById('blogModalLabel').textContent = 'Edit Blog Post';
+            document.getElementById('blog-id').value = p.id;
+            document.getElementById('blog-title').value = p.title;
+            document.getElementById('blog-slug').value = p.slug;
+            document.getElementById('blog-status').value = p.status;
+            document.getElementById('blog-excerpt').value = p.excerpt || '';
+            document.getElementById('blog-content').value = p.content;
+
+            new bootstrap.Modal(document.getElementById('blogModal')).show();
+        }
+
+        async function deletePost(id) {
+            if (!confirm('Are you sure you want to delete this blog post?')) return;
+            try {
+                const res = await adminFetch(`${ADMIN_API_URL}/blog/${id}`, { method: 'DELETE' });
+                if (res && res.ok) {
+                    showToast('Post deleted', 'success');
+                    loadPosts();
+                }
+            } catch (err) {
+                showToast('Delete failed', 'error');
+            }
+        }
+
+
+    </script>
+    <style>
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+</body>
+
+</html>

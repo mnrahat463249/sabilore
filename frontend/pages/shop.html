@@ -1,0 +1,448 @@
+<style>
+    
+    .filter-sidebar-sticky {
+        position: sticky;
+        top: 100px;
+        z-index: 10;
+        transition: all 0.3s ease;
+    }
+
+    .glass-filter-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 2px;
+        
+        padding: 30px 25px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
+        -webkit-backdrop-filter: blur(15px);
+        backdrop-filter: blur(15px);
+    }
+
+    .filter-section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .filter-label-stark {
+        font-size: 0.7rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: var(--secondary);
+        margin: 0;
+    }
+
+    .filter-clear-link {
+        font-size: 0.6rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 700;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+    }
+
+    .filter-clear-link.visible {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .filter-clear-link:hover {
+        text-decoration: underline;
+    }
+
+    
+    .search-input-stark {
+        background: transparent !important;
+        border: none !important;
+        border-bottom: 2px solid var(--border-color) !important;
+        border-radius: 0 !important;
+        padding: 12px 0 !important;
+        font-size: 0.85rem !important;
+        font-weight: 500;
+        transition: border-color 0.3s ease;
+        color: var(--text-main) !important;
+    }
+
+    .search-input-stark:focus {
+        border-bottom-color: var(--primary) !important;
+        box-shadow: none !important;
+    }
+
+    .glass-filter-card-padded { padding: 20px 15px; }
+    .filter-select-custom {
+        border-bottom: 2px solid var(--border-color) !important;
+        font-size: 0.85rem;
+        color: var(--text-main);
+        background-color: transparent;
+        font-weight: 600;
+    }
+    .filter-drawer-title { font-size: 1rem; }
+    .shop-title-main { font-size: 1.5rem; color: var(--text-main); }
+    .shop-subtitle-main { letter-spacing: 0.05em; font-size: 0.7rem; }
+    .btn-find-fit { font-size: 0.7rem; letter-spacing: 0.1em; }
+    .skeleton-w-80 { width: 80%; }
+    .skeleton-w-40 { width: 40%; }
+
+    
+    .price-range-wrapper {
+        padding: 10px 0;
+    }
+
+    .price-display-box {
+        background: #fcfcfc;
+        border: 1px solid #eee;
+        padding: 8px 12px;
+        text-align: center;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        margin-top: 15px;
+    }
+
+    html[data-theme='dark'] .price-display-box {
+        background: #1a1a1a;
+        border-color: #333;
+    }
+
+    
+    .filter-chip-stark {
+        padding: 8px 12px;
+        border: 1px solid #eee;
+        background: #fff;
+        font-size: 0.7rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+        min-width: 45px;
+        text-align: center;
+        color: #999;
+    }
+
+    .filter-chip-stark:hover {
+        border-color: #000;
+        color: #000;
+    }
+
+    .filter-chip-stark.active {
+        background: #000;
+        border-color: #000;
+        color: #fff;
+    }
+
+    html[data-theme='dark'] .filter-chip-stark {
+        background: #111;
+        border-color: #333;
+        color: #666;
+    }
+
+    html[data-theme='dark'] .filter-chip-stark.active {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: #fff;
+    }
+
+    
+    .filter-swatch-stark {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        padding: 3px;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .filter-swatch-stark:hover {
+        transform: scale(1.1);
+    }
+
+    .filter-swatch-stark.active {
+        border-color: #000;
+    }
+
+    html[data-theme='dark'] .filter-swatch-stark.active {
+        border-color: var(--primary);
+    }
+
+    .swatch-inner-circle {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    
+    .mobile-filter-bar {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        display: none;
+    }
+
+    .btn-filter-mobile {
+        background: #000;
+        color: #fff;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 50px;
+        font-weight: 800;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.15em;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .filter-drawer-mobile {
+        position: fixed;
+        inset: auto 0 0 0;
+        max-height: 85vh;
+        background: var(--bg-body);
+        z-index: 1100;
+        transform: translateY(100%);
+        transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        overflow-y: auto;
+        padding: 30px 25px;
+        border-top-left-radius: 24px;
+        border-top-right-radius: 24px;
+        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .shop-filter-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 1099;
+        -webkit-backdrop-filter: blur(2px);
+        backdrop-filter: blur(2px);
+    }
+
+    .shop-filter-overlay.active {
+        display: block;
+    }
+
+    .filter-drawer-mobile.active {
+        transform: translateY(0);
+    }
+
+    .filter-drawer-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+    }
+
+    @media (max-width: 991px) {
+        .filter-sidebar-sticky {
+            display: none;
+        }
+
+        .mobile-filter-bar {
+            display: block;
+        }
+    }
+
+    
+    .shop-card-sizes-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.95);
+        color: #000;
+        font-size: 0.65rem;
+        padding: 10px;
+        text-align: center;
+        opacity: 0;
+        transform: translateY(100%);
+        transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        pointer-events: none;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        font-weight: 700;
+    }
+
+    .asos-card-img-wrap:hover .shop-card-sizes-overlay {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .shop-color-swatch {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        display: inline-block;
+        flex-shrink: 0;
+    }
+</style>
+<main id="shop-main-content">
+<div class="container py-5">
+    <div class="row position-relative">
+        
+        <div class="col-lg-2 filter-sidebar-sticky pe-lg-4">
+            <div class="glass-filter-card glass-filter-card-padded">
+                <div class="mb-5 search-suggestions-wrap">
+                    <label class="filter-label-stark mb-3">Search</label>
+                    <input type="text" id="product-search" class="form-control search-input-stark"
+                         autocomplete="off">
+                    <div id="search-suggestions" class="search-suggestions-list"></div>
+                </div>
+
+                
+                <div class="mb-5">
+                    <div class="filter-section-header">
+                        <label class="filter-label-stark" for="category-filter">Category</label>
+                        <a href="javascript:void(0)" class="filter-clear-link" id="clear-category"
+                            onclick="clearSpecificFilter('category')">Clear</a>
+                    </div>
+                    <select id="category-filter" class="form-select border-0 border-bottom shadow-none px-0 filter-select-custom" title="Category">
+                        <option value="">All Collections</option>
+                    </select>
+                </div>
+
+                <div class="mb-5">
+                    <div class="filter-section-header">
+                        <label class="filter-label-stark" for="price-range">Price Range</label>
+                    </div>
+                    <div class="price-range-wrapper">
+                        <input type="range" id="price-range" class="form-range" min="0" max="10000" step="500"
+                            value="10000" title="Price Range">
+                        <div class="price-display-box" id="price-value">
+                            UP TO 10k BDT
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="mb-5">
+                    <div class="filter-section-header">
+                        <label class="filter-label-stark">Size</label>
+                        <a href="javascript:void(0)" class="filter-clear-link" id="clear-size"
+                            onclick="clearSpecificFilter('size')">Clear</a>
+                    </div>
+                    <div id="size-chips-container" class="d-flex flex-wrap gap-2 mt-2">
+                        
+                    </div>
+                    <input type="hidden" id="size-filter" value="">
+                </div>
+
+                <div class="mb-5">
+                    <label class="filter-label-stark mb-3" for="sort-by">Sort By</label>
+                    <select id="sort-by" class="form-select border-0 border-bottom shadow-none px-0 filter-select-custom" title="Sort By">
+                        <option value="latest">LATEST ARRIVALS</option>
+                        <option value="bestselling">BEST SELLING</option>
+                        <option value="low">PRICE: LOW TO HIGH</option>
+                        <option value="high">PRICE: HIGH TO LOW</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-dark w-100 py-3 text-uppercase small fw-bold tracking-widest"
+                    onclick="resetFilters()">
+                    Reset All Filters
+                </button>
+            </div>
+        </div>
+
+        
+        <div class="mobile-filter-bar">
+            <button class="btn-filter-mobile" onclick="toggleMobileFilterDrawer()">
+                <i class="fas fa-sliders-h"></i>
+                Filters
+            </button>
+        </div>
+
+        <div class="shop-filter-overlay" id="shopFilterOverlay" onclick="toggleMobileFilterDrawer()"></div>
+
+        <div id="mobile-filter-drawer" class="filter-drawer-mobile">
+            <div class="filter-drawer-header">
+                <h3 class="filter-label-stark m-0 filter-drawer-title">Filters</h3>
+                <button class="btn-close" onclick="toggleMobileFilterDrawer()" aria-label="Close Filters" title="Close Filters"></button>
+            </div>
+
+            <div id="mobile-filter-content">
+                
+            </div>
+
+            <div class="mt-5 pt-4 border-top">
+                <button class="btn btn-dark w-100 rounded-0 py-3 text-uppercase small fw-bold tracking-widest"
+                    onclick="toggleMobileFilterDrawer()">
+                    Show Products
+                </button>
+            </div>
+        </div>
+
+        
+        <div class="col-lg-10">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 id="shop-title" class="text-uppercase tracking-wider fw-light shop-title-main">All
+                        Collections</h1>
+                    <span id="shop-subtitle" class="theme-text-muted small text-uppercase shop-subtitle-main">Showing all available products</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-sm btn-outline-dark btn-rect text-uppercase small px-3 py-2 btn-find-fit" onclick="openSizeRecommender()">
+                        Find My Fit
+                    </button>
+                </div>
+            </div>
+
+            <div id="shop-products-row" class="row g-2">
+                
+                <div class="col-6 col-md-4 col-lg-3">
+                    <div class="skeleton-loader skeleton-img mb-2"></div>
+                    <div class="skeleton-loader skeleton-text skeleton-w-80"></div>
+                    <div class="skeleton-loader skeleton-text skeleton-w-40"></div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-3">
+                    <div class="skeleton-loader skeleton-img mb-2"></div>
+                    <div class="skeleton-loader skeleton-text skeleton-w-80"></div>
+                    <div class="skeleton-loader skeleton-text skeleton-w-40"></div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-3 d-none d-md-block">
+                    <div class="skeleton-loader skeleton-img mb-2"></div>
+                    <div class="skeleton-loader skeleton-text skeleton-w-80"></div>
+                    <div class="skeleton-loader skeleton-text skeleton-w-40"></div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-3 d-none d-md-block">
+                    <div class="skeleton-loader skeleton-img mb-2"></div>
+                    <div class="skeleton-loader skeleton-text skeleton-w-80"></div>
+                    <div class="skeleton-loader skeleton-text skeleton-w-40"></div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-3 d-none d-md-block">
+                    <div class="skeleton-loader skeleton-img mb-2"></div>
+                    <div class="skeleton-loader skeleton-text skeleton-w-80"></div>
+                    <div class="skeleton-loader skeleton-text skeleton-w-40"></div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-3 d-none d-md-block">
+                    <div class="skeleton-loader skeleton-img mb-2"></div>
+                    <div class="skeleton-loader skeleton-text skeleton-w-80"></div>
+                    <div class="skeleton-loader skeleton-text skeleton-w-40"></div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-3 d-none d-md-block">
+                    <div class="skeleton-loader skeleton-img mb-2"></div>
+                    <div class="skeleton-loader skeleton-text skeleton-w-80"></div>
+                    <div class="skeleton-loader skeleton-text skeleton-w-40"></div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-3 d-none d-md-block">
+                    <div class="skeleton-loader skeleton-img mb-2"></div>
+                    <div class="skeleton-loader skeleton-text skeleton-w-80"></div>
+                    <div class="skeleton-loader skeleton-text skeleton-w-40"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</main>
+

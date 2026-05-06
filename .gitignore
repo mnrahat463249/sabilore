@@ -1,0 +1,24 @@
+node_modules/
+.env
+api_access.log
+*.log
+.stylelintcache
+
+# User-uploaded product images — stored on server, NOT in git
+uploads/
+!uploads/placeholders/
+
+# Temporary/debug scripts
+tmp/
+tmp-*.js
+tmp-*.txt
+build_log.txt
+scratch/
+temp_check/
+
+# Build artifacts and zip files
+*.zip
+
+# OS files
+.DS_Store
+Thumbs.db

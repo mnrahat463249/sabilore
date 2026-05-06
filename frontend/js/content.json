@@ -1,0 +1,115 @@
+{
+    "terms": {
+        "title": "Terms & Conditions",
+        "lastUpdated": "February 2026",
+        "sections": [
+            {
+                "id": 1,
+                "heading": "Introduction",
+                "content": "Welcome to <span class=\"site-name-text\">SABILORÉ</span>. These Terms and Conditions govern your use of our website and services. By accessing or using our platform, you agree to be bound by these terms. If you do not agree, please refrain from using our services."
+            },
+            {
+                "id": 2,
+                "heading": "Use of the Site & Eligibility",
+                "content": "To use this site, you must be at least 18 years of age or have parental/guardian consent. You agree to provide accurate and complete information when creating an account or placing an order. Any fraudulent or unauthorized use of the site is strictly prohibited."
+            },
+            {
+                "id": 3,
+                "heading": "Product Information & Pricing",
+                "content": "We strive to display our products, including colors and textures, as accurately as possible. All prices are listed in BDT and are subject to change without prior notice. We reserve the right to correct any pricing errors that may occur."
+            },
+            {
+                "id": 4,
+                "heading": "Order Acceptance & Changes",
+                "content": "Receipt of an order confirmation does not signify our acceptance of your order. We reserve the right at any time after receipt of your order to accept or decline it for any reason, including product availability or inaccuracies in pricing/product descriptions."
+            },
+            {
+                "id": 5,
+                "heading": "Shipping & Delivery",
+                "content": "<ul><li>Inside Dhaka — 2–3 business days</li><li>Outside Dhaka — 3–5 business days</li></ul><br><strong>Delivery fees:</strong> Inside Dhaka — 80 BDT, Outside Dhaka — 140 BDT.<br><br><strong>Customer Responsibility for Delivery Information:</strong> Please provide correct name, address, and phone number. We are not responsible for delays or lost orders caused by incorrect or incomplete information.<br><br><em>Delivery times are estimates and may be affected by factors beyond our control, such as courier delays.</em>"
+            },
+            {
+                "id": 6,
+                "heading": "Returns & Refunds",
+                "content": "Items can be returned within 7 days of delivery if they are in original condition, unworn, and with all tags intact. Refunds will be processed within 5-7 business days after the returned item has been inspected and approved. Shipping costs for returns are the responsibility of the customer unless the item is defective."
+            },
+            {
+                "id": 7,
+                "heading": "Limitation of Liability",
+                "content": "<span class=\"site-name-text\">SABILORÉ</span> shall not be liable for any direct, indirect, incidental, or consequential damages resulting from the use or inability to use our services or products."
+            },
+            {
+                "id": 8,
+                "heading": "Changes to Terms",
+                "content": "We reserve the right to update or modify these Terms at any time at our sole discretion. Any changes will be effective immediately upon posting on our website. Your continued use of our website after changes indicates your acceptance of the updated Terms."
+            },
+            {
+                "id": 9,
+                "heading": "Governing Law",
+                "content": "These terms are governed by the laws of Bangladesh. Any disputes arising from these terms or your use of the site shall be resolved exclusively in the courts of Bangladesh."
+            }
+        ]
+    },
+    "privacy": {
+        "title": "Privacy Policy",
+        "lastUpdated": "February 2026",
+        "sections": [
+            {
+                "id": 1,
+                "heading": "Information We Collect",
+                "content": "We collect personal information that you voluntarily provide to us when you register on the site, place an order, or contact us. This may include your name, email address, phone number, shipping address, and payment details."
+            },
+            {
+                "id": 2,
+                "heading": "How We Use Your Information",
+                "content": "Your information is used to process and fulfill your orders, provide customer support, improve our website and services, and send you occasional promotional emails if you have opted in to receive them."
+            },
+            {
+                "id": 3,
+                "heading": "Data Security",
+                "content": "We implement a variety of security measures to maintain the safety of your personal information. Your sensitive data is encrypted and protected using industry-standard protocols."
+            },
+            {
+                "id": 4,
+                "heading": "Cookies Policy",
+                "content": "We use cookies to enhance your browsing experience, remember the items in your cart, and understand how you interact with our site. You can choose to disable cookies through your browser settings."
+            },
+            {
+                "id": 5,
+                "heading": "Third-Party Disclosure",
+                "content": "We do not sell, trade, or transfer your personal information to outside parties except for trusted third parties who assist us in operating our website, conducting our business, or servicing you (e.g., delivery partners)."
+            },
+            {
+                "id": 6,
+                "heading": "Your Rights",
+                "content": "You have the right to access, correct, or delete your personal information at any time. If you wish to exercise these rights, please contact us via the details provided in our header or footer."
+            },
+            {
+                "id": 7,
+                "heading": "Policy Updates",
+                "content": "We may update this Privacy Policy from time to time. Changes become effective once posted on our website. Continued use of our services indicates acceptance of the updated policy.<br><br><strong>By using our website, you agree to this Privacy Policy.</strong>"
+            }
+        ]
+    },
+    "delivery": {
+        "title": "Delivery Information",
+        "lastUpdated": "February 2026",
+        "sections": [
+            {
+                "id": 1,
+                "heading": "Delivery Zones & Fees",
+                "content": "<ul><li><strong>Inside Dhaka:</strong> 80 BDT (2–3 business days)</li><li><strong>Outside Dhaka:</strong> 140 BDT (3–5 business days)</li></ul>"
+            },
+            {
+                "id": 2,
+                "heading": "Estimated Delivery Time",
+                "content": "Delivery typically takes 2-5 business days. During sales or holidays, it may take slightly longer. Please note that delivery times are estimates and may be affected by factors beyond our control, such as courier delays."
+            },
+            {
+                "id": 3,
+                "heading": "Tracking Your Order",
+                "content": "Once your order is shipped, you will receive a confirmation message with tracking details. Please ensure your contact information is accurate to avoid delivery issues."
+            }
+        ]
+    }
+}

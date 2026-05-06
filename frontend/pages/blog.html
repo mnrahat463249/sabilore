@@ -1,0 +1,247 @@
+<div class="container py-5">
+    
+    <div id="blog-header" class="row mb-5">
+        <div class="col-12 text-center">
+            <p class="text-uppercase small fw-bold mb-2 blog-journal-tag">Journal</p>
+            <h1 class="fw-bold blog-header-title">Fashion & Style Tips
+            </h1>
+            <p class="theme-text-muted mt-2 mx-auto fs-5 blog-header-desc">
+                Seasonal trends, styling guides, and fashion advice from the SABILORÉ editorial team.
+            </p>
+        </div>
+    </div>
+
+    
+    <div id="featured-post-container" class="row mb-5 d-none">
+        
+    </div>
+
+    
+    <div id="blog-grid" class="row g-4 mb-5">
+        
+        <div class="col-12 text-center py-5" id="blog-loading">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-2 theme-text-muted">Loading our journal...</p>
+        </div>
+    </div>
+
+    
+    <div id="single-post-view" class="row justify-content-center d-none">
+        <div class="col-lg-9">
+            <button class="btn btn-link text-decoration-none theme-text-muted p-0 mb-4" onclick="showBlogList()">
+                <i class="fas fa-arrow-left me-2"></i> Back to Journal
+            </button>
+            <div id="post-content-inner">
+                
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="row" id="blog-newsletter">
+        <div class="col-12">
+            <div class="text-center py-5 px-4 blog-newsletter-card">
+                <h2 class="fw-bold mb-2 blog-newsletter-title">Stay In Style</h2>
+                <p class="theme-text-muted mb-4">Get weekly fashion tips and new collection alerts directly to your
+                    inbox.</p>
+                <div class="d-flex justify-content-center gap-2 flex-wrap">
+                    <input type="email" id="newsletter-email-blog" class="form-control border-0 border-bottom blog-newsletter-input"
+                        >
+                    <button onclick="subscribeNewsletterBlog()"
+                        class="btn btn-dark btn-rect px-4 text-uppercase-wide fw-bold blog-newsletter-btn">Subscribe</button>
+                </div>
+                <div id="newsletter-status-blog" class="mt-2 small d-none"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const slug = urlParams.get('slug');
+
+        if (slug) {
+            loadSinglePost(slug);
+        } else {
+            loadBlogPosts();
+        }
+    });
+
+    async function loadBlogPosts() {
+        const grid = document.getElementById('blog-grid');
+        const featured = document.getElementById('featured-post-container');
+
+        try {
+            const response = await fetch('/api/blog');
+            const posts = await response.json();
+
+            if (posts.length === 0) {
+                grid.innerHTML = '<div class="col-12 text-center py-5 theme-text-muted">No posts published yet. Check back soon!</div>';
+                featured.classList.add('d-none');
+                return;
+            }
+
+            // Featured Post (First one)
+            const first = posts[0];
+            const firstExt = first.image ? first.image.split('.').pop().toLowerCase() : '';
+            const isFirstVideo = ['mp4', 'webm', 'ogg', 'mov'].includes(firstExt);
+
+            let firstMediaHtml = '';
+            if (first.image) {
+                if (isFirstVideo) {
+                    firstMediaHtml = `<video src="${first.image}" class="w-100 h-100 blog-media-cover" muted loop autoplay playsinline></video>`;
+                } else {
+                    firstMediaHtml = `<img loading="lazy" decoding="async" src="${first.image}" class="w-100 h-100 blog-img-top" alt="Featured Blog Image">`;
+                }
+            } else {
+                firstMediaHtml = `<div class="h-100 d-flex align-items-center justify-content-center text-white opacity-25" style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);"><i class="fas fa-star fa-4x"></i></div>`;
+            }
+
+            featured.innerHTML = `
+                <div class="col-12">
+                    <div class="blog-featured-card blog-card-flat">
+                        <div class="row g-0">
+                            <div class="col-md-6" style="min-height: 350px; background: #111;">
+                                ${firstMediaHtml}
+                            </div>
+                            <div class="col-md-6 p-4 p-md-5 d-flex flex-column justify-content-start">
+                                <span class="badge bg-dark text-white mb-3 px-3 blog-badge-featured">FEATURED</span>
+                                <h2 class="fw-bold mb-3 blog-post-title">${first.title}</h2>
+                                <p class="theme-text-muted mb-4 blog-post-excerpt">${first.excerpt || first.content.substring(0, 150) + '...'}</p>
+                                <div class="d-flex align-items-center justify-content-between mt-2">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <span class="theme-text-muted small"><i class="fas fa-calendar-alt me-1"></i> ${new Date(first.created_at).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}</span>
+                                        <span class="theme-text-muted small"><i class="fas fa-user me-1"></i> ${first.author}</span>
+                                    </div>
+                                    <a href="?slug=${first.slug}" class="btn btn-sm btn-dark px-4">Read Article</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            featured.classList.remove('d-none');
+
+            // Grid Posts
+            const gridPosts = posts.slice(1);
+            if (gridPosts.length > 0) {
+                grid.innerHTML = gridPosts.map(post => {
+                    const ext = post.image ? post.image.split('.').pop().toLowerCase() : '';
+                    const isVideo = ['mp4', 'webm', 'ogg', 'mov'].includes(ext);
+
+                    let mediaHtml = '';
+                    if (post.image) {
+                        if (isVideo) {
+                            mediaHtml = `<video src="${post.image}" class="w-100 h-100 blog-media-cover" muted loop autoplay playsinline></video>`;
+                        } else {
+                            mediaHtml = `<img loading="lazy" decoding="async" src="${post.image}" class="w-100 h-100 blog-img-top" alt="Blog Image">`;
+                        }
+                    } else {
+                        mediaHtml = `<div class="h-100 d-flex align-items-center justify-content-center text-white opacity-25" style="background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);"><i class="fas fa-image fa-3x"></i></div>`;
+                    }
+
+                    return `
+                    <div class="col-md-6 col-lg-4">
+                        <article class="blog-card h-100 blog-card-flat" style="transition: transform 0.2s ease;">
+                            <a href="?slug=${post.slug}" class="text-decoration-none d-block" style="height: 200px; background: #111;">
+                                ${mediaHtml}
+                            </a>
+                            <div class="p-4">
+                                <h3 class="fw-bold mb-2 blog-post-title">
+                                    <a href="?slug=${post.slug}" class="text-decoration-none color-inherit">${post.title}</a>
+                                </h3>
+                                <p class="theme-text-muted mb-3 blog-post-excerpt" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                                    ${post.excerpt || post.content.replace(/<[^>]*>/g, '').substring(0, 100)}...
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center mt-4">
+                                    <span class="theme-text-muted" style="font-size: 0.75rem;"><i class="fas fa-calendar-alt me-1"></i> ${new Date(post.created_at).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}</span>
+                                    <a href="?slug=${post.slug}" class="text-primary small fw-bold text-decoration-none">Read More <i class="fas fa-arrow-right ms-1"></i></a>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                `}).join('');
+            } else {
+                grid.innerHTML = '';
+            }
+        } catch (err) {
+            console.error('Blog load error:', err);
+            grid.innerHTML = '<div class="col-12 text-center py-5 text-danger">Failed to load the journal. Please try again later.</div>';
+        }
+    }
+
+    async function loadSinglePost(slug) {
+        document.getElementById('blog-header').classList.add('d-none');
+        document.getElementById('featured-post-container').classList.add('d-none');
+        document.getElementById('blog-grid').classList.add('d-none');
+        document.getElementById('single-post-view').classList.remove('d-none');
+
+        const container = document.getElementById('post-content-inner');
+        container.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary"></div></div>';
+
+        try {
+            const res = await fetch(`/api/blog/${slug}`);
+            const post = await res.json();
+
+            if (!res.ok) throw new Error(post.message);
+
+            const ext = post.image ? post.image.split('.').pop().toLowerCase() : '';
+            const isVideo = ['mp4', 'webm', 'ogg', 'mov'].includes(ext);
+            let mediaHtml = '';
+
+            if (post.image) {
+                if (isVideo) {
+                    mediaHtml = `<video src="${post.image}" class="w-100 mb-5 blog-single-media" muted loop autoplay playsinline controls></video>`;
+                } else {
+                    mediaHtml = `<img loading="lazy" decoding="async" src="${post.image}" class="img-fluid mb-5 w-100 blog-single-media">`;
+                }
+            }
+
+            container.innerHTML = `
+                <h1 class="fw-bold mb-3 blog-single-title">${post.title}</h1>
+                <div class="d-flex align-items-center gap-3 mb-4 theme-text-muted">
+                    <span><i class="fas fa-calendar-alt me-1"></i> ${new Date(post.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                    <span><i class="fas fa-user me-1"></i> ${post.author}</span>
+                </div>
+                ${mediaHtml}
+                <div class="blog-content-body">
+                    ${post.content}
+                </div>
+            `;
+
+            // Update page title
+            document.title = post.title + ' | SABILORÉ Journal';
+        } catch (err) {
+            container.innerHTML = '<div class="alert alert-danger">' + (err.message || 'Error loading post') + '</div>';
+        }
+    }
+
+    function showBlogList() {
+        window.location.href = 'blog';
+    }
+
+    async function subscribeNewsletterBlog() {
+        const emailInput = document.getElementById('newsletter-email-blog');
+        const statusEl = document.getElementById('newsletter-status-blog');
+        const email = emailInput.value.trim();
+
+        if (!email) return;
+
+        try {
+            const response = await fetch('/api/newsletter/subscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            const result = await response.json();
+            statusEl.textContent = result.message;
+            statusEl.style.display = 'block';
+            statusEl.style.color = response.ok ? '#28a745' : '#dc3545';
+            if (response.ok) emailInput.value = '';
+        } catch (e) {
+            statusEl.textContent = 'Connection error';
+            statusEl.style.display = 'block';
+        }
+    }
+</script>

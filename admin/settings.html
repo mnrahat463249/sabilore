@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 ">
+    <title>SABILORÉ | Site Settings</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+    
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <style>
+        
+        .ql-container {
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            border-bottom-left-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+            background: #fff;
+            min-height: 200px;
+            box-sizing: border-box !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        .ql-toolbar {
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+            background: #f8f9fa;
+            box-sizing: border-box !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            display: flex !important;
+            flex-wrap: wrap !important;
+            padding: 8px 8px 0 8px !important;
+        }
+
+        .ql-toolbar.ql-snow .ql-formats {
+            margin-right: 15px;
+            margin-bottom: 8px !important;
+            display: inline-flex !important;
+            flex-wrap: wrap !important;
+            align-items: center;
+        }
+
+        .ql-snow .ql-picker-options {
+            z-index: 100 !important;
+        }
+
+        
+        .ql-toolbar svg {
+            vertical-align: top !important;
+        }
+
+        .ql-snow .ql-picker {
+            box-sizing: content-box !important;
+            line-height: normal !important;
+            height: 24px;
+        }
+
+        .ql-snow .ql-picker-label {
+            display: flex;
+            align-items: center;
+        }
+
+        .settings-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+        }
+
+        .ql-editor {
+            min-height: 150px;
+            max-height: 350px;
+            overflow-y: auto !important;
+        }
+
+        .ql-container.ql-snow {
+            border: 1px solid #ccc;
+            overflow: hidden;
+        }
+
+        .preview-img {
+            max-height: 120px;
+            border-radius: 8px;
+            border: 2px dashed #ddd;
+            padding: 4px;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .tummy-preview-wrap {
+            display: none;
+            overflow: hidden;
+            background: #fff;
+            border: 2px solid #eee !important;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .tummy-preview-img {
+            max-height: 350px;
+            max-width: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .tummy-upload-box {
+            border: 2px dashed #dee2e6;
+            cursor: pointer;
+            background: #fafafa;
+        }
+
+        .upload-icon-lg {
+            font-size: 1.5rem;
+        }
+
+        .logo-upload-box {
+            border: 2px dashed #dee2e6;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .logo-upload-box:hover,
+        .logo-upload-box.drag-over {
+            border-color: #0d6efd;
+            background: #f0f7ff;
+        }
+
+        .logo-preview-current {
+            max-height: 70px;
+            border-radius: 6px;
+            border: 1px solid #eee;
+            padding: 6px;
+            background: #f8f8f8;
+        }
+
+        .logo-preview-new {
+            max-height: 70px;
+            border-radius: 6px;
+            border: 1px dashed #198754;
+            padding: 6px;
+        }
+
+        .favicon-preview-current {
+            max-height: 48px;
+            border-radius: 4px;
+            border: 1px solid #eee;
+            padding: 4px;
+            background: #f8f8f8;
+        }
+
+        .favicon-preview-new {
+            max-height: 48px;
+            border-radius: 4px;
+            border: 1px dashed #198754;
+            padding: 4px;
+        }
+
+        .hidden-settings-wrap {
+            display: none;
+        }
+
+        .hero-preview-media {
+            max-height: 100px;
+            border-radius: 8px;
+        }
+
+        .w-auto-select {
+            width: auto;
+        }
+
+        .text-bkash { color: #e2136e !important; }
+        .text-nagad { color: #f7941d !important; }
+        .text-ebl { color: #0071cd !important; }
+        .text-facebook { color: #1877F2 !important; }
+    </style>
+</head>
+
+<body>
+    
+    <div id="admin-layout-placeholder"></div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="admin-main-content p-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="fw-bold mb-0">Site Settings</h3>
+                </div>
+
+                
+                <div class="settings-card">
+                    <h5 class="section-title"><i class="fas fa-palette me-2 text-primary"></i>Branding & Logo</h5>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold" for="site_name">Site Name</label>
+                            <input type="text" id="site_name" class="form-control rounded-pill"  title="Site Name">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold" for="contact_email">Contact Email</label>
+                            <input type="email" id="contact_email" class="form-control rounded-pill"
+                                 title="Contact Email">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold" for="contact_phone">Contact Phone</label>
+                            <input type="text" id="contact_phone" class="form-control rounded-pill"
+                                 title="Contact Phone">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold" for="whatsapp_url">WhatsApp URL</label>
+                            <input type="text" id="whatsapp_url" class="form-control rounded-pill"
+                                 title="WhatsApp URL">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold" for="facebook_url">Facebook URL</label>
+                            <input type="text" id="facebook_url" class="form-control rounded-pill"
+                                 title="Facebook URL">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold" for="instagram_url">Instagram URL</label>
+                            <input type="text" id="instagram_url" class="form-control rounded-pill"
+                                 title="Instagram URL">
+                        </div>
+
+                        
+                        <div class="col-12">
+                            <hr class="my-2">
+                            <h6 class="fw-bold mb-3"><i class="fas fa-image me-2 text-primary"></i>Logo & Favicon</h6>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Mobile / Default Logo <br><small
+                                    class="text-muted">(Recommended: 100×100px square, Max 200KB. PNG
+                                    format)</small></label>
+                            <div class="logo-upload-area border-2 border-dashed rounded-3 p-4 text-center mb-2 logo-upload-box"
+                                id="logo-drop-zone"
+                                onclick="document.getElementById('site_logo').click()"
+                                ondragover="event.preventDefault(); this.classList.add('drag-over');"
+                                ondragleave="this.classList.remove('drag-over');"
+                                ondrop="handleLogoDrop(event,'site_logo','preview_logo')">
+                                <i class="fas fa-mobile-alt text-muted mb-2 upload-icon-lg"></i>
+                                <p class="text-muted small mb-0">Click or drag & drop Mobile Logo</p>
+                            </div>
+                            <input type="file" id="site_logo" accept="image/*" class="d-none"
+                                onchange="previewLogoFile(this,'preview_logo')" title="Upload Mobile Logo">
+                            
+                            <div id="logo-current-wrap" class="mt-2 hidden-settings-wrap">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <small class="text-muted">Current mobile logo:</small>
+                                    <button type="button" class="btn btn-sm btn-outline-danger p-0 px-2"
+                                        onclick="removeSettingImage('site_logo', 'logo-current-wrap')"
+                                        title="Remove Logo"><i class="fas fa-trash-alt"></i></button>
+                                </div>
+                                <img loading="lazy" decoding="async" id="preview_logo" class="preview-img logo-preview-current" src="" alt="Mobile Logo">
+                            </div>
+                            <div id="logo-new-wrap" class="mt-2 hidden-settings-wrap">
+                                <small class="text-success d-block mb-1"><i class="fas fa-check-circle me-1"></i>New
+                                    mobile logo selected:</small>
+                                <img loading="lazy" decoding="async" id="preview_logo_new" class="preview-img logo-preview-new" src="" alt="New Mobile Logo preview">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Desktop Logo <br><small class="text-muted">(Recommended:
+                                    250×100px or 500×200px wide, Max 500KB. PNG format)</small></label>
+                            <div class="logo-upload-area border-2 border-dashed rounded-3 p-4 text-center mb-2 logo-upload-box"
+                                id="logo-desktop-drop-zone"
+                                onclick="document.getElementById('site_logo_desktop').click()"
+                                ondragover="event.preventDefault(); this.classList.add('drag-over');"
+                                ondragleave="this.classList.remove('drag-over');"
+                                ondrop="handleLogoDrop(event,'site_logo_desktop','preview_logo_desktop')">
+                                <i class="fas fa-desktop text-muted mb-2 upload-icon-lg"></i>
+                                <p class="text-muted small mb-0">Click or drag & drop Desktop Logo</p>
+                            </div>
+                            <input type="file" id="site_logo_desktop" accept="image/*" class="d-none"
+                                onchange="previewLogoFile(this,'preview_logo_desktop')" title="Upload Desktop Logo">
+                            
+                            <div id="logo-desktop-current-wrap" class="mt-2 hidden-settings-wrap">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <small class="text-muted">Current desktop logo:</small>
+                                    <button type="button" class="btn btn-sm btn-outline-danger p-0 px-2"
+                                        onclick="removeSettingImage('site_logo_desktop', 'logo-desktop-current-wrap')"
+                                        title="Remove Desktop Logo"><i class="fas fa-trash-alt"></i></button>
+                                </div>
+                                <img loading="lazy" decoding="async" id="preview_logo_desktop" class="preview-img logo-preview-current" src="" alt="Desktop Logo">
+                            </div>
+                            <div id="logo-desktop-new-wrap" class="mt-2 hidden-settings-wrap">
+                                <small class="text-success d-block mb-1"><i class="fas fa-check-circle me-1"></i>New
+                                    desktop logo selected:</small>
+                                <img loading="lazy" decoding="async" id="preview_logo_desktop_new" class="preview-img logo-preview-new" src="" alt="New Desktop Logo preview">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Site Favicon <small class="text-muted">(ICO, PNG 32×32px
+                                    recommended)</small></label>
+                            <div class="logo-upload-area border-2 border-dashed rounded-3 p-4 text-center mb-2 logo-upload-box"
+                                id="favicon-drop-zone"
+                                onclick="document.getElementById('site_favicon').click()"
+                                ondragover="event.preventDefault(); this.classList.add('drag-over');"
+                                ondragleave="this.classList.remove('drag-over');"
+                                ondrop="handleLogoDrop(event,'site_favicon','preview_favicon')">
+                                <i class="fas fa-star text-muted mb-2 upload-icon-lg"></i>
+                                <p class="text-muted small mb-0">Click to browse or drag & drop a favicon</p>
+                            </div>
+                            <input type="file" id="site_favicon" accept="image/*,.ico" class="d-none"
+                                onchange="previewLogoFile(this,'preview_favicon')" title="Upload Site Favicon">
+                            <div id="favicon-current-wrap" class="mt-2 hidden-settings-wrap">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <small class="text-muted">Current favicon:</small>
+                                    <button type="button" class="btn btn-sm btn-outline-danger p-0 px-2"
+                                        onclick="removeSettingImage('site_favicon', 'favicon-current-wrap')"
+                                        title="Remove Favicon"><i class="fas fa-trash-alt"></i></button>
+                                </div>
+                                <img loading="lazy" decoding="async" id="preview_favicon" class="preview-img favicon-preview-current" src="" alt="Favicon">
+                            </div>
+                            <div id="favicon-new-wrap" class="mt-2 hidden-settings-wrap">
+                                <small class="text-success d-block mb-1"><i class="fas fa-check-circle me-1"></i>New
+                                    favicon selected — save to apply:</small>
+                                <img loading="lazy" decoding="async" id="preview_favicon_new" class="preview-img favicon-preview-new" src="" alt="New Favicon preview">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-primary" for="image_display_mode">Product Image Display Mode</label>
+                            <select id="image_display_mode"
+                                class="form-select rounded-pill border-primary border-opacity-25 shadow-sm" title="Select Product Image Display Mode">
+                                <option value="contain">Contain (Show Full Image, No Cropping)</option>
+                                <option value="cover">Cover (Fill Box, May Crop Edges)</option>
+                            </select>
+                            <small class="text-muted d-block mt-2">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Use <b>Contain</b> if images have varied sizes and you want to see everything.
+                                Use <b>Cover</b> for a more uniform "grid" look.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="settings-card">
+                    <h5 class="section-title"><i class="fas fa-scroll me-2 text-primary"></i>Ticker Banner Texts</h5>
+                    <p class="text-muted small mb-4">These are the scrolling texts shown in the black bar at the very top of every page. You can use up to 5 items. Leave blank to hide that item.</p>
+                    <div class="row g-3">
+                        <div class="col-md-6 col-lg-4">
+                            <label class="form-label fw-bold small" for="ticker_text_1">Item 1</label>
+                            <input type="text" id="ticker_text_1" class="form-control rounded-pill"  maxlength="40" title="Ticker Text Item 1">
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <label class="form-label fw-bold small" for="ticker_text_2">Item 2</label>
+                            <input type="text" id="ticker_text_2" class="form-control rounded-pill"  maxlength="40" title="Ticker Text Item 2">
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <label class="form-label fw-bold small" for="ticker_text_3">Item 3</label>
+                            <input type="text" id="ticker_text_3" class="form-control rounded-pill"  maxlength="40" title="Ticker Text Item 3">
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <label class="form-label fw-bold small" for="ticker_text_4">Item 4</label>
+                            <input type="text" id="ticker_text_4" class="form-control rounded-pill"  maxlength="40" title="Ticker Text Item 4">
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <label class="form-label fw-bold small" for="ticker_text_5">Item 5</label>
+                            <input type="text" id="ticker_text_5" class="form-control rounded-pill"  maxlength="40" title="Ticker Text Item 5">
+                        </div>
+
+                        <div class="col-12">
+                            <div class="alert alert-info alert-sm py-2 px-3 small rounded-3 mb-0">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Changes will appear on the live site after clicking <strong>Save All Settings</strong>.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="settings-card">
+                    <h5 class="section-title"><i class="fas fa-image me-2 text-primary"></i>Hero Section</h5>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold" for="hero_media_type">Media Type</label>
+                            <select id="hero_media_type" class="form-select rounded-pill" title="Hero Media Type">
+                                <option value="image">Image</option>
+                                <option value="video">Video</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold" for="hero_description">Hero Description <small class="text-muted">(max 60
+                                    chars)</small></label>
+                            <input type="text" id="hero_description" class="form-control rounded-pill" maxlength="60"
+                                 title="Hero Description">
+                            <small class="text-muted"><span id="hero_desc_count">0</span>/60 characters</small>
+                        </div>
+
+                        
+                        <div class="col-12">
+                            <hr class="my-1">
+                            <h6 class="fw-bold mb-3"><i class="fas fa-desktop me-2 text-primary"></i>Desktop Hero <small
+                                    class="text-muted fw-normal">(≥768px screens)</small></h6>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold" for="hero_image">Desktop Hero Image</label>
+                            <input type="file" id="hero_image" class="form-control rounded-pill" accept="image/*" title="Upload Desktop Hero Image">
+                            <div id="hero_image_wrap" class="mt-2 hidden-settings-wrap">
+                                <img loading="lazy" decoding="async" id="preview_hero_image" class="preview-img rounded-3 hero-preview-media" src="" alt="Desktop Hero preview">
+                                <button type="button" class="btn btn-sm btn-outline-danger d-block mt-2"
+                                    onclick="removeSettingImage('hero_image', 'hero_image_wrap')"><i
+                                        class="fas fa-trash-alt"></i> Remove</button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold" for="hero_video">Desktop Hero Video</label>
+                            <input type="file" id="hero_video" class="form-control rounded-pill" accept="video/*" title="Upload Desktop Hero Video">
+                            <div id="hero_video_wrap" class="mt-2 hidden-settings-wrap">
+                                <video id="preview_hero_video" class="preview-img rounded-3 hero-preview-media"
+                                    controls muted title="Desktop Hero Video Preview"></video>
+                                <button type="button" class="btn btn-sm btn-outline-danger d-block mt-2"
+                                    onclick="removeSettingImage('hero_video', 'hero_video_wrap')"><i
+                                        class="fas fa-trash-alt"></i> Remove</button>
+                            </div>
+                        </div>
+
+                        
+                        <div class="col-12">
+                            <hr class="my-1">
+                            <h6 class="fw-bold mb-1"><i class="fas fa-mobile-alt me-2 text-success"></i>Mobile Hero
+                                <small class="text-muted fw-normal">(≤767px screens)</small>
+                            </h6>
+                            <p class="text-muted small mb-3">If left empty, desktop media will be used on mobile too.
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold" for="hero_image_mobile">Mobile Hero Image</label>
+                            <input type="file" id="hero_image_mobile" class="form-control rounded-pill"
+                                accept="image/*" title="Upload Mobile Hero Image">
+                            <div id="hero_image_mobile_wrap" class="mt-2 hidden-settings-wrap">
+                                <img loading="lazy" decoding="async" id="preview_hero_image_mobile" class="preview-img rounded-3 hero-preview-media" src="" alt="Mobile Hero preview">
+                                <button type="button" class="btn btn-sm btn-outline-danger d-block mt-2"
+                                    onclick="removeSettingImage('hero_image_mobile', 'hero_image_mobile_wrap')"><i
+                                        class="fas fa-trash-alt"></i> Remove</button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold" for="hero_video_mobile">Mobile Hero Video</label>
+                            <input type="file" id="hero_video_mobile" class="form-control rounded-pill"
+                                accept="video/*" title="Upload Mobile Hero Video">
+                            <div id="hero_video_mobile_wrap" class="mt-2 hidden-settings-wrap">
+                                <video id="preview_hero_video_mobile" class="preview-img rounded-3 hero-preview-media"
+                                    controls muted title="Mobile Hero Video Preview"></video>
+                                <button type="button" class="btn btn-sm btn-outline-danger d-block mt-2"
+                                    onclick="removeSettingImage('hero_video_mobile', 'hero_video_mobile_wrap')"><i
+                                        class="fas fa-trash-alt"></i> Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+                <div class="settings-card">
+                    <h5 class="section-title"><i class="fas fa-user-tag me-2 text-primary"></i>Tummy Shape Illustrations
+                    </h5>
+                    <p class="text-muted small mb-4">Upload illustrative images for each tummy shape to help customers
+                        choose correctly.</p>
+
+                    <div class="row g-4 mb-5">
+                        
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <label class="form-label fw-bold mb-3" for="tummy_flatter_img">Flatter Shape Illustration</label>
+                                <div class="position-relative mb-2 tummy-preview-wrap" id="tummy_flatter_wrap">
+                                    <img loading="lazy" id="preview_tummy_flatter" class="tummy-preview-img" src="" alt="Flatter shape preview">
+                                    <div class="position-absolute top-0 end-0 m-1 d-flex gap-1">
+                                        <button type="button" class="btn btn-sm btn-dark px-2 py-1" onclick="document.getElementById('tummy_flatter_img').click()" title="Change Image"><i class="fas fa-pencil-alt"></i></button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger px-2 py-1" onclick="removeSettingImage('tummy_flatter_img','tummy_flatter_wrap')" title="Remove"><i class="fas fa-trash-alt"></i></button>
+                                    </div>
+                                </div>
+                                <div class="border-2 border-dashed rounded-4 p-4 text-center tummy-upload-box" onclick="document.getElementById('tummy_flatter_img').click()">
+                                    <i class="fas fa-cloud-upload-alt text-muted mb-2 upload-icon-lg"></i>
+                                    <p class="text-muted small mb-0">Upload Flatter Image</p>
+                                </div>
+                                <input type="file" id="tummy_flatter_img" accept="image/*" class="d-none" onchange="previewLogoFile(this,'preview_tummy_flatter')" title="Upload Flatter Tummy Shape Image">
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <label class="form-label fw-bold mb-3" for="tummy_average_img">Average Shape Illustration</label>
+                                <div class="position-relative mb-2 tummy-preview-wrap" id="tummy_average_wrap">
+                                    <img loading="lazy" id="preview_tummy_average" class="tummy-preview-img" src="" alt="Average shape preview">
+                                    <div class="position-absolute top-0 end-0 m-1 d-flex gap-1">
+                                        <button type="button" class="btn btn-sm btn-dark px-2 py-1" onclick="document.getElementById('tummy_average_img').click()" title="Change Image"><i class="fas fa-pencil-alt"></i></button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger px-2 py-1" onclick="removeSettingImage('tummy_average_img','tummy_average_wrap')" title="Remove"><i class="fas fa-trash-alt"></i></button>
+                                    </div>
+                                </div>
+                                <div class="border-2 border-dashed rounded-4 p-4 text-center tummy-upload-box" onclick="document.getElementById('tummy_average_img').click()">
+                                    <i class="fas fa-cloud-upload-alt text-muted mb-2 upload-icon-lg"></i>
+                                    <p class="text-muted small mb-0">Upload Average Image</p>
+                                </div>
+                                <input type="file" id="tummy_average_img" accept="image/*" class="d-none" onchange="previewLogoFile(this,'preview_tummy_average')" title="Upload Average Tummy Shape Image">
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <label class="form-label fw-bold mb-3" for="tummy_curvier_img">Curvier Shape Illustration</label>
+                                <div class="position-relative mb-2 tummy-preview-wrap" id="tummy_curvier_wrap">
+                                    <img loading="lazy" id="preview_tummy_curvier" class="tummy-preview-img" src="" alt="Curvier shape preview">
+                                    <div class="position-absolute top-0 end-0 m-1 d-flex gap-1">
+                                        <button type="button" class="btn btn-sm btn-dark px-2 py-1" onclick="document.getElementById('tummy_curvier_img').click()" title="Change Image"><i class="fas fa-pencil-alt"></i></button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger px-2 py-1" onclick="removeSettingImage('tummy_curvier_img','tummy_curvier_wrap')" title="Remove"><i class="fas fa-trash-alt"></i></button>
+                                    </div>
+                                </div>
+                                <div class="border-2 border-dashed rounded-4 p-4 text-center tummy-upload-box" onclick="document.getElementById('tummy_curvier_img').click()">
+                                    <i class="fas fa-cloud-upload-alt text-muted mb-2 upload-icon-lg"></i>
+                                    <p class="text-muted small mb-0">Upload Curvier Image</p>
+                                </div>
+                                <input type="file" id="tummy_curvier_img" accept="image/*" class="d-none" onchange="previewLogoFile(this,'preview_tummy_curvier')" title="Upload Curvier Tummy Shape Image">
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4 opacity-25">
+
+                    
+                    <h6 class="fw-bold mb-3">Global Size Guide Text</h6>
+                    <p class="text-muted small mb-4">Enter the main size chart text that appears in the product size
+                        guide modal.</p>
+
+                    <div class="row mb-5">
+                        <div class="col-12">
+                            <label class="form-label fw-bold visually-hidden" for="size_guide_text">Size Guide Text</label>
+                            <textarea id="size_guide_text" class="form-control rounded-4" rows="8"
+                                 title="Global Size Guide Text"></textarea>
+                        </div>
+                    </div>
+
+                    <hr class="my-4 opacity-25">
+
+                    
+                    <h6 class="fw-bold mb-3">Advanced Size Recommendation Rules</h6>
+                    <p class="text-muted small mb-4">Add specific measurement ranges to automatically suggest sizes to
+                        customers.
+                    </p>
+
+                    <form id="add-size-rule-form" class="row g-3 mb-4 p-3 bg-light rounded-3">
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold" for="rule-shape">Tummy Shape</label>
+                            <select id="rule-shape" class="form-select form-select-sm rounded-pill" required title="Select Tummy Shape for Rule">
+                                <option value="flatter">Flatter</option>
+                                <option value="average">Average</option>
+                                <option value="curvier">Curvier</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small fw-bold" for="rule-wmin">Min Weight (kg)</label>
+                            <input type="number" id="rule-wmin" class="form-control form-control-sm rounded-pill"
+                                 required title="Minimum Weight in kg">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small fw-bold" for="rule-wmax">Max Weight (kg)</label>
+                            <input type="number" id="rule-wmax" class="form-control form-control-sm rounded-pill"
+                                 required title="Maximum Weight in kg">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small fw-bold" for="rule-hmin">Min Height (cm)</label>
+                            <input type="number" id="rule-hmin" class="form-control form-control-sm rounded-pill"
+                                 required title="Minimum Height in cm">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small fw-bold" for="rule-hmax">Max Height (cm)</label>
+                            <input type="number" id="rule-hmax" class="form-control form-control-sm rounded-pill"
+                                 required title="Maximum Height in cm">
+                        </div>
+                        <div class="col-md-1">
+                            <label class="form-label small fw-bold" for="rule-size">Size</label>
+                            <input type="text" id="rule-size" class="form-control form-control-sm rounded-pill"
+                                 required title="Recommended Size">
+                        </div>
+                        <div class="col-12 text-end">
+                            <button type="submit" class="btn btn-dark btn-sm rounded-pill px-3">
+                                <i class="fas fa-plus me-1"></i> Add Rule
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover align-middle small">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Shape</th>
+                                    <th>Weight Range</th>
+                                    <th>Height Range</th>
+                                    <th>Recommended</th>
+                                    <th class="text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="size-rules-list">
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <h5 class="section-title"><i class="fas fa-question-circle me-2 text-primary"></i>FAQ Section</h5>
+                    <p class="text-muted small mb-3">Add FAQ items below. Each question will be clickable — customers
+                        click to reveal the answer.</p>
+
+                    
+                    <div id="faq-builder" class="mb-3">
+                        
+                    </div>
+
+                    <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 mb-3"
+                        onclick="addFaqRow()">
+                        <i class="fas fa-plus me-1"></i> Add Question
+                    </button>
+
+                    
+                    <textarea id="footer_faq" class="d-none" title="FAQ JSON Data"></textarea>
+                </div>
+
+
+                <div class="settings-card">
+                    <h5 class="section-title"><i class="fas fa-headset me-2 text-primary"></i>Support Section</h5>
+                    <p class="text-muted small mb-3">HTML content for the support page. You can include phone numbers,
+                        operating
+                        hours, etc.</p>
+                    <label class="form-label fw-bold visually-hidden" for="footer_support">Support Section Text</label>
+                    <textarea id="footer_support" class="form-control rounded-4" rows="5"
+                         title="Support Section HTML Content"></textarea>
+                </div>
+
+
+                
+                <div class="settings-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="section-title border-0 mb-0 pb-0"><i
+                                class="fas fa-magic me-2 text-primary"></i>Animation Settings</h5>
+                        <div class="d-flex align-items-center gap-2">
+                            <label class="fw-bold mb-0 small text-nowrap" for="policy_animation_enabled">Enable Animations</label>
+                            <select id="policy_animation_enabled" class="form-select form-select-sm rounded-pill w-auto-select" title="Enable or Disable Page Animations">
+                                <option value="yes">Yes (Enabled)</option>
+                                <option value="no">No (Disabled)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="settings-card">
+                    <h5 class="section-title"><i class="fas fa-file-contract me-2 text-primary"></i>Terms & Conditions
+                    </h5>
+                    <p class="text-muted small mb-3">Legal terms and conditions for your store.</p>
+                    <label class="form-label fw-bold visually-hidden" for="legal_terms">Terms & Conditions Text</label>
+                    <textarea id="legal_terms" class="form-control rounded-4" rows="8"
+                         title="Terms & Conditions HTML Content"></textarea>
+                </div>
+
+                
+                <div class="settings-card">
+                    <h5 class="section-title"><i class="fas fa-shield-alt me-2 text-primary"></i>Privacy Policy</h5>
+                    <p class="text-muted small mb-3">Your store's privacy policy content.</p>
+                    <label class="form-label fw-bold visually-hidden" for="legal_privacy">Privacy Policy Text</label>
+                    <textarea id="legal_privacy" class="form-control rounded-4" rows="8"
+                         title="Privacy Policy HTML Content"></textarea>
+                </div>
+
+                
+                <div class="settings-card">
+                    <h5 class="section-title"><i class="fas fa-truck me-2 text-primary"></i>Delivery Information</h5>
+                    <p class="text-muted small mb-3">Shipping and delivery details for customers.</p>
+                    <label class="form-label fw-bold visually-hidden" for="legal_delivery">Delivery Information Text</label>
+                    <textarea id="legal_delivery" class="form-control rounded-4" rows="6"
+                         title="Delivery Information HTML Content"></textarea>
+                </div>
+
+
+                
+                <div class="settings-card">
+                    <h5 class="section-title"><i class="fas fa-address-card me-2 text-primary"></i>Contact Page Text
+                    </h5>
+                    <p class="text-muted small mb-3">Additional text displayed on the Contact Us page.</p>
+                    <label class="form-label fw-bold visually-hidden" for="footer_contact_text">Contact Page Extra Text</label>
+                    <textarea id="footer_contact_text" class="form-control rounded-4" rows="4"
+                         title="Contact Page Additional HTML Content"></textarea>
+                </div>
+
+                
+                <div class="settings-card">
+                    <h5 class="section-title"><i class="fas fa-money-check-alt me-2 text-primary"></i>API Gateways
+                        Configuration</h5>
+                    <p class="text-muted small mb-4">Manage API keys and credentials for bKash, Nagad, and EBL. Ensure
+                        you use Sandbox mode for testing.</p>
+
+                    
+                    <h6 class="fw-bold mb-3 text-bkash"><i class="fas fa-wallet me-2"></i>bKash
+                        Setting</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold" for="bkash_app_key">App Key</label>
+                            <input type="text" id="bkash_app_key" class="form-control form-control-sm rounded-3"  title="bKash App Key">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold" for="bkash_app_secret">App Secret</label>
+                            <input type="password" id="bkash_app_secret" class="form-control form-control-sm rounded-3"  title="bKash App Secret">
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label small fw-bold" for="bkash_username">Username</label>
+                            <input type="text" id="bkash_username" class="form-control form-control-sm rounded-3"  title="bKash Username">
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label small fw-bold" for="bkash_password">Password</label>
+                            <input type="password" id="bkash_password" class="form-control form-control-sm rounded-3"  title="bKash Password">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small fw-bold" for="bkash_is_sandbox">Sandbox Mode</label>
+                            <select id="bkash_is_sandbox" class="form-select form-select-sm rounded-3" title="Toggle bKash Sandbox Mode">
+                                <option value="true">Yes</option>
+                                <option value="false">No (Live)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    
+                    <h6 class="fw-bold mb-3 text-nagad"><i
+                            class="fas fa-mobile-alt me-2"></i>Nagad Setting</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold" for="nagad_merchant_id">Merchant ID</label>
+                            <input type="text" id="nagad_merchant_id" class="form-control form-control-sm rounded-3"  title="Nagad Merchant ID">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold" for="nagad_public_key">Public Key</label>
+                            <input type="password" id="nagad_public_key" class="form-control form-control-sm rounded-3"
+                                 title="Nagad Public Key">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold" for="nagad_is_sandbox">Sandbox Mode</label>
+                            <select id="nagad_is_sandbox" class="form-select form-select-sm rounded-3" title="Toggle Nagad Sandbox Mode">
+                                <option value="true">Yes</option>
+                                <option value="false">No (Live)</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-bold" for="nagad_private_key">Merchant Private Key</label>
+                            <textarea id="nagad_private_key" class="form-control form-control-sm rounded-3" rows="3"
+                                 title="Nagad Merchant Private Key"></textarea>
+                        </div>
+                    </div>
+
+                    
+                    <h6 class="fw-bold mb-3 text-ebl"><i class="fas fa-university me-2"></i>EBL
+                        SkyPay Setting</h6>
+                    <div class="row g-3">
+                        <div class="col-md-5">
+                            <label class="form-label small fw-bold" for="ebl_merchant_id">Merchant ID (Terminal ID)</label>
+                            <input type="text" id="ebl_merchant_id" class="form-control form-control-sm rounded-3"  title="EBL Merchant ID">
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label small fw-bold" for="ebl_password">Password / Secure Key</label>
+                            <input type="password" id="ebl_password" class="form-control form-control-sm rounded-3"  title="EBL Password/Secure Key">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small fw-bold" for="ebl_is_sandbox">Sandbox Mode</label>
+                            <select id="ebl_is_sandbox" class="form-select form-select-sm rounded-3" title="Toggle EBL Sandbox Mode">
+                                <option value="true">Yes</option>
+                                <option value="false">No (Live)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="settings-card">
+                    <h5 class="section-title"><i class="fas fa-chart-line me-2 text-primary"></i>Tracking Pixels</h5>
+                    <p class="text-muted small mb-4">Integrate analytics and conversion tracking. Leave blank if not
+                        using.</p>
+
+                    <h6 class="fw-bold mb-3 text-primary"><i class="fab fa-google me-2"></i>Google Analytics (GA4)</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold" for="google_pixel_id">Measurement ID (e.g., G-XXXXXXX)</label>
+                            <input type="text" id="google_pixel_id" class="form-control form-control-sm rounded-3"  title="Google Analytics Measurement ID">
+                        </div>
+                    </div>
+
+                    <h6 class="fw-bold mb-3 text-facebook"><i class="fab fa-facebook me-2"></i>Meta Pixel
+                        (Facebook)</h6>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold" for="meta_pixel_id">Pixel ID (e.g., 1234567890)</label>
+                            <input type="text" id="meta_pixel_id" class="form-control form-control-sm rounded-3"  title="Facebook Meta Pixel ID">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-end mb-4 d-flex justify-content-end gap-2">
+                    <button class="btn btn-outline-warning rounded-pill px-4" onclick="clearSystemCache()">
+                        <i class="fas fa-broom me-2"></i> Clear Cache
+                    </button>
+                    <button id="save-settings-btn" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm"
+                        onclick="saveAllSettings()">
+                        <i class="fas fa-save me-2"></i> Save All Settings
+                    </button>
+                </div>
+
+                <div id="settings-status" class="alert d-none rounded-4 mb-4"></div>
+            </div>
+
+        </div>
+    </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="js/admin.js"></script>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <script>
+        const SETTINGS_API = '/api/admin';
+        const SETTINGS_BASE = '';
+
+        // Check auth
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAdminLayout();
+            checkAdminAuth();
+            initQuillEditors();
+            loadCurrentSettings(); // Also initializes FAQ builder after loading
+            loadSizeGuideRules();
+
+            // Hero description counter
+            const descInput = document.getElementById('hero_description');
+            if (descInput) {
+                descInput.addEventListener('input', () => {
+                    document.getElementById('hero_desc_count').textContent = descInput.value.length;
+                });
+            }
+
+            // File previews
+            setupFilePreview('tummy_curvier_img', 'preview_tummy_curvier');
+
+            // Hero media previews
+            setupHeroPreview('hero_image', 'preview_hero_image', false);
+            setupHeroPreview('hero_video', 'preview_hero_video', true);
+            setupHeroPreview('hero_image_mobile', 'preview_hero_image_mobile', false);
+            setupHeroPreview('hero_video_mobile', 'preview_hero_video_mobile', true);
+
+            // Add rule listener
+            const ruleForm = document.getElementById('add-size-rule-form');
+            if (ruleForm) {
+                ruleForm.addEventListener('submit', addSizeGuideRule);
+            }
+        });
+
+        // ===== FAQ Builder =====
+        let faqRows = [];
+
+        function renderFaqBuilder(faqs) {
+            faqRows = Array.isArray(faqs) ? faqs : [];
+            const builder = document.getElementById('faq-builder');
+            if (!builder) return;
+
+            if (faqRows.length === 0) {
+                builder.innerHTML = '<p class="text-muted small">No FAQ items yet. Click "Add Question" to start.</p>';
+            } else {
+                builder.innerHTML = faqRows.map((item, i) => `
+                    <div class="border rounded-3 p-3 mb-2 bg-white" id="faq-row-${i}">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-bold small text-muted">Q${i + 1}</span>
+                            <button type="button" class="btn btn-sm btn-outline-danger border-0 py-0 px-2" onclick="removeFaqRow(${i})">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                        <input type="text" class="form-control form-control-sm rounded-pill mb-2 faq-q-input"
+                                value="${(item.question || '').replace(/"/g, '&quot;')}"
+                               oninput="syncFaqJson()">
+                        <textarea class="form-control form-control-sm rounded-3 faq-a-input" rows="2"
+                                   oninput="syncFaqJson()">${item.answer || ''}</textarea>
+                    </div>
+                `).join('');
+            }
+            syncFaqJson();
+        }
+
+        function addFaqRow() {
+            faqRows.push({ question: '', answer: '' });
+            renderFaqBuilder(faqRows);
+        }
+
+        function removeFaqRow(index) {
+            faqRows.splice(index, 1);
+            renderFaqBuilder(faqRows);
+        }
+
+        function syncFaqJson() {
+            const qInputs = document.querySelectorAll('.faq-q-input');
+            const aInputs = document.querySelectorAll('.faq-a-input');
+            const data = [];
+            qInputs.forEach((q, i) => {
+                data.push({ question: q.value.trim(), answer: aInputs[i]?.value.trim() || '' });
+            });
+            faqRows = data;
+            const textarea = document.getElementById('footer_faq');
+            if (textarea) textarea.value = JSON.stringify(data);
+        }
+
+
+        // --- Size Guide Rules Logic ---
+        async function loadSizeGuideRules() {
+            const list = document.getElementById('size-rules-list');
+            if (!list) return;
+
+            try {
+                const res = await fetch(`${SETTINGS_API}/size-guides`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                if (!res.ok) throw new Error('Failed to fetch rules');
+                const rules = await res.json();
+
+                if (rules.length === 0) {
+                    list.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-3">No rules defined yet</td></tr>';
+                    return;
+                }
+
+                list.innerHTML = rules.map(r => `
+                    <tr>
+                        <td class="text-capitalize">${r.tummy_shape}</td>
+                        <td>${r.weight_min}-${r.weight_max} kg</td>
+                        <td>${r.height_min}-${r.height_max} cm</td>
+                        <td><span class="badge bg-dark rounded-pill">${r.recommended_size}</span></td>
+                        <td class="text-end">
+                            <button onclick="deleteSizeRule(${r.id})" class="btn btn-sm btn-outline-danger border-0">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (e) {
+                console.error('Error loading rules:', e);
+                list.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error loading rules</td></tr>';
+            }
+        }
+
+        async function addSizeGuideRule(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.disabled = true;
+
+            const ruleData = {
+                tummy_shape: document.getElementById('rule-shape').value,
+                weight_min: parseInt(document.getElementById('rule-wmin').value),
+                weight_max: parseInt(document.getElementById('rule-wmax').value),
+                height_min: parseInt(document.getElementById('rule-hmin').value),
+                height_max: parseInt(document.getElementById('rule-hmax').value),
+                recommended_size: document.getElementById('rule-size').value
+            };
+
+            try {
+                const res = await fetch(`${SETTINGS_API}/size-guides`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(ruleData)
+                });
+
+                if (res.ok) {
+                    showStatus('Rule added successfully!', true);
+                    e.target.reset();
+                    loadSizeGuideRules();
+                } else {
+                    const data = await res.json();
+                    throw new Error(data.message || 'Failed to add rule');
+                }
+            } catch (err) {
+                showStatus(err.message, false);
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        async function deleteSizeRule(id) {
+            if (!confirm('Are you sure you want to delete this rule?')) return;
+
+            try {
+                const res = await fetch(`${SETTINGS_API}/size-guides/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+
+                if (res.ok) {
+                    showStatus('Rule deleted', true);
+                    loadSizeGuideRules();
+                }
+            } catch (err) {
+                showStatus('Failed to delete rule', false);
+            }
+        }
+
+        function setupFilePreview(inputId, previewId) {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+            if (input && preview) {
+                input.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        preview.src = URL.createObjectURL(file);
+                        preview.style.display = 'block';
+                    }
+                });
+            }
+        }
+
+        function initQuillEditors() {
+            window.quillEditors = {};
+            const richTextFields = [
+                'footer_support', 'legal_terms',
+                'legal_privacy', 'legal_delivery', 'footer_contact_text', 'size_guide_text'
+            ];
+
+            richTextFields.forEach(id => {
+                const textarea = document.getElementById(id);
+                if (!textarea) return;
+
+                // Hide textarea completely
+                textarea.style.display = 'none';
+
+                // Create container element
+                const container = document.createElement('div');
+                container.id = 'quill_' + id;
+                textarea.parentNode.insertBefore(container, textarea.nextSibling);
+
+                // Initialize Quill Editor
+                const q = new Quill(container, {
+                    theme: 'snow',
+                    modules: {
+                        toolbar: [
+                            ['bold', 'italic', 'underline', 'strike'],
+                            [{ 'color': [] }, { 'background': [] }],
+                            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                            [{ 'align': [] }],
+                            ['link', 'clean']
+                        ]
+                    }
+                });
+
+                // When user types in Quill, update the hidden textarea
+                q.on('text-change', () => {
+                    const htmlContent = q.root.innerHTML;
+                    // Provide empty string instead of <p><br></p> if field is practically empty
+                    textarea.value = htmlContent === '<p><br></p>' ? '' : htmlContent;
+                });
+
+                window.quillEditors[id] = q;
+            });
+        }
+
+        async function loadCurrentSettings() {
+            try {
+                const response = await fetch(`${SETTINGS_API}/settings`);
+                if (!response.ok) return;
+                const settings = await response.json();
+
+                // Text fields (footer_faq handled separately by FAQ builder)
+                const textFields = ['site_name', 'contact_email', 'contact_phone',
+                    'facebook_url', 'instagram_url', 'whatsapp_url',
+                    'hero_description', 'hero_media_type', 'image_display_mode',
+                    'footer_support',
+                    'legal_terms', 'legal_privacy', 'legal_delivery', 'footer_contact_text',
+                    'policy_animation_enabled', 'size_guide_text',
+                    'bkash_app_key', 'bkash_app_secret', 'bkash_username', 'bkash_password', 'bkash_is_sandbox',
+                    'nagad_merchant_id', 'nagad_public_key', 'nagad_private_key', 'nagad_is_sandbox',
+                    'ebl_merchant_id', 'ebl_password', 'ebl_is_sandbox',
+                    'google_pixel_id', 'meta_pixel_id',
+                    'ticker_text_1', 'ticker_text_2', 'ticker_text_3', 'ticker_text_4', 'ticker_text_5',
+                    'ticker_bg_color', 'ticker_text_color'];
+
+
+                textFields.forEach(key => {
+                    const el = document.getElementById(key);
+                    if (el && settings[key]) {
+                        el.value = settings[key];
+                        if (window.quillEditors && window.quillEditors[key]) {
+                            // Strip quill cursor before loading to prevent editor freeze
+                            const cleanHtml = settings[key].replace(/<span class="ql-cursor">.*?<\/span>/g, '');
+                            window.quillEditors[key].clipboard.dangerouslyPasteHTML(cleanHtml);
+                            // Also sync textarea value so save works correctly
+                            el.value = cleanHtml;
+                        }
+                    }
+                });
+
+                // Initialize FAQ Builder with saved data
+                if (typeof renderFaqBuilder === 'function') {
+                    let faqData = [];
+                    const raw = (settings.footer_faq || '').trim();
+                    if (raw.startsWith('[')) {
+                        try { faqData = JSON.parse(raw); } catch (e) { }
+                    } else if (raw) {
+                        // Legacy text format — auto-convert first Q&A pair
+                        faqData = [{ question: 'FAQ', answer: raw }];
+                    }
+                    renderFaqBuilder(faqData);
+                }
+
+                // Update hero desc counter
+                if (settings.hero_description) {
+                    document.getElementById('hero_desc_count').textContent = settings.hero_description.length;
+                }
+
+                // Image previews
+                if (settings.site_logo) {
+                    const img = document.getElementById('preview_logo');
+                    img.src = getImageUrl(settings.site_logo);
+                    document.getElementById('logo-current-wrap').style.display = 'block';
+                }
+                if (settings.site_logo_desktop) {
+                    const img = document.getElementById('preview_logo_desktop');
+                    img.src = getImageUrl(settings.site_logo_desktop);
+                    document.getElementById('logo-desktop-current-wrap').style.display = 'block';
+                }
+                if (settings.site_favicon) {
+                    const img = document.getElementById('preview_favicon');
+                    img.src = getImageUrl(settings.site_favicon);
+                    document.getElementById('favicon-current-wrap').style.display = 'block';
+                }
+                if (settings.hero_image) {
+                    const img = document.getElementById('preview_hero_image');
+                    img.src = getImageUrl(settings.hero_image);
+                    document.getElementById('hero_image_wrap').style.display = 'block';
+                }
+                if (settings.hero_video) {
+                    const vid = document.getElementById('preview_hero_video');
+                    vid.src = getImageUrl(settings.hero_video);
+                    document.getElementById('hero_video_wrap').style.display = 'block';
+                }
+                if (settings.hero_image_mobile) {
+                    const img = document.getElementById('preview_hero_image_mobile');
+                    img.src = getImageUrl(settings.hero_image_mobile);
+                    document.getElementById('hero_image_mobile_wrap').style.display = 'block';
+                }
+                if (settings.hero_video_mobile) {
+                    const vid = document.getElementById('preview_hero_video_mobile');
+                    vid.src = getImageUrl(settings.hero_video_mobile);
+                    document.getElementById('hero_video_mobile_wrap').style.display = 'block';
+                }
+
+                ['flatter', 'average', 'curvier'].forEach(shape => {
+                    const key = `tummy_${shape}_img`;
+                    const imgEl = document.getElementById(`preview_tummy_${shape}`);
+                    const wrapEl = document.getElementById(`tummy_${shape}_wrap`);
+                    if (settings[key] && settings[key].trim()) {
+                        if (imgEl) imgEl.src = getImageUrl(settings[key]);
+                        if (wrapEl) wrapEl.style.display = 'block';
+                    } else {
+                        if (wrapEl) wrapEl.style.display = 'none';
+                    }
+                });
+            } catch (e) {
+                console.error('Load settings error:', e);
+            }
+        }
+
+        function removeSettingImage(key, wrapId) {
+            window.clearSettings = window.clearSettings || {};
+            window.clearSettings[key] = true;
+            const wrap = document.getElementById(wrapId);
+            if (wrap) wrap.style.display = 'none';
+
+            // Also clear the file input if the user had selected a file before clicking remove
+            const fileInput = document.getElementById(key);
+            if (fileInput) {
+                fileInput.value = '';
+            }
+        }
+
+        async function saveAllSettings() {
+            const btn = document.getElementById('save-settings-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Saving...';
+
+            try {
+                const formData = new FormData();
+
+                // Text fields
+                const textFields = ['site_name', 'contact_email', 'contact_phone',
+                    'facebook_url', 'instagram_url', 'whatsapp_url',
+                    'hero_description', 'hero_media_type', 'image_display_mode',
+                    'footer_faq', 'footer_support',
+                    'legal_terms', 'legal_privacy', 'legal_delivery', 'footer_contact_text',
+                    'policy_animation_enabled', 'size_guide_text',
+                    'bkash_app_key', 'bkash_app_secret', 'bkash_username', 'bkash_password', 'bkash_is_sandbox',
+                    'nagad_merchant_id', 'nagad_public_key', 'nagad_private_key', 'nagad_is_sandbox',
+                    'ebl_merchant_id', 'ebl_password', 'ebl_is_sandbox',
+                    'google_pixel_id', 'meta_pixel_id',
+                    'ticker_text_1', 'ticker_text_2', 'ticker_text_3', 'ticker_text_4', 'ticker_text_5',
+                    'ticker_bg_color', 'ticker_text_color'];
+
+                // First, sync FAQ builder to hidden textarea
+                if (typeof syncFaqJson === 'function') syncFaqJson();
+
+                // Then, sync all Quill editors to their hidden textareas
+                if (window.quillEditors) {
+                    Object.keys(window.quillEditors).forEach(id => {
+                        const q = window.quillEditors[id];
+                        const ta = document.getElementById(id);
+                        if (q && ta) {
+                            const html = q.root.innerHTML;
+                            ta.value = html === '<p><br></p>' ? '' : html;
+                        }
+                    });
+                }
+
+
+                textFields.forEach(key => {
+                    const el = document.getElementById(key);
+                    if (el) {
+                        formData.append(key, el.value || '');
+                    }
+                });
+
+                // File fields
+                const fileFields = [
+                    'site_logo', 'site_logo_desktop', 'site_favicon',
+                    'hero_image', 'hero_video', 'hero_image_mobile', 'hero_video_mobile',
+                    'tummy_flatter_img', 'tummy_average_img', 'tummy_curvier_img'
+                ];
+
+                fileFields.forEach(key => {
+                    const el = document.getElementById(key);
+                    if (el && el.files && el.files[0]) {
+                        formData.append(key, el.files[0]);
+                    }
+                });
+
+                // Append clear flags
+                if (window.clearSettings) {
+                    Object.keys(window.clearSettings).forEach(key => {
+                        if (window.clearSettings[key]) {
+                            formData.append(`clear_${key}`, 'true');
+                        }
+                    });
+                }
+
+                const response = await fetch(`${SETTINGS_API}/settings`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    },
+                    body: formData
+                });
+
+                const result = await response.json();
+                // Clear cached settings so header reloads fresh ticker texts on next page load
+                try { sessionStorage.removeItem('_site_settings'); } catch(e){}
+                showStatus(result.message || 'Settings saved!', response.ok);
+            } catch (error) {
+                showStatus('Error: ' + error.message, false);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-save me-2"></i> Save All Settings';
+            }
+        }
+
+        function showStatus(message, success) {
+            const el = document.getElementById('settings-status');
+            el.className = `alert ${success ? 'alert-success' : 'alert-danger'} rounded-4`;
+            el.innerHTML = `<i class="fas ${success ? 'fa-check-circle' : 'fa-exclamation-triangle'} me-2"></i> ${message}`;
+            el.classList.remove('d-none');
+            el.scrollIntoView({ behavior: 'smooth' });
+            setTimeout(() => el.classList.add('d-none'), 5000);
+        }
+
+        function adminLogout() {
+            localStorage.removeItem('admin_token');
+            localStorage.removeItem('admin_user');
+            window.location.href = 'login';
+        }
+
+        // Logo upload helpers
+        function previewLogoFile(input, previewId) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            // Clear removal flag because a new file is replacing it
+            window.clearSettings = window.clearSettings || {};
+            window.clearSettings[input.id] = false;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                let newImgId, wrapId;
+                if (previewId === 'preview_logo_desktop') {
+                    newImgId = 'preview_logo_desktop_new';
+                    wrapId = 'logo-desktop-new-wrap';
+                } else if (previewId === 'preview_logo') {
+                    newImgId = 'preview_logo_new';
+                    wrapId = 'logo-new-wrap';
+                } else if (previewId === 'preview_favicon') {
+                    newImgId = 'preview_favicon_new';
+                    wrapId = 'favicon-new-wrap';
+                } else {
+                    // Generic preview for any other image uploads like tummy shapes
+                    const img = document.getElementById(previewId);
+                    if (img) {
+                        img.src = e.target.result;
+                    }
+                    // wrap ID: tummy_flatter_img → tummy_flatter_wrap
+                    const wrapId = input.id.endsWith('_img')
+                        ? input.id.slice(0, -4) + '_wrap'
+                        : input.id + '_wrap';
+                    const wrap = document.getElementById(wrapId);
+                    if (wrap) wrap.style.display = 'block';
+                    return; // Stop here for generic handlers
+                }
+                const img = document.getElementById(newImgId);
+                if (img) { img.src = e.target.result; }
+                const wrap = document.getElementById(wrapId);
+                if (wrap) { wrap.style.display = 'block'; }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleLogoDrop(event, inputId, previewId) {
+            event.preventDefault();
+            const input = document.getElementById(inputId);
+            const file = event.dataTransfer.files[0];
+            if (!file || !file.type.startsWith('image/')) return;
+            // Transfer file to the hidden input
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            input.files = dt.files;
+            previewLogoFile(input, previewId);
+        }
+
+        // Live preview for hero media inputs
+        function setupHeroPreview(inputId, previewId, isVideo = false) {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+            if (!input || !preview) return;
+            input.addEventListener('change', () => {
+                const file = input.files[0];
+                if (!file) return;
+
+                // Clear removal flag if new file selected
+                window.clearSettings = window.clearSettings || {};
+                window.clearSettings[inputId] = false;
+
+                const url = URL.createObjectURL(file);
+                preview.src = url;
+                document.getElementById(`${inputId}_wrap`).style.display = 'block';
+                if (isVideo) preview.load();
+            });
+        }
+
+
+        async function clearSystemCache() {
+            if (!confirm('Are you sure you want to clear all server-side caches? This will refresh product data and site settings for all users.')) return;
+
+            try {
+                const res = await fetch(`${SETTINGS_API}/clear-cache`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    showStatus(data.message || 'Cache cleared successfully', true);
+                } else {
+                    showStatus(data.message || 'Failed to clear cache', false);
+                }
+            } catch (err) {
+                console.error('[Cache Error]', err);
+                showStatus('Network error while clearing cache', false);
+            }
+        }
+    </script>
+
+</body>
+
+</html>

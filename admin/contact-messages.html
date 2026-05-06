@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 ">
+    <title>SABILORÉ | Contact Inbox</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <style>
+        .msg-card {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+            cursor: pointer;
+            border-left: 4px solid #eee;
+        }
+
+        .msg-card.unread {
+            background-color: #f8f9ff;
+            border-left-color: #0d6efd;
+        }
+
+        .msg-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .avatar-circle {
+            width: 45px;
+            height: 45px;
+            background: #eee;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div id="admin-layout-placeholder"></div>
+
+    
+    <div class="admin-main-content p-5">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h2 class="fw-bold mb-1">Contact Inbox</h2>
+                <p class="text-muted mb-0">Manage customer inquiries and messages</p>
+            </div>
+            <button id="refresh-messages-btn" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                <i id="refresh-icon" class="fas fa-sync-alt me-2"></i> Refresh
+            </button>
+        </div>
+
+        <div id="messages-list" class="row g-3">
+            <div class="col-12 text-center py-5">
+                <div class="spinner-border text-primary"></div>
+            </div>
+        </div>
+    </div>
+
+
+    
+    <div class="modal fade" id="msgModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Message Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4" id="msg-detail-body">
+                    
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-outline-danger rounded-pill"
+                        id="delete-msg-btn">Delete</button>
+                    <button type="button" class="btn btn-dark rounded-pill" data-bs-dismiss="modal">Close</button>
+                    <a href="" id="reply-msg-btn" class="btn btn-primary rounded-pill">Reply via Email</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/admin.js"></script>
+    <script>
+        let autoRefreshInterval = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAdminAuth();
+            renderAdminLayout();
+            loadMessages();
+            
+            const refreshBtn = document.getElementById('refresh-messages-btn');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', () => {
+                    loadMessages(true); // pass true for manual refresh feedback
+                });
+            }
+
+            // Auto refresh every 30 seconds
+            autoRefreshInterval = setInterval(loadMessages, 30000);
+        });
+
+        let windowMessages = [];
+
+        async function loadMessages(isManual = false) {
+            const list = document.getElementById('messages-list');
+            const syncIcon = document.getElementById('refresh-icon');
+            
+            if(syncIcon) syncIcon.classList.add('fa-spin');
+
+            try {
+                const res = await adminFetch(`${ADMIN_API_URL}/contact-messages`);
+                if (!res) return;
+                
+                const messages = await res.json();
+                windowMessages = messages;
+
+                if (messages.length === 0) {
+                    list.innerHTML = '<div class="col-12 text-center text-muted py-5"><i class="fas fa-inbox fa-3x mb-3 opacity-25"></i><h5>No messages yet</h5></div>';
+                    return;
+                }
+
+                list.innerHTML = messages.map((m, index) => `
+                    <div class="col-12 mb-3">
+                        <div class="card msg-card p-3 ${m.status === 'Read' ? '' : 'unread'}" onclick="viewMsg(${index})">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="avatar-circle">${escapeHTML(m.name)[0].toUpperCase()}</div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between">
+                                        <h6 class="fw-bold mb-0">${escapeHTML(m.name)}</h6>
+                                        <small class="text-muted">${new Date(m.created_at).toLocaleDateString()}</small>
+                                    </div>
+                                    <div class="text-primary small mb-1">${escapeHTML(m.subject) || 'No Subject'}</div>
+                                    <div class="text-muted small text-truncate" style="max-width: 600px;">${escapeHTML(m.message)}</div>
+                                </div>
+                                <div class="ms-3 d-flex flex-column align-items-end gap-2">
+                                    ${m.status === 'Read' ? '<i class="fas fa-check-double text-muted" title="Read"></i>' : '<i class="fas fa-circle text-primary" style="font-size:0.6rem" title="Unread"></i>'}
+                                    <button class="btn btn-sm text-danger p-0 border-0" onclick="event.stopPropagation(); deleteMsg(${m.id})" title="Delete Message">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            if (isManual) showToast('Inbox updated', 'success');
+            } catch (e) {
+                console.error('loadMessages error:', e);
+                list.innerHTML = '<div class="alert alert-danger">Failed to load messages</div>';
+            } finally {
+                if(syncIcon) syncIcon.classList.remove('fa-spin');
+            }
+        }
+
+        async function viewMsg(index) {
+            const m = windowMessages[index];
+            if(!m) return;
+
+            const body = document.getElementById('msg-detail-body');
+            body.innerHTML = `
+                <div class="mb-4">
+                    <label class="text-muted small text-uppercase fw-bold">From</label>
+                    <div class="fw-bold">${escapeHTML(m.name)} &lt;${escapeHTML(m.email)}&gt;</div>
+                    <small class="text-muted">${new Date(m.created_at).toLocaleString()}</small>
+                </div>
+                <div class="mb-4">
+                    <label class="text-muted small text-uppercase fw-bold">Subject</label>
+                    <div class="text-primary fw-bold">${escapeHTML(m.subject) || 'General Inquiry'}</div>
+                </div>
+                <div class="mb-2">
+                    <label class="text-muted small text-uppercase fw-bold">Message</label>
+                    <div class="p-3 bg-light rounded-3" style="white-space: pre-wrap;">${escapeHTML(m.message)}</div>
+                </div>
+            `;
+
+            document.getElementById('reply-msg-btn').href = `mailto:${m.email}?subject=Re: ${m.subject || 'SABILORÉ Inquiry'}`;
+            document.getElementById('delete-msg-btn').onclick = () => deleteMsg(m.id);
+
+            const modal = new bootstrap.Modal(document.getElementById('msgModal'));
+            modal.show();
+
+            if (m.status !== 'Read') {
+                await markRead(m.id);
+            }
+        }
+
+        async function markRead(id) {
+            await adminFetch(`${ADMIN_API_URL}/contact-messages/${id}/read`, { method: 'PATCH' });
+            loadMessages();
+        }
+
+        async function deleteMsg(id) {
+            if (!confirm('Are you sure you want to delete this message?')) return;
+            await adminFetch(`${ADMIN_API_URL}/contact-messages/${id}`, { method: 'DELETE' });
+            const modalEl = document.getElementById('msgModal');
+            const modalInstance = bootstrap.Modal.getInstance(modalEl);
+            if(modalInstance) modalInstance.hide();
+            loadMessages();
+        }
+
+
+    </script>
+</body>
+
+</html>

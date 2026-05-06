@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 ">
+    <title>SABILORÉ | Customer Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <style>
+        .avatar-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #007bff, #00d4ff);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div id="admin-layout-placeholder"></div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="admin-main-content p-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="fw-bold mb-1">Customer Management</h2>
+                        <p class="text-muted mb-0">View and manage registered customers</p>
+                    </div>
+                </div>
+
+                
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="card p-3 border-0 shadow-sm">
+                            <small class="text-muted text-uppercase fw-bold">Total Customers</small>
+                            <h3 class="fw-bold mb-0" id="stat-total">—</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card p-3 border-0 shadow-sm">
+                            <small class="text-muted text-uppercase fw-bold">Active</small>
+                            <h3 class="fw-bold mb-0 text-success" id="stat-active">—</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card p-3 border-0 shadow-sm">
+                            <small class="text-muted text-uppercase fw-bold">Blocked</small>
+                            <h3 class="fw-bold mb-0 text-danger" id="stat-blocked">—</h3>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="card p-4 border-0 shadow-sm rounded-4">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0"><i
+                                        class="fas fa-search text-muted"></i></span>
+                                <label for="customer-search" class="visually-hidden">Search Customers</label>
+                                <input type="text" id="customer-search" class="form-control border-start-0 ps-0"
+                                     title="Search Customers" aria-label="Search Customers">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="customer-status-filter" class="visually-hidden">Customer Status</label>
+                            <select id="customer-status-filter" class="form-select" title="Customer Status" aria-label="Customer Status">
+                                <option value="">All Customers</option>
+                                <option value="active">Active only</option>
+                                <option value="blocked">Blocked only</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-outline-secondary w-100 rounded-pill" onclick="clearFilters()" title="Clear Filters" aria-label="Clear Filters"><i
+                                    class="fas fa-times me-1"></i>Clear</button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead class="bg-light small">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Customer</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Status</th>
+                                    <th>Joined</th>
+                                    <th class="text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-customers-table">
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted py-4"><span
+                                            class="spinner-border spinner-border-sm me-2"></span>Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="text-muted small mb-0" id="customer-count-label"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/admin.js"></script>
+    <script>
+        let allCustomers = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAdminLayout();
+            loadCustomers();
+            document.getElementById('customer-search').addEventListener('input', renderCustomers);
+            document.getElementById('customer-status-filter').addEventListener('change', renderCustomers);
+        });
+
+        async function loadCustomers() {
+            if (!checkAdminAuth()) return;
+            const res = await adminFetch(`${ADMIN_API_URL}/customers`);
+            if (!res) return;
+            allCustomers = await res.json();
+
+            const active = allCustomers.filter(c => !c.is_blocked).length;
+            const blocked = allCustomers.filter(c => c.is_blocked).length;
+            document.getElementById('stat-total').textContent = allCustomers.length;
+            document.getElementById('stat-active').textContent = active;
+            document.getElementById('stat-blocked').textContent = blocked;
+
+            renderCustomers();
+        }
+
+        function renderCustomers() {
+            const tableBody = document.getElementById('admin-customers-table');
+            const search = document.getElementById('customer-search').value.toLowerCase().trim();
+            const statusFilter = document.getElementById('customer-status-filter').value;
+
+            const filtered = allCustomers.filter(c => {
+                const matchSearch = !search ||
+                    (c.name || '').toLowerCase().includes(search) ||
+                    (c.email || '').toLowerCase().includes(search);
+                const matchStatus = !statusFilter ||
+                    (statusFilter === 'active' && !c.is_blocked) ||
+                    (statusFilter === 'blocked' && c.is_blocked);
+                return matchSearch && matchStatus;
+            });
+
+            document.getElementById('customer-count-label').textContent =
+                filtered.length < allCustomers.length
+                    ? `Showing ${filtered.length} of ${allCustomers.length} customers`
+                    : `${allCustomers.length} customers total`;
+
+            if (filtered.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-4">No customers match your search</td></tr>';
+                return;
+            }
+
+            tableBody.innerHTML = filtered.map(c => `
+                <tr>
+                    <td class="fw-semibold">#${c.id}</td>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="avatar-circle">${(c.name || '?')[0].toUpperCase()}</div>
+                            <span>${c.name || 'N/A'}</span>
+                        </div>
+                    </td>
+                    <td>${c.email || 'N/A'}</td>
+                    <td>${c.phone || '—'}</td>
+                    <td>
+                        <span class="badge ${c.is_blocked ? 'bg-danger' : 'bg-success'} bg-opacity-10 text-${c.is_blocked ? 'danger' : 'success'} rounded-pill px-3">
+                            ${c.is_blocked ? 'Blocked' : 'Active'}
+                        </span>
+                    </td>
+                    <td class="text-muted">${c.created_at ? new Date(c.created_at).toLocaleDateString() : '—'}</td>
+                    <td class="text-end text-nowrap">
+                        <button onclick="toggleCustomerBlock(${c.id}, ${c.is_blocked})" class="btn btn-sm ${c.is_blocked ? 'btn-outline-success' : 'btn-outline-danger'} rounded-pill px-3 me-1" title="${c.is_blocked ? 'Unblock' : 'Block'} Customer">
+                            <i class="fas ${c.is_blocked ? 'fa-user-check' : 'fa-user-slash'}"></i>
+                        </button>
+                        <button onclick="deleteCustomer(${c.id})" class="btn btn-sm btn-outline-danger rounded-pill px-3" title="Delete Customer">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function clearFilters() {
+            document.getElementById('customer-search').value = '';
+            document.getElementById('customer-status-filter').value = '';
+            renderCustomers();
+        }
+
+        async function toggleCustomerBlock(id, currentStatus) {
+            const newStatus = currentStatus ? 0 : 1;
+            const action = newStatus ? 'block' : 'unblock';
+            if (!confirm(`Are you sure you want to ${action} this customer?`)) return;
+            const res = await adminFetch(`${ADMIN_API_URL}/customers/${id}/status`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ is_blocked: newStatus })
+            });
+            if (res && res.ok) {
+                showToast(`Customer ${action}ed successfully`, 'success');
+                loadCustomers();
+            } else {
+                showToast(`Failed to ${action} customer`, 'error');
+            }
+        }
+    </script>
+</body>
+
+</html>

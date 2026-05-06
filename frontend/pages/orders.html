@@ -1,0 +1,474 @@
+<?php
+// Orders page content
+?>
+
+<style>
+    .order-card-mobile {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 12px;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border-color);
+    }
+
+    .order-card-mobile .order-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .order-card-mobile .order-card-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 4px 0;
+        font-size: 0.82rem;
+    }
+
+    .order-card-mobile .order-card-row .label {
+        color: var(--secondary);
+        font-weight: 500;
+        opacity: 0.8;
+    }
+
+    .order-card-mobile .order-card-row .value {
+        font-weight: 600;
+        color: var(--text-main);
+    }
+
+    
+    #orders-cards-mobile {
+        display: none;
+    }
+
+    @media (max-width: 767.98px) {
+        #orders-cards-mobile {
+            display: block;
+        }
+
+        .table-responsive {
+            display: none !important;
+        }
+
+        .orders-header-row {
+            flex-direction: column;
+            gap: 8px;
+            align-items: flex-start !important;
+        }
+
+        .orders-header-row .btn {
+            align-self: stretch;
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-11">
+            <div class="d-flex justify-content-between align-items-center mb-4 orders-header-row">
+                <div>
+                    <h1 class="fw-bold mb-1 orders-title"><i
+                            class="fas fa-box me-2 text-primary"></i> My Orders</h1>
+                    <p class="theme-text-muted small mb-0">Track and manage your recent purchases</p>
+                </div>
+                <a href="/shop" class="btn btn-dark rounded-pill px-4">Continue Shopping</a>
+            </div>
+
+            <div id="orders-loading" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="mt-2 theme-text-muted">Fetching your order history...</p>
+            </div>
+
+            <div id="no-orders" class="d-none text-center py-5">
+                <i class="fas fa-shopping-cart theme-text-muted fa-3x mb-3 opacity-25"></i>
+                <h5>No Orders Found</h5>
+                <p class="theme-text-muted">You haven't placed any orders yet.</p>
+                <a href="/shop" class="btn btn-dark rounded-pill px-4 mt-2">Browse Shop</a>
+            </div>
+
+            
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table id="orders-table" class="table table-hover align-middle mb-0 d-none">
+                            <thead class="table-header-gray">
+                                <tr>
+                                    <th class="ps-4">Order ID</th>
+                                    <th>Date</th>
+                                    <th>Items</th>
+                                    <th>Method</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th class="text-end pe-4">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-list">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div id="orders-cards-mobile"></div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="returnRequestModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold">Request Return/Exchange</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="return-request-form">
+                    <input type="hidden" id="return-order-id">
+
+                    <div class="mb-3">
+                        <label for="return-product-id" class="form-label small theme-text-muted text-uppercase fw-bold">Select Item</label>
+                        <select id="return-product-id" class="form-select rounded-4" required>
+                            <option value="">Loading items...</option>
+                        </select>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-6">
+                            <label for="return-type" class="form-label small theme-text-muted text-uppercase fw-bold">Return Type</label>
+                            <select id="return-type" class="form-select rounded-4">
+                                <option value="Refund">Refund</option>
+                                <option value="Exchange">Exchange</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label for="return-method" class="form-label small theme-text-muted text-uppercase fw-bold">Method</label>
+                            <select id="return-method" class="form-select rounded-4">
+                                <option value="Courier">Courier</option>
+                                <option value="Handover">Handover</option>
+                                <option value="Delivery Man">Delivery Man</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="refund-fields" class="mb-3">
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <label for="return-payment-method" class="form-label small theme-text-muted text-uppercase fw-bold">Refund
+                                    Method</label>
+                                <select id="return-payment-method" class="form-select rounded-4">
+                                    <option value="bKash">bKash</option>
+                                    <option value="Nagad">Nagad</option>
+                                    <option value="Rocket">Rocket</option>
+                                    <option value="Bank">Bank Transfer</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label for="return-account-number" class="form-label small theme-text-muted text-uppercase fw-bold">A/C
+                                    Number</label>
+                                <input type="text" id="return-account-number" class="form-control rounded-4"
+                                    >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="return-reason" class="form-label small theme-text-muted text-uppercase fw-bold">Reason</label>
+                        <textarea id="return-reason" class="form-control rounded-4" rows="3" required
+                            ></textarea>
+                    </div>
+
+                    <div id="return-feedback" class="mb-3 d-none"></div>
+                    <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 text-uppercase fw-bold">Submit
+                        Request</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="orderModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold" id="orderModalLabel">Order Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div id="modal-loading" class="text-center py-4">
+                    <div class="spinner-border spinner-border-sm text-primary"></div>
+                </div>
+                <div id="modal-content" class="d-none">
+                    <div id="order-items-list" class="mb-4">
+                        
+                    </div>
+                    <div id="order-meta" class="row g-3 p-3 bg-theme-aware border border-color rounded-3">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        // Use global window.API_URL and token
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = '/login';
+            return;
+        }
+
+        const handleReturnRequest = async (e) => {
+            e.preventDefault();
+            const orderId = document.getElementById('return-order-id').value;
+            const productId = document.getElementById('return-product-id').value;
+            const reason = document.getElementById('return-reason').value;
+            const returnType = document.getElementById('return-type').value;
+            const returnMethod = document.getElementById('return-method').value;
+            const paymentMethod = document.getElementById('return-payment-method').value;
+            const accountNumber = document.getElementById('return-account-number').value;
+            const feedback = document.getElementById('return-feedback');
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Submitting...';
+
+            try {
+                const res = await fetch(`${API_URL}/orders/return`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        orderId,
+                        productId,
+                        reason,
+                        returnType,
+                        returnMethod,
+                        paymentMethod,
+                        accountNumber
+                    })
+                });
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || 'Request failed');
+
+                feedback.className = 'alert alert-success small';
+                feedback.textContent = 'Return request submitted successfully! We will contact you soon.';
+                feedback.classList.remove('d-none');
+                setTimeout(() => {
+                    bootstrap.Modal.getInstance(document.getElementById('returnRequestModal')).hide();
+                    feedback.classList.add('d-none');
+                    document.getElementById('return-request-form').reset();
+                }, 2000);
+            } catch (err) {
+                feedback.className = 'alert alert-danger small';
+                feedback.textContent = err.message;
+                feedback.classList.remove('d-none');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Submit Request';
+            }
+        };
+
+        const returnForm = document.getElementById('return-request-form');
+        if (returnForm) returnForm.addEventListener('submit', handleReturnRequest);
+
+        window.openReturnModal = async (orderId) => {
+            document.getElementById('return-order-id').value = orderId;
+            const productSelect = document.getElementById('return-product-id');
+            productSelect.innerHTML = '<option value="">Loading items...</option>';
+
+            new bootstrap.Modal(document.getElementById('returnRequestModal')).show();
+
+            // Fetch order items to populate select
+            try {
+                const res = await fetch(`${API_URL}/orders/${orderId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                const items = Array.isArray(data) ? data : (data.items || []);
+
+                productSelect.innerHTML = items.map(item => `
+                    <option value="${item.product_id}">${item.name} (${item.size || 'N/A'} / ${item.color || 'N/A'})</option>
+                `).join('');
+            } catch (err) {
+                productSelect.innerHTML = '<option value="">Error loading items</option>';
+            }
+        };
+
+        // Toggle refund fields based on type
+        document.getElementById('return-type').addEventListener('change', (e) => {
+            const refundFields = document.getElementById('refund-fields');
+            refundFields.style.display = e.target.value === 'Refund' ? 'block' : 'none';
+        });
+
+        const loadOrders = async () => {
+            try {
+                const response = await fetch(`${API_URL}/orders/my-orders`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!response.ok) throw new Error('Failed to load orders');
+                const orders = await response.json();
+
+                document.getElementById('orders-loading').classList.add('d-none');
+
+                if (orders.length === 0) {
+                    document.getElementById('no-orders').classList.remove('d-none');
+                    return;
+                }
+
+                const list = document.getElementById('orders-list');
+                list.innerHTML = orders.map(order => {
+                    const isReturnable = (order.status.toLowerCase() === 'completed' || order.status.toLowerCase() === 'delivered');
+                    return `
+                    <tr>
+                        <td class="ps-4 fw-bold text-primary">${order.order_number || ('#ORD-' + order.id)}</td>
+                        <td>${new Date(order.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}</td>
+                        <td>${order.items_count} items</td>
+                        <td><small class="text-uppercase fw-bold theme-text-muted">${order.payment_method}</small></td>
+                        <td class="fw-bold">৳${Number(order.total_amount).toLocaleString()}</td>
+                        <td><span class="badge bg-${getStatusColor(order.status)} bg-opacity-10 text-${getStatusColor(order.status)} rounded-pill px-3">${order.status.toUpperCase()}</span></td>
+                        <td class="text-end pe-4">
+                            <div class="d-flex justify-content-end gap-2">
+                                ${isReturnable ? `<button class="btn btn-sm btn-outline-danger rounded-pill px-3" onclick="openReturnModal(${order.id})">Return</button>` : ''}
+                                <button class="btn btn-sm btn-dark rounded-pill px-3" onclick="viewOrderDetails(${order.id})">View</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                }).join('');
+
+                // Mobile cards
+                const mobileCards = document.getElementById('orders-cards-mobile');
+                if (mobileCards) {
+                    mobileCards.innerHTML = orders.map(order => {
+                        const isReturnable = (order.status.toLowerCase() === 'completed' || order.status.toLowerCase() === 'delivered');
+                        return `
+                        <div class="order-card-mobile">
+                            <div class="order-card-header">
+                                <span class="fw-bold">${order.order_number || ('#ORD-' + order.id)}</span>
+                                <span class="badge bg-${getStatusColor(order.status)} bg-opacity-10 text-${getStatusColor(order.status)} rounded-pill px-3">${order.status.toUpperCase()}</span>
+                            </div>
+                            <div class="order-card-row">
+                                <span class="label">Date</span>
+                                <span class="value">${new Date(order.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                            </div>
+                            <div class="order-card-row">
+                                <span class="label">Total</span>
+                                <span class="value">৳${Number(order.total_amount).toLocaleString()}</span>
+                            </div>
+                            <div class="mt-3 d-flex gap-2">
+                                <button class="btn btn-sm btn-dark rounded-pill px-4 flex-grow-1" onclick="viewOrderDetails(${order.id})">Details</button>
+                                ${isReturnable ? `<button class="btn btn-sm btn-outline-danger rounded-pill px-4 flex-grow-1" onclick="openReturnModal(${order.id})">Return</button>` : ''}
+                            </div>
+                        </div>
+                    `;
+                    }).join('');
+                }
+
+                document.getElementById('orders-table').classList.remove('d-none');
+            } catch (err) {
+                console.error(err);
+                document.getElementById('orders-loading').innerHTML = '<p class="text-danger">Failed to load orders.</p>';
+            }
+        };
+
+        window.viewOrderDetails = async (id) => {
+            const modal = new bootstrap.Modal(document.getElementById('orderModal'));
+            modal.show();
+
+            const modalLoading = document.getElementById('modal-loading');
+            const modalContent = document.getElementById('modal-content');
+            modalLoading.classList.remove('d-none');
+            modalContent.classList.add('d-none');
+
+            try {
+                const res = await fetch(`${API_URL}/orders/${id}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+
+                // Handle both array (items only) and object with items + order info
+                const items = Array.isArray(data) ? data : (data.items || []);
+                const order = Array.isArray(data) ? null : data.order;
+
+                const list = document.getElementById('order-items-list');
+                list.innerHTML = items.map(item => {
+                    let imgToUse = item.variant_image || item.image;
+                    let imgSrc = imgToUse ? (imgToUse.startsWith('http') ? imgToUse : (imgToUse.startsWith('/') ? imgToUse : '/' + imgToUse)) : '/img/placeholder.png';
+                    // Fix double slashes just in case
+                    imgSrc = imgSrc.replace(/([^:]\/)\/+/g, "$1");
+
+                    return `
+                    <div class="d-flex align-items-center mb-3">
+                        <a href="/product/${item.slug}">
+                            <img loading="lazy" decoding="async" src="${imgSrc}" class="order-item-thumb me-3">
+                        </a>
+                        <div class="flex-grow-1">
+                            <a href="/product/${item.slug}" class="text-decoration-none text-body">
+                                <h6 class="mb-0 fw-bold">${item.name}</h6>
+                            </a>
+                            <small class="theme-text-muted">${item.size ? 'Size: ' + item.size + ' · ' : ''}Quantity: ${item.quantity} x ৳${parseFloat(item.price).toLocaleString()}</small>
+                        </div>
+                        <div class="text-end">
+                            <span class="fw-bold">৳${(item.quantity * item.price).toLocaleString()}</span>
+                        </div>
+                    </div>
+                `}).join('');
+
+                // Show order meta info if available
+                const metaEl = document.getElementById('order-meta');
+                if (order) {
+                    metaEl.innerHTML = `
+                        <div class="col-md-4">
+                            <small class="theme-text-muted d-block">Status</small>
+                            <span class="badge bg-${getStatusColor(order.status)} bg-opacity-10 text-${getStatusColor(order.status)} rounded-pill px-3">${(order.status || 'N/A').toUpperCase()}</span>
+                        </div>
+                        <div class="col-md-4">
+                            <small class="theme-text-muted d-block">Payment</small>
+                            <strong class="text-uppercase">${order.payment_method || 'N/A'}</strong>
+                        </div>
+                        <div class="col-md-4">
+                            <small class="theme-text-muted d-block">Total</small>
+                            <strong class="text-primary">৳${Number(order.total_amount || 0).toLocaleString()}</strong>
+                        </div>
+                        ${order.shipping_address ? `<div class="col-12 mt-2"><small class="theme-text-muted d-block">Shipping Address</small><span>${order.shipping_address}${order.shipping_city ? ', ' + order.shipping_city : ''}</span></div>` : ''}
+                    `;
+                } else {
+                    metaEl.innerHTML = '';
+                }
+
+                modalLoading.classList.add('d-none');
+                modalContent.classList.remove('d-none');
+            } catch (err) {
+                console.error(err);
+                modalLoading.innerHTML = '<p class="text-danger">Error loading details</p>';
+            }
+        };
+
+        loadOrders();
+    });
+
+    function getStatusColor(status) {
+        if (!status) return 'secondary';
+        switch (status.toLowerCase()) {
+            case 'pending': return 'warning';
+            case 'processing': return 'info';
+            case 'shipped': return 'primary';
+            case 'delivered':
+            case 'completed': return 'success';
+            case 'cancelled': return 'danger';
+            default: return 'secondary';
+        }
+    }
+</script>

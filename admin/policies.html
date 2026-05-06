@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 ">
+    <title>SABILORÉ | Policy Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <style>
+        .policy-card {
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .policy-card:hover {
+            background: #f8f9fa;
+        }
+
+        .policy-icon-wrapper {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .policy-icon-primary {
+            background: #f0f4ff;
+        }
+
+        .policy-icon-warning {
+            background: #fef3c7;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div id="admin-layout-placeholder"></div>
+
+    <div class="admin-main-content p-5">
+        <h2 class="fw-bold mb-5">Policy Management</h2>
+
+        <div class="row g-4">
+            <div class="col-md-6">
+                <a href="../frontend/terms" target="_blank" class="card p-4 policy-card text-decoration-none text-dark d-block">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="policy-icon-wrapper policy-icon-primary">
+                            <i class="fas fa-file-contract text-primary fa-lg"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Terms & Conditions</h6>
+                            <p class="text-muted small mb-0">View the terms and conditions page</p>
+                        </div>
+                        <i class="fas fa-external-link-alt text-muted ms-auto"></i>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-6">
+                <a href="../frontend/privacy" target="_blank" class="card p-4 policy-card text-decoration-none text-dark d-block">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="policy-icon-wrapper policy-icon-warning">
+                            <i class="fas fa-shield-alt text-warning fa-lg"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Privacy Policy</h6>
+                            <p class="text-muted small mb-0">View the privacy policy page</p>
+                        </div>
+                        <i class="fas fa-external-link-alt text-muted ms-auto"></i>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="card p-4 mt-4">
+            <div class="text-center py-3">
+                <i class="fas fa-info-circle text-muted fa-lg mb-2 d-block"></i>
+                <p class="text-muted mb-0 small">To edit policy content, modify the PHP files directly:
+                    <code>frontend/pages/terms.php</code> and <code>frontend/pages/privacy.php</code>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="js/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAdminLayout();
+            loadPolicies();
+        });
+    </script>
+</body>
+
+</html>

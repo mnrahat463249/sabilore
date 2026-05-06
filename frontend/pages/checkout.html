@@ -1,0 +1,652 @@
+<style>
+    .checkout-section {
+        background: var(--card-bg);
+        border-radius: 16px;
+        box-shadow: var(--shadow-sm);
+        padding: 2rem;
+        border: 1px solid var(--border-color);
+    }
+
+    .free-delivery-option {
+        border-color: #00b894 !important;
+        background: linear-gradient(135deg, rgba(0,184,148,0.08), rgba(0,206,201,0.08)) !important;
+    }
+
+    .checkout-sticky {
+        top: 2rem;
+    }
+
+    .hidden-by-default {
+        display: none;
+    }
+
+    .success-icon-large {
+        font-size: 4rem;
+    }
+
+    .order-id-card {
+        max-width: 400px;
+        border: 2px dashed #ccc !important;
+    }
+
+    .checkout-section h5 {
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid var(--border-color);
+        color: var(--text-main);
+    }
+
+    @media (max-width: 768px) {
+        .checkout-section {
+            padding: 1rem;
+        }
+    }
+    
+
+    .location-option {
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        padding: 1rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: var(--input-bg);
+    }
+
+    .location-option:hover {
+        border-color: #adb5bd;
+    }
+
+    .location-option.selected {
+        border-color: var(--primary);
+        background: var(--light-gray);
+    }
+
+    .payment-option {
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        padding: 1rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: var(--input-bg);
+    }
+
+    .payment-option:hover {
+        border-color: #adb5bd;
+    }
+
+    .payment-option.selected {
+        border-color: var(--primary);
+        background: var(--light-gray);
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+    }
+
+    .summary-row.total {
+        border-top: 2px solid var(--border-color);
+        margin-top: 0.5rem;
+        padding-top: 1rem;
+        font-size: 1.15rem;
+        color: var(--text-main);
+    }
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="d-flex align-items-center mb-4">
+                <a href="cart" class="btn btn-outline-dark btn-sm rounded-pill me-3">
+                    <i class="fas fa-arrow-left me-1"></i> Back to Cart
+                </a>
+                <div>
+                    <h1 class="fw-bold mb-0">Checkout</h1>
+                    <p class="theme-text-muted small mb-0">Shipping to: <strong>Dhaka, Bangladesh</strong></p>
+                </div>
+            </div>
+
+            
+            <div id="checkout-empty" class="d-none text-center py-5">
+                <i class="fas fa-shopping-cart fa-3x theme-text-muted mb-3"></i>
+                <h5>Your cart is empty</h5>
+                <p class="theme-text-muted">Add some items before checking out.</p>
+                <a href="/shop" class="btn btn-dark rounded-pill px-4">Browse Shop</a>
+            </div>
+
+            
+            <div id="checkout-login" class="d-none text-center py-5">
+                <i class="fas fa-user-lock fa-3x theme-text-muted mb-3"></i>
+                <h5>Please Login First</h5>
+                <p class="theme-text-muted">You need to be logged in to place an order.</p>
+                <a href="/login" class="btn btn-dark rounded-pill px-4">Login Now</a>
+            </div>
+
+            
+            <form id="checkout-form" class="d-none">
+                <div class="row g-4">
+                    
+                    <div class="col-lg-7">
+                        
+                        <div class="checkout-section mb-4">
+                            <h5><i class="fas fa-truck me-2 text-primary"></i> Shipping Information</h5>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold text-uppercase" for="ship-name">Full Name</label>
+                                    <input type="text" id="ship-name" class="form-control rounded-3" required  title="Full Name">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold text-uppercase" for="ship-phone">Phone Number</label>
+                                    <input type="tel" id="ship-phone" class="form-control rounded-3" required
+                                         title="Phone Number">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label small fw-bold text-uppercase" for="ship-email">Email Address
+                                        (Optional)</label>
+                                    <input type="email" id="ship-email" class="form-control rounded-3"
+                                         title="Email Address">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label small fw-bold text-uppercase" for="ship-address">Street Address</label>
+                                    <input type="text" id="ship-address" class="form-control rounded-3" required
+                                         title="Street Address">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold text-uppercase" for="ship-city">City</label>
+                                    <input type="text" id="ship-city" class="form-control rounded-3" required  title="City">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold text-uppercase" for="ship-postal">Postal Code
+                                        (Optional)</label>
+                                    <input type="text" id="ship-postal" class="form-control rounded-3"  title="Postal Code">
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div class="checkout-section mb-4">
+                            <h5><i class="fas fa-map-marker-alt me-2 text-danger"></i> Delivery Zone</h5>
+                            <div class="row g-3" id="delivery-zone-options">
+                                <div class="col-6">
+                                    <div class="location-option selected" data-location="inside_dhaka"
+                                        onclick="selectLocation(this)">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <i class="fas fa-city text-primary"></i>
+                                            <div>
+                                                <div class="fw-bold">Inside Dhaka</div>
+                                                <small class="theme-text-muted">৳80 delivery fee</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="location-option" data-location="outside_dhaka"
+                                        onclick="selectLocation(this)">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <i class="fas fa-globe-asia text-success"></i>
+                                            <div>
+                                                <div class="fw-bold">Outside Dhaka</div>
+                                                <small class="theme-text-muted">৳140 delivery fee</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="location-option" data-location="express_dhaka"
+                                        onclick="selectLocation(this)">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <i class="fas fa-shipping-fast text-warning"></i>
+                                            <div>
+                                                <div class="fw-bold">Express Delivery (Inside Dhaka Only)</div>
+                                                <small class="theme-text-muted">৳150 delivery fee (12-24 Hours)</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-12 d-none" id="free-delivery-option-wrap">
+                                    <div class="location-option free-delivery-option" data-location="free_delivery"
+                                        onclick="selectLocation(this)">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <i class="fas fa-truck text-success"></i>
+                                            <div>
+                                                <div class="fw-bold text-success">🚚 Free Delivery</div>
+                                                <small class="text-success fw-bold">৳0 — No delivery charge!</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div class="checkout-section">
+                            <h5><i class="fas fa-credit-card me-2 text-success"></i> Payment Method</h5>
+                            <div class="row g-3" id="payment-methods-container">
+                                <div class="col-12 text-center py-3">
+                                    <span class="spinner-border spinner-border-sm me-2"></span> Loading payment
+                                    options...
+                                </div>
+                            </div>
+
+                            
+                            <div id="payment-extra-info" class="d-none mt-3 p-3 bg-theme-light rounded-3 border">
+                                
+                            </div>
+
+                            <div class="mt-4">
+                                <label class="form-label small fw-bold text-uppercase" for="order-notes">Order Notes (Optional)</label>
+                                <textarea id="order-notes" class="form-control rounded-3" rows="2"
+                                     title="Order Notes"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div class="col-lg-5">
+                        <div class="checkout-section position-sticky checkout-sticky">
+                            <h5><i class="fas fa-receipt me-2 text-warning"></i> Order Summary</h5>
+                            <div id="checkout-items">
+                                
+                            </div>
+                            <div class="mt-3">
+                                
+                                <div class="mb-3 px-3 py-3 bg-theme-light rounded-3 border">
+                                    <label class="form-label small fw-bold text-uppercase" for="coupon-code-input"><i
+                                            class="fas fa-tag me-1 text-primary"></i> Have a Coupon?</label>
+                                    <div class="input-group">
+                                        <input type="text" id="coupon-code-input" class="form-control"
+                                             title="Coupon Code">
+                                        <button class="btn btn-dark" type="button" id="apply-coupon-btn" title="Apply Coupon">Apply</button>
+                                    </div>
+                                    <div id="coupon-message" class="small mt-2 d-none"></div>
+                                </div>
+
+                                <div class="summary-row">
+                                    <span class="theme-text-muted">Subtotal</span>
+                                    <span class="fw-bold" id="checkout-subtotal">৳0</span>
+                                </div>
+                                <div class="summary-row hidden-by-default" id="discount-row">
+                                    <span class="text-danger">Discount</span>
+                                    <span class="fw-bold text-danger" id="checkout-discount">-৳0</span>
+                                </div>
+                                <div class="summary-row">
+                                    <span class="theme-text-muted">Delivery Fee</span>
+                                    <span class="fw-bold" id="checkout-delivery">৳80</span>
+                                </div>
+                                <div class="summary-row total">
+                                    <span class="fw-bold">Total</span>
+                                    <span class="fw-bold text-primary fs-5" id="checkout-total">৳0</span>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-dark w-100 rounded-pill py-3 mt-4 fw-bold"
+                                id="place-order-btn">
+                                <i class="fas fa-lock me-2"></i> Place Order
+                            </button>
+                            <div id="checkout-feedback" class="mt-3 d-none"></div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            
+            <div id="checkout-success" class="d-none text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-check-circle text-success success-icon-large"></i>
+                </div>
+                <h3 class="fw-bold mb-2">Order Placed Successfully! 🎉</h3>
+                <p class="theme-text-muted mb-4">We've received your order and will start processing it shortly.</p>
+
+                <div class="card bg-theme-light border-0 rounded-4 p-4 mb-4 mx-auto order-id-card">
+                    <p class="small fw-bold text-uppercase text-muted mb-2">Your Order ID</p>
+                    <h2 class="fw-bold tracking-wider mb-0 text-primary" id="success-order-id">#ORD-000</h2>
+                </div>
+
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="/track" id="btn-track-order" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm"><i
+                            class="fas fa-truck me-2"></i> Track Your Order</a>
+                    <a href="/shop" class="btn btn-outline-dark rounded-pill px-4 fw-bold">Continue Shopping</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const cart = window.SABILORE_UTILS.Cart.get();
+        const urlParams = new URLSearchParams(window.location.search);
+        const paymentStatus = urlParams.get('payment');
+        const paymentError = urlParams.get('error');
+
+        if (paymentStatus === 'success') {
+            document.getElementById('checkout-form').classList.add('d-none');
+            const finalOrderId = urlParams.get('orderId');
+            if (finalOrderId) {
+                document.getElementById('success-order-id').textContent = '#ORD-' + finalOrderId;
+            }
+
+            // Tracking Purchase using centralized utility
+            if (window.SabiloreTracking) {
+                let trackingValue = cart.reduce((sum, c) => sum + (Number(c.price) * Number(c.quantity)), 0);
+                window.SabiloreTracking.trackPurchase({
+                    transaction_id: finalOrderId || 'gateway_order',
+                    value: trackingValue,
+                    items: cart.map(c => ({ id: c.id, name: c.name, price: c.price, quantity: c.quantity }))
+                });
+            }
+
+            document.getElementById('checkout-success').classList.remove('d-none');
+            window.SABILORE_UTILS.Cart.clear();
+            window.history.replaceState({}, document.title, window.location.pathname);
+            return;
+        }
+
+        if (paymentError) {
+            const feedback = document.getElementById('checkout-feedback');
+            if (feedback) {
+                feedback.className = 'alert alert-danger small mt-3';
+                feedback.textContent = paymentError;
+                feedback.classList.remove('d-none');
+            }
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        if (cart.length === 0) {
+            document.getElementById('checkout-empty').classList.remove('d-none');
+            return;
+        }
+
+        document.getElementById('checkout-form').classList.remove('d-none');
+
+        // Prefill shipping info
+        if (window.SABILORE_UTILS.prefillShippingInfo) {
+            window.SABILORE_UTILS.prefillShippingInfo('checkout-form');
+        }
+
+        let products = [];
+        let appliedCoupon = null;
+        let subtotal = 0;
+        let discountAmount = 0;
+
+        window.renderCheckoutItems = function () {
+            const currentCart = window.SABILORE_UTILS.Cart.get();
+            if (currentCart.length === 0) { window.location.href = '/cart'; return; }
+
+            const itemsContainer = document.getElementById('checkout-items');
+            subtotal = 0;
+
+            itemsContainer.innerHTML = currentCart.map((cartItem, index) => {
+                const product = products.find(p => p.id == cartItem.id);
+                if (!product) return '';
+                const itemTotal = (cartItem.price || product.price) * (cartItem.quantity || 1);
+                subtotal += itemTotal;
+                const imageUrl = product.image ? (product.image.startsWith('http') ? product.image : window.BASE_URL + product.image) : 'https://via.placeholder.com/600x600';
+                
+                let sizeHtml = '';
+                if (cartItem.size) {
+                    sizeHtml = `<div class="theme-text-muted mb-1" style="font-size: 1.05rem;">Size: <span style="color:var(--text-main);">${cartItem.size}</span></div>`;
+                }
+                
+                let colorHtml = '';
+                if (cartItem.color) {
+                    colorHtml = `<div class="theme-text-muted mb-2" style="font-size: 1.05rem;">Color: <span style="color:var(--text-main);">${cartItem.color}</span></div>`;
+                }
+
+                return `
+                    <div class="order-item-card border-bottom pb-4 mb-4">
+                        <img loading="lazy" decoding="async" src="${imageUrl}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/500'" class="w-100 mb-4" style="border-radius: 12px; object-fit: cover; aspect-ratio: 4/5;">
+                        <h3 class="fw-bold mb-2">${product.name}</h3>
+                        ${sizeHtml}
+                        ${colorHtml}
+                        <div class="d-flex align-items-center justify-content-between mt-3">
+                            <div class="fw-bold" style="font-size: 1.4rem;">৳${itemTotal.toLocaleString()}</div>
+                            <div class="d-flex align-items-center gap-1">
+                                <button type="button" class="btn btn-outline-secondary bg-white text-dark d-flex align-items-center justify-content-center" style="width:38px; height:38px; padding:0; border: 1px solid #ced4da; font-size: 18px;" onclick="updateCheckoutQty(${index}, -1)">-</button>
+                                <span class="fw-bold mx-2 text-center" style="font-size: 1.1rem; min-width: 16px;">${cartItem.quantity || 1}</span>
+                                <button type="button" class="btn btn-outline-secondary bg-white text-dark d-flex align-items-center justify-content-center" style="width:38px; height:38px; padding:0; border: 1px solid #ced4da; font-size: 18px;" onclick="updateCheckoutQty(${index}, 1)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            updateSummary(subtotal);
+        };
+
+        window.updateCheckoutQty = function (index, delta) {
+            window.SABILORE_UTILS.Cart.updateQty(index, delta);
+            renderCheckoutItems();
+        };
+
+        // Fetch products using bulk utility
+        try {
+            const ids = cart.map(c => c.id);
+            products = await window.SABILORE_UTILS.fetchBulkProducts(ids);
+            renderCheckoutItems();
+
+            // ── Free Delivery Detection ──────────────────────────────────────────
+            // If ALL cart items have is_free_delivery = 1, show the FREE DELIVERY option
+            // and auto-select it (deselecting the default Inside Dhaka option)
+            const allFreeDelivery = products.length > 0 && cart.every(cartItem => {
+                const p = products.find(p => p.id == cartItem.id);
+                return p && p.is_free_delivery == 1;
+            });
+            const freeOptWrap = document.getElementById('free-delivery-option-wrap');
+            if (allFreeDelivery && freeOptWrap) {
+                freeOptWrap.classList.remove('d-none');
+                // Auto-select Free Delivery and deselect others
+                document.querySelectorAll('.location-option').forEach(o => o.classList.remove('selected'));
+                freeOptWrap.querySelector('.location-option').classList.add('selected');
+                updateSummary(subtotal);
+            }
+        } catch (e) {
+            console.error('Checkout product load error:', e);
+        }
+
+        // ... Load Payment Methods ...
+        const paymentContainer = document.getElementById('payment-methods-container');
+        let activeMethods = [];
+
+        async function loadPaymentMethods() {
+            try {
+                const res = await fetch(`${API_URL}/payments/active`);
+                activeMethods = await res.json();
+
+                // Ensure Nagad Personal fallback
+                if (!activeMethods.find(m => m.name.toLowerCase().includes('nagad'))) {
+                    activeMethods.push({
+                        id: 9999, name: 'Nagad (Personal)', type: 'mobile',
+                        instructions: '<p><strong>Nagad (Personal):</strong> <span style="color:purple;">01858-912152</span></p><p>Please send money to this number and enter your Transaction ID below.</p>'
+                    });
+                }
+
+                if (activeMethods.length === 0) {
+                    paymentContainer.innerHTML = '<div class="col-12 text-danger small">No payment methods available.</div>';
+                    return;
+                }
+
+                paymentContainer.innerHTML = activeMethods.map((m, idx) => `
+                    <div class="col-12 col-md-6">
+                        <div class="payment-option ${idx === 0 ? 'selected' : ''}" data-method="${m.name.toLowerCase().replace(/\s+/g, '_')}" data-type="${m.type}" data-id="${m.id}"
+                            onclick="selectPayment(this, ${m.id})">
+                            <div class="d-flex align-items-center gap-2">
+                                ${m.image ? `<img loading="lazy" decoding="async" src="${m.image}" alt="${m.name}" style="height: 30px; width: 45px; object-fit: contain; border-radius: 4px;">` : `<i class="fas fa-credit-card" style="font-size: 1.4rem; color: var(--primary);"></i>`}
+                                <div>
+                                    <div class="fw-bold small">${m.name}</div>
+                                    <small class="theme-text-muted" style="font-size: 0.7rem;">${m.type === 'mobile' ? 'Mobile Banking' : m.type === 'bank' ? 'Bank Transfer' : 'Pay on Delivery'}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                if (activeMethods[0]) updateExtraInfo(activeMethods[0].id);
+            } catch (e) { console.error('Payment load error:', e); }
+        }
+
+        loadPaymentMethods();
+
+        window.selectLocation = function (el) {
+            document.querySelectorAll('.location-option').forEach(o => o.classList.remove('selected'));
+            el.classList.add('selected');
+            updateSummary(subtotal);
+        };
+
+        window.selectPayment = function (el, id) {
+            document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
+            el.classList.add('selected');
+            updateExtraInfo(id);
+        };
+
+        function updateExtraInfo(id) {
+            const extraRes = document.getElementById('payment-extra-info');
+            const method = activeMethods.find(m => m.id === id);
+            if (!method) { extraRes.classList.add('d-none'); return; }
+
+            let html = (method.instructions || '').trim();
+            if (html === '<p><br></p>') html = '';
+
+            const isCOD = method.name.toLowerCase().includes('cash') || method.type === 'cash';
+            if (!isCOD) {
+                html += `
+                    <div class="mt-2">
+                        <label class="form-label small fw-bold text-uppercase" style="font-size: 0.65rem;">Transaction / Reference ID</label>
+                        <input type="text" id="payment-txn-id" class="form-control form-control-sm rounded-3"  required>
+                    </div>`;
+            }
+
+            if (html) {
+                extraRes.innerHTML = html;
+                extraRes.classList.remove('d-none');
+            } else {
+                extraRes.innerHTML = ''; // This fixes the silent validation failure exactly
+                extraRes.classList.add('d-none');
+            }
+        }
+
+        function updateSummary(sub) {
+            const location = document.querySelector('.location-option.selected')?.dataset.location;
+            let deliveryFee = 80;
+            if (location === 'outside_dhaka') deliveryFee = 140;
+            else if (location === 'express_dhaka') deliveryFee = 150;
+            else if (location === 'free_delivery') deliveryFee = 0;
+
+            if (appliedCoupon) {
+                discountAmount = (appliedCoupon.discount_type === 'percentage')
+                    ? Math.round(sub * (appliedCoupon.discount_value / 100))
+                    : appliedCoupon.discount_value;
+                if (discountAmount > sub) discountAmount = sub;
+                document.getElementById('discount-row').style.display = 'flex';
+                document.getElementById('checkout-discount').textContent = `-৳${discountAmount}`;
+            } else {
+                discountAmount = 0;
+                document.getElementById('discount-row').style.display = 'none';
+            }
+
+            document.getElementById('checkout-subtotal').textContent = `৳${sub.toLocaleString()}`;
+            document.getElementById('checkout-delivery').innerHTML = deliveryFee === 0 ? '<span class="text-success fw-bold">FREE</span>' : `৳${deliveryFee}`;
+            document.getElementById('checkout-total').textContent = `৳${(sub - discountAmount + deliveryFee).toLocaleString()}`;
+        }
+
+        const applyCouponBtn = document.getElementById('apply-coupon-btn');
+        applyCouponBtn.addEventListener('click', async () => {
+            const code = document.getElementById('coupon-code-input').value.trim();
+            if (!code) return;
+            applyCouponBtn.disabled = true;
+            try {
+                const res = await fetch(`${API_URL}/coupons/validate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code, cart_total: subtotal })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message);
+                appliedCoupon = data.coupon;
+                document.getElementById('coupon-code-input').disabled = true;
+                applyCouponBtn.style.display = 'none';
+                document.getElementById('coupon-message').textContent = 'Coupon applied!';
+                document.getElementById('coupon-message').className = 'small mt-2 text-success';
+                document.getElementById('coupon-message').classList.remove('d-none');
+                updateSummary(subtotal);
+            } catch (e) {
+                document.getElementById('coupon-message').textContent = e.message;
+                document.getElementById('coupon-message').className = 'small mt-2 text-danger';
+                document.getElementById('coupon-message').classList.remove('d-none');
+            } finally { applyCouponBtn.disabled = false; }
+        });
+
+        document.getElementById('checkout-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('place-order-btn');
+            const feedback = document.getElementById('checkout-feedback');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processing...';
+
+            const location = document.querySelector('.location-option.selected')?.dataset.location;
+            const deliveryFee = location === 'outside_dhaka' ? 140 : (location === 'express_dhaka' ? 150 : (location === 'free_delivery' ? 0 : 80));
+            const currentCart = window.SABILORE_UTILS.Cart.get();
+
+            const orderData = {
+                items: currentCart
+                    .filter(c => products.find(p => p.id == c.id)) // Only include products that actually exist in DB
+                    .map(c => ({
+                        product_id: c.id, quantity: c.quantity || 1, size: c.size, color: c.color,
+                        tummy_shape: c.tummy_shape, price: c.price
+                    })),
+                shipping_name: document.getElementById('ship-name').value,
+                shipping_phone: document.getElementById('ship-phone').value,
+                shipping_email: document.getElementById('ship-email').value,
+                shipping_address: document.getElementById('ship-address').value,
+                shipping_city: document.getElementById('ship-city').value,
+                shipping_postal: document.getElementById('ship-postal').value,
+                location, delivery_fee: deliveryFee,
+                payment_method: document.querySelector('.payment-option.selected')?.dataset.method,
+                bkash_txn: document.getElementById('payment-txn-id')?.value || null,
+                notes: document.getElementById('order-notes').value,
+                total_amount: subtotal - discountAmount + deliveryFee,
+                coupon_code: appliedCoupon ? appliedCoupon.code : null,
+                discount_amount: discountAmount
+            };
+
+            try {
+                const token = localStorage.getItem('token');
+                const headers = { 'Content-Type': 'application/json' };
+                if (token) headers['Authorization'] = `Bearer ${token}`;
+
+                const res = await fetch(`${API_URL}/orders`, {
+                    method: 'POST', headers, body: JSON.stringify(orderData)
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message);
+                if (data.redirect_url) { window.location.href = data.redirect_url; return; }
+
+                const orderNum = data.order_number || `#ORD-${data.orderId || data.id}`;
+                document.getElementById('success-order-id').textContent = orderNum;
+
+                // Tracking
+                if (window.SabiloreTracking) {
+                    window.SabiloreTracking.trackPurchase({
+                        transaction_id: orderNum,
+                        value: orderData.total_amount,
+                        items: currentCart.map(c => ({ id: c.id, name: c.name, price: c.price, quantity: c.quantity }))
+                    });
+                }
+
+                window.SABILORE_UTILS.Cart.clear();
+                document.getElementById('checkout-form').classList.add('d-none');
+                const trackBtn = document.getElementById('btn-track-order');
+                if (trackBtn) trackBtn.href = `/track?order_id=${encodeURIComponent(orderNum)}&phone=${encodeURIComponent(orderData.shipping_phone)}`;
+                document.getElementById('checkout-success').classList.remove('d-none');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (err) {
+                feedback.textContent = err.message;
+                feedback.className = 'alert alert-danger small mt-3';
+                feedback.classList.remove('d-none');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-lock me-2"></i> Place Order';
+            }
+        });
+    });
+</script>

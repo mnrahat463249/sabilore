@@ -1,0 +1,52 @@
+{
+  "name": "sabilore-final",
+  "version": "1.0.0",
+  "description": "SABILORÉ Finalized E-Commerce Platform",
+  "main": "backend/app.js",
+  "scripts": {
+    "start": "cross-env NODE_ENV=production node backend/app.js",
+    "dev": "cross-env NODE_ENV=development nodemon backend/app.js",
+    "kill": "taskkill /F /IM node.exe 2>nul || true",
+    "fresh": "taskkill /F /T /IM node.exe 2>nul & node backend/app.js",
+    "build": "npx purgecss --css frontend/css/style.css frontend/css/bootstrap.css --content frontend/pages/*.html frontend/includes/*.html frontend/js/*.js --output frontend/css/ --safelist active show ticker-hidden page-loaded dropdown-menu dropdown-item collapsing collapse nav-link nav-item btn navbar-collapse fade skeleton-loader skeleton-loading && node ./scripts/minify-assets.js && node ./scripts/optimize-images.js",
+    "build:watch": "nodemon --watch frontend/css --watch frontend/js --watch admin/css --watch admin/js --ext css,js --exec \"node scripts/minify-assets.js\"",
+    "lint": "eslint . --ext .js",
+    "lint:fix": "eslint . --ext .js --fix",
+    "stylelint": "stylelint \"frontend/css/[^_]*.css\" \"!frontend/css/*.min.css\" \"admin/css/[^_]*.css\" \"!admin/css/*.min.css\" --ignore-path .stylelintignore --cache",
+    "stylelint:fix": "stylelint \"frontend/css/[^_]*.css\" \"!frontend/css/*.min.css\" \"admin/css/[^_]*.css\" \"!admin/css/*.min.css\" --fix --ignore-path .stylelintignore",
+    "duplicate:check": "jscpd frontend/ backend/ admin/ --threshold 5",
+    "audit:check": "npm audit --audit-level=moderate",
+    "analyze": "npm run lint || ver > nul && npm run stylelint || ver > nul && npm run duplicate:check || ver > nul"
+  },
+  "dependencies": {
+    "axios": "^1.15.0",
+    "bcryptjs": "^2.4.3",
+    "clean-css": "^5.3.3",
+    "compression": "^1.8.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-rate-limit": "^8.2.1",
+    "express-validator": "^7.3.2",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.0",
+    "lodash": "^4.17.21",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.2.0",
+    "nodemailer": "^8.0.5",
+    "puppeteer-core": "^24.42.0",
+    "sharp": "^0.34.5",
+    "uglify-js": "^3.19.3",
+    "xss": "^1.0.15"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@ljharb/tsconfig": "^0.3.2",
+    "cross-env": "^10.1.0",
+    "eslint": "^10.2.0",
+    "jscpd": "^4.0.9",
+    "purgecss": "^8.0.0",
+    "stylelint": "^17.9.0",
+    "stylelint-config-standard": "^40.0.0"
+  }
+}

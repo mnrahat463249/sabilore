@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 ">
+    <title>SABILORÉ | Return Requests</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+
+<body>
+    
+    <div id="admin-layout-placeholder"></div>
+
+    
+    <div class="admin-main-content p-5">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h2 class="fw-bold mb-1">Return Requests</h2>
+                <p class="text-muted mb-0">Manage customer return and exchange requests</p>
+            </div>
+            <button id="refresh-returns-btn" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                <i id="refresh-icon" class="fas fa-sync-alt me-2"></i> Refresh
+            </button>
+        </div>
+
+        <div class="card p-4 border-0 shadow-sm rounded-4">
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead class="bg-light small text-muted">
+                        <tr>
+                            <th>ID</th>
+                            <th>Order</th>
+                            <th>Customer</th>
+                            <th>Product</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="returns-tbody">
+                        <tr>
+                            <td colspan="7" class="text-center py-4 text-muted">Loading returns...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
+    
+    <div class="modal fade" id="returnModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Update Request Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div id="return-details" class="mb-4 p-3 bg-light rounded-4 small">
+                        
+                    </div>
+                    <form id="return-form">
+                        <input type="hidden" id="return-id">
+                        <div class="mb-3">
+                            <label for="return-status" class="form-label fw-bold small text-uppercase">Update Status</label>
+                            <select id="return-status" class="form-select rounded-pill">
+                                <option value="Pending">Pending</option>
+                                <option value="Approved">Approved</option>
+                                <option value="Rejected">Rejected</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="return-notes" class="form-label fw-bold small text-uppercase">Admin Notes</label>
+                            <textarea id="return-notes" class="form-control rounded-4" rows="3"
+                                ></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 fw-bold">Save
+                            Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAdminLayout();
+            checkAdminAuth();
+            loadReturns();
+
+            const refreshBtn = document.getElementById('refresh-returns-btn');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', () => {
+                    loadReturns(true); // manual refresh
+                });
+            }
+
+            document.getElementById('return-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const id = document.getElementById('return-id').value;
+                const data = {
+                    status: document.getElementById('return-status').value,
+                    admin_notes: document.getElementById('return-notes').value
+                };
+
+                try {
+                    const res = await adminFetch(`${ADMIN_API_URL}/returns/${id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    if (res && res.ok) {
+                        showToast('Return request updated', 'success');
+                        bootstrap.Modal.getInstance(document.getElementById('returnModal')).hide();
+                        loadReturns();
+                    }
+                } catch (err) {
+                    showToast('Update failed', 'error');
+                }
+            });
+        });
+
+        // Global cache to prevent passing full objects in HTML attributes
+        globalThis.adminReturnsCache = [];
+
+        async function loadReturns(isManual = false) {
+            const tbody = document.getElementById('returns-tbody');
+            const syncIcon = document.getElementById('refresh-icon');
+
+            if (syncIcon) syncIcon.classList.add('fa-spin');
+            try {
+                const res = await adminFetch(`${ADMIN_API_URL}/returns`);
+                const returns = await res.json();
+                
+                globalThis.adminReturnsCache = returns || [];
+
+                if (globalThis.adminReturnsCache.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-muted">No return requests found</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = globalThis.adminReturnsCache.map(r => {
+                    // Cache the date string to avoid recalculating unnecessarily
+                    const dateStr = new Date(r.created_at).toLocaleDateString();
+                    return `
+                    <tr>
+                        <td>#${r.id}</td>
+                        <td class="fw-bold text-primary">${escapeHTML(r.order_number || '')}</td>
+                        <td>
+                            <div>${escapeHTML(r.customer_name || 'Guest')}</div>
+                            <small class="text-muted">${escapeHTML(r.customer_email || '')}</small>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img src="${getImageUrl(r.product_image, '/img/placeholder.png')}" loading="lazy" width="32" height="32" style="object-fit: cover; border-radius: 4px;" class="me-2" alt="Product Image" onerror="this.src='/img/placeholder.png'">
+                                <div class="small fw-bold text-truncate" style="max-width: 120px;">${escapeHTML(r.product_name || 'N/A')}</div>
+                            </div>
+                        </td>
+                        <td><span class="badge ${r.return_type === 'Exchange' ? 'bg-info' : 'bg-secondary'} rounded-pill">${escapeHTML(r.return_type || '')}</span></td>
+                        <td><span class="badge ${getStatusBadgeClass(r.status)} rounded-pill">${escapeHTML(r.status || '')}</span></td>
+                        <td>${dateStr}</td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-dark rounded-pill px-3 me-1" onclick="openReturnModal(${r.id})">
+                                <i class="fas fa-edit me-1"></i> Handle
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger rounded-circle" onclick="deleteReturnRequest(${r.id})" title="Delete Request">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    `;
+                }).join('');
+
+                if (isManual) showToast('Return requests updated', 'success');
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger py-4">Failed to load returns</td></tr>';
+            } finally {
+                if (syncIcon) syncIcon.classList.remove('fa-spin');
+            }
+        }
+
+        function getStatusBadgeClass(status) {
+            const map = { 'Pending': 'bg-warning text-dark', 'Approved': 'bg-info text-white', 'Rejected': 'bg-danger text-white', 'Completed': 'bg-success text-white' };
+            return map[status] || 'bg-secondary';
+        }
+
+        function openReturnModal(id) {
+            const r = globalThis.adminReturnsCache.find(item => item.id === id);
+            if (!r) return;
+
+            document.getElementById('return-id').value = r.id;
+            document.getElementById('return-status').value = r.status;
+            document.getElementById('return-notes').value = r.admin_notes || '';
+
+            const details = document.getElementById('return-details');
+            details.innerHTML = `
+                <div class="row g-2">
+                    <div class="col-6 mb-2">
+                        <label class="text-muted d-block small text-uppercase">Type</label>
+                        <strong class="${r.return_type === 'Exchange' ? 'text-info' : 'text-primary'}">${escapeHTML(r.return_type)}</strong>
+                    </div>
+                    <div class="col-6 mb-2">
+                        <label class="text-muted d-block small text-uppercase">Method</label>
+                        <strong>${escapeHTML(r.return_method)}</strong>
+                    </div>
+                    ${r.return_type === 'Refund' ? `
+                    <div class="col-6 mb-2">
+                        <label class="text-muted d-block small text-uppercase">Refund To</label>
+                        <strong>${escapeHTML(r.payment_method || 'N/A')}</strong>
+                    </div>
+                    <div class="col-6 mb-2">
+                        <label class="text-muted d-block small text-uppercase">A/C Number</label>
+                        <strong>${escapeHTML(r.account_number || 'N/A')}</strong>
+                    </div>
+                    ` : ''}
+                    <div class="col-12">
+                        <label class="text-muted d-block small text-uppercase">Reason</label>
+                        <p class="mb-0 border-top mt-1 pt-1">${escapeHTML(r.reason || 'No reason provided')}</p>
+                    </div>
+                </div>
+            `;
+
+            new bootstrap.Modal(document.getElementById('returnModal')).show();
+        }
+
+        async function deleteReturnRequest(id) {
+            if (!confirm('Are you sure you want to permanently delete this return request?')) return;
+
+            try {
+                const res = await adminFetch(`${ADMIN_API_URL}/returns/${id}`, {
+                    method: 'DELETE'
+                });
+                if (res && res.ok) {
+                    showToast('Return request deleted successfully', 'success');
+                    loadReturns();
+                } else {
+                    showToast('Failed to delete request', 'error');
+                }
+            } catch (err) {
+                console.error('Delete error:', err);
+                showToast('Connection error', 'error');
+            }
+        }
+
+
+    </script>
+</body>
+
+</html>

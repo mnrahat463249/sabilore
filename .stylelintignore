@@ -1,0 +1,14 @@
+# Minified files — never lint build artifacts
+**/*.min.css
+**/*.css.bak
+
+# Vendor / third-party CSS — not our code to lint
+frontend/css/bootstrap.css
+frontend/css/fa.min.css
+
+# Generated / build output directories
+node_modules/**
+uploads/**
+logs/**
+dist/**
+build/**

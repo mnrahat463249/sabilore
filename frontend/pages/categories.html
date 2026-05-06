@@ -1,0 +1,101 @@
+<div class="container py-4 py-md-5">
+    
+    <div class="text-center mb-5">
+        <h1 class="text-uppercase tracking-wider fw-light collections-page-title">Collections
+        </h1>
+        <p class="theme-text-muted small mt-2">Explore all our curated collections</p>
+    </div>
+
+    <div id="categories-container" class="row g-4 justify-content-center">
+        
+        <div class="col-6 col-md-4 col-lg-3">
+            <div class="skeleton-loader skeleton-circle mb-3"></div>
+            <div class="skeleton-loader skeleton-text mx-auto skeleton-width-70"></div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-3">
+            <div class="skeleton-loader skeleton-circle mb-3"></div>
+            <div class="skeleton-loader skeleton-text mx-auto skeleton-width-70"></div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-3">
+            <div class="skeleton-loader skeleton-circle mb-3"></div>
+            <div class="skeleton-loader skeleton-text mx-auto skeleton-width-70"></div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-3">
+            <div class="skeleton-loader skeleton-circle mb-3"></div>
+            <div class="skeleton-loader skeleton-text mx-auto skeleton-width-70"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        loadCategoriesPage();
+    });
+
+    async function loadCategoriesPage() {
+        const container = document.getElementById('categories-container');
+        if (!container) return;
+
+        try {
+            const categories = await window.SABILORE_UTILS.getCategories();
+
+            if (categories.length === 0) {
+                container.innerHTML = '<div class="col-12 text-center py-5 theme-text-muted">No collections available yet.</div>';
+                return;
+            }
+
+            // Deduplicate by name
+            const seen = new Set();
+            const unique = categories.filter(cat => {
+                const key = cat.name.toLowerCase().trim();
+                if (seen.has(key)) return false;
+                seen.add(key);
+                return true;
+            });
+
+            container.innerHTML = unique.map((cat, idx) => {
+                const catImage = cat.image
+                    ? (cat.image.startsWith('http') ? cat.image : BASE_URL + cat.image)
+                    : null;
+                const catVideo = cat.video
+                    ? (cat.video.startsWith('http') ? cat.video : BASE_URL + cat.video)
+                    : null;
+                const slug = cat.slug || encodeURIComponent(cat.name.toLowerCase());
+
+                return `
+                    <div class="col-6 col-md-4 col-lg-3 scroll-reveal-card" data-reveal-delay="${idx % 4}">
+                        <a href="/shop?cat=${slug}" class="collection-modern-card text-decoration-none">
+                            <div class="collection-media-box">
+                                ${cat.active_media === 'video' && catVideo
+                        ? `<video src="${catVideo}" autoplay muted loop playsinline class="collection-video"></video>`
+                        : (catImage
+                            ? `<img src="${catImage}" alt="${cat.name}" class="collection-img" loading="lazy">`
+                            : `<div class="collection-placeholder"><i class="fas fa-tag"></i></div>`
+                        )
+                    }
+                                <div class="collection-overlay-simple"></div>
+                            </div>
+                            <div class="collection-info-simple">
+                                <h3 class="collection-name-simple">${cat.name}</h3>
+                                <span class="collection-link-simple">Explore <i class="fas fa-arrow-right"></i></span>
+                            </div>
+                        </a>
+                    </div>
+                `;
+            }).join('');
+
+            // Trigger same scroll-reveal animation as home page
+            if (typeof refreshScrollReveal === 'function') refreshScrollReveal();
+
+        } catch (error) {
+            console.error('Categories load error:', error);
+            container.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <i class="fas fa-exclamation-triangle fa-2x text-muted mb-3"></i>
+                    <p class="fw-bold">Failed to load collections.</p>
+                    <button class="btn btn-outline-dark btn-sm rounded-pill mt-2" onclick="location.reload()">Try Again</button>
+                </div>
+            `;
+        }
+    }
+</script>
