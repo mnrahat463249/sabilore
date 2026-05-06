@@ -1181,6 +1181,7 @@ html[data-theme="dark"] .asos-heart-active {
 
 .site-header-side-col {
     min-width:140px;
+    overflow: visible !important;
 }
 
 .site-header-container {
@@ -1836,9 +1837,6 @@ html[data-theme="dark"] .logo-ticker-bar {
     overflow: visible !important;
 }
 
-.site-header-side-col {
-    overflow: visible !important;
-}
 
 
 #site-footer {
@@ -2921,8 +2919,7 @@ html:not([data-theme="dark"]) .drawer-input-flat {
         flex-direction:column;
         justify-content:center;
         align-items:center;
-        overflow-y:auto;
-        overflow-x:hidden;
+        overflow: hidden auto;
     }
 
     #navbarNavUnified.custom-show {
@@ -2958,6 +2955,8 @@ html:not([data-theme="dark"]) .drawer-input-flat {
 
     .footer-nav-row {
         display:flex!important;
+        flex-direction:column!important;
+        gap:8px!important;
     }
 
     .footer-nav-group .footer-section-label::after {
@@ -2981,11 +2980,6 @@ html:not([data-theme="dark"]) .drawer-input-flat {
         transition:max-height .4s cubic-bezier(.4, 0, .2, 1),opacity .3s!important;
         opacity:0%!important;
         padding:0!important;
-    }
-
-    .footer-nav-row {
-        flex-direction:column!important;
-        gap:8px!important;
     }
 
     .footer-nav-group {
@@ -3094,12 +3088,12 @@ html:not([data-theme="dark"]) .drawer-input-flat {
     align-items: center !important;
     justify-content: center !important;
     border: 1.5px solid #fff !important;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3) !important;
+    box-shadow: 0 2px 6px rgb(0 0 0 / 30%) !important;
     z-index: 99999 !important;
     line-height: 1 !important;
     padding: 0 !important;
     pointer-events: none !important;
-    opacity: 1 !important;
+    opacity: 100% !important;
     visibility: visible !important;
     margin: 0 !important;
 }
@@ -3112,9 +3106,9 @@ html[data-theme="dark"] .header-count-badge {
 }
 
 @keyframes badgePop {
-    0% { transform: scale(0.5); opacity: 0; }
-    50% { transform: scale(1.2); opacity: 1; }
-    100% { transform: scale(1); opacity: 1; }
+    0% { transform: scale(0.5); opacity: 0%; }
+    50% { transform: scale(1.2); opacity: 100%; }
+    100% { transform: scale(1); opacity: 100%; }
 }
 
 .badge-pop-anim {
